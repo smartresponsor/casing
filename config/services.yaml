@@ -11,6 +11,9 @@ services:
     arguments:
       $providers: !tagged_iterator casing.form_contribution
 
+  App\Casing\Contract\PurchasedProductSubjectResolverInterface:
+    alias: App\Casing\Integration\Ordering\OrderingPurchasedProductSubjectResolver
+
   App\Casing\:
     resource: '../src/'
     exclude:
@@ -19,3 +22,4 @@ services:
       - '../src/Enum/'
       - '../src/Value/'
       - '../src/Contract/CaseFormContributionInterface.php'
+      - '../src/Contract/PurchasedProductSubjectResolverInterface.php'

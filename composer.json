@@ -14,6 +14,7 @@
     "doctrine/orm": "^3.3",
     "interfacing/interface": "*@dev",
     "objecting/object": "*@dev",
+    "ordering/order": "*@dev",
     "paying/payment": "*@dev",
     "shipping/shipment": "*@dev",
     "symfony/dependency-injection": "^8.1",
@@ -39,6 +40,7 @@
     {"type": "path", "url": "../Interfacing", "options": {"symlink": true}},
     {"type": "path", "url": "../Navigating", "options": {"symlink": true}},
     {"type": "path", "url": "../Objecting", "options": {"symlink": true}},
+    {"type": "path", "url": "../Ordering", "options": {"symlink": true}},
     {"type": "path", "url": "../Paying", "options": {"symlink": true}},
     {"type": "path", "url": "../Shipping", "options": {"symlink": true}},
     {"type": "path", "url": "../Viewing", "options": {"symlink": true}}
