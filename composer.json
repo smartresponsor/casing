@@ -14,6 +14,8 @@
     "doctrine/orm": "^3.3",
     "interfacing/interface": "*@dev",
     "objecting/object": "*@dev",
+    "paying/payment": "*@dev",
+    "shipping/shipment": "*@dev",
     "symfony/dependency-injection": "^8.1",
     "symfony/form": "^8.1",
     "symfony/framework-bundle": "^8.1",
@@ -30,11 +32,15 @@
   "autoload": {"psr-4": {"App\\Casing\\": "src/"}},
   "autoload-dev": {"psr-4": {"App\\Casing\\Tests\\": "tests/"}},
   "repositories": [
+    {"type": "path", "url": "../Administering", "options": {"symlink": true}},
     {"type": "path", "url": "../Attaching", "options": {"symlink": true}},
     {"type": "path", "url": "../Cataloging", "options": {"symlink": true}},
     {"type": "path", "url": "../Cruding", "options": {"symlink": true}},
     {"type": "path", "url": "../Interfacing", "options": {"symlink": true}},
+    {"type": "path", "url": "../Navigating", "options": {"symlink": true}},
     {"type": "path", "url": "../Objecting", "options": {"symlink": true}},
+    {"type": "path", "url": "../Paying", "options": {"symlink": true}},
+    {"type": "path", "url": "../Shipping", "options": {"symlink": true}},
     {"type": "path", "url": "../Viewing", "options": {"symlink": true}}
   ],
   "scripts": {
@@ -46,5 +52,7 @@
     "allow-plugins": {"symfony/runtime": true},
     "sort-packages": true
   },
-  "extra": {"symfony": {"bundle": "App\\Casing\\CasingBundle"}}
+  "extra": {"symfony": {"bundle": "App\\Casing\\CasingBundle"}},
+  "minimum-stability": "dev",
+  "prefer-stable": true
 }
