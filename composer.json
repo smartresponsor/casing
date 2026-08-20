@@ -16,6 +16,7 @@
     "objecting/object": "*@dev",
     "ordering/order": "*@dev",
     "paying/payment": "*@dev",
+    "smartresponsor/relating": "*@dev",
     "shipping/shipment": "*@dev",
     "symfony/dependency-injection": "^8.1",
     "symfony/form": "^8.1",
@@ -45,6 +46,7 @@
     {"type": "path", "url": "../Objecting", "options": {"symlink": true}},
     {"type": "path", "url": "../Ordering", "options": {"symlink": true}},
     {"type": "path", "url": "../Paying", "options": {"symlink": true}},
+    {"type": "path", "url": "../Relating", "options": {"symlink": true}},
     {"type": "path", "url": "../Shipping", "options": {"symlink": true}},
     {"type": "path", "url": "../Viewing", "options": {"symlink": true}}
   ],

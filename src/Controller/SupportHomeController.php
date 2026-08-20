@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Casing\Controller;
 
+use App\Casing\Contract\LeadSubjectResolverInterface;
 use App\Casing\Contract\PurchasedProductSubjectResolverInterface;
 use App\Casing\Contract\ServicePaymentSubjectResolverInterface;
 use App\Casing\Service\CaseActorAccessService;
@@ -18,6 +19,7 @@ final readonly class SupportHomeController
         private CaseCatalogService $catalogs,
         private PurchasedProductSubjectResolverInterface $subjects,
         private ServicePaymentSubjectResolverInterface $servicePayments,
+        private LeadSubjectResolverInterface $leadSubjects,
     ) {
     }
 
@@ -48,6 +50,18 @@ final readonly class SupportHomeController
                 'description' => 'Open a dispute about a payment associated with one of your service orders.',
                 'href' => '/support/service/dispute',
                 'availableItems' => count($this->servicePayments->listForActor($actorId)),
+            ];
+        }
+
+        $leadDisputeCategory = $this->catalogs->publishedCategory('leads', 'leads.dispute');
+        if (null !== $leadDisputeCategory) {
+            $rows[] = [
+                'id' => 'lead-dispute',
+                'context' => 'Lead',
+                'request' => $leadDisputeCategory->getName(),
+                'description' => 'Dispute a lead that is already associated with your vendor relationship.',
+                'href' => '/support/lead/dispute',
+                'availableItems' => count($this->leadSubjects->listForActor($actorId)),
             ];
         }
 

@@ -1,0 +1,59 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Casing\Service;
+
+use App\Casing\Contract\LeadSubjectResolverInterface;
+use App\Casing\Entity\CaseDraftEntity;
+use Doctrine\ORM\EntityManagerInterface;
+
+final readonly class LeadDisputeIntakeService
+{
+    public function __construct(
+        private LeadSubjectResolverInterface $subjects,
+        private EntityManagerInterface $entityManager,
+    ) {
+    }
+
+    public function associateLead(CaseDraftEntity $draft, string $leadReference): void
+    {
+        $subject = $this->subjects->resolve($draft->getActorId(), $leadReference);
+        if (null === $subject) {
+            throw new \DomainException('We could not associate this lead with your account.');
+        }
+
+        $references = array_values(array_filter(
+            $draft->getSubjectReferences(),
+            static fn (array $reference): bool => 'relating' !== ($reference['component'] ?? null),
+        ));
+        $references[] = ['component' => 'relating', 'type' => 'lead', 'id' => $subject->leadReference];
+        $draft->setSubjectReferences($references);
+
+        $contributions = $draft->getContributionData();
+        $contributions['relating.lead_dispute_subject'] = $subject->toArray();
+        $draft->setContributionData($contributions);
+        $draft->setCurrentStep('details');
+        $this->persist($draft);
+    }
+
+    public function recordCustomerClaim(CaseDraftEntity $draft, string $description): void
+    {
+        $description = trim($description);
+        if ('' === $description) {
+            throw new \InvalidArgumentException('Lead dispute description is required.');
+        }
+
+        $facts = $draft->getSuppliedFacts();
+        $facts['leadDispute'] = ['description' => $description];
+        $draft->setSuppliedFacts($facts);
+        $draft->setCurrentStep('review');
+        $this->persist($draft);
+    }
+
+    private function persist(CaseDraftEntity $draft): void
+    {
+        $this->entityManager->persist($draft);
+        $this->entityManager->flush();
+    }
+}

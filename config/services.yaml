@@ -17,6 +17,9 @@ services:
   App\Casing\Contract\ServicePaymentSubjectResolverInterface:
     alias: App\Casing\Integration\Paying\ServicePaymentSubjectResolver
 
+  App\Casing\Contract\LeadSubjectResolverInterface:
+    alias: App\Casing\Integration\Relating\LeadSubjectResolver
+
   App\Casing\:
     resource: '../src/'
     exclude:
@@ -28,3 +31,4 @@ services:
       - '../src/Contract/CaseFormContributionInterface.php'
       - '../src/Contract/PurchasedProductSubjectResolverInterface.php'
       - '../src/Contract/ServicePaymentSubjectResolverInterface.php'
+      - '../src/Contract/LeadSubjectResolverInterface.php'
