@@ -36,4 +36,24 @@ final class CaseBoundaryTest extends TestCase
         self::assertSame(['attachment-1'], $case->getAttachmentReferences());
         self::assertSame(CaseStatus::Submitted, $case->getStatus());
     }
+
+    public function testCaseFollowUpIsAppendedWithoutReplacingSubmittedFacts(): void
+    {
+        $catalog = new CatalogCatalogEntity('services', 'Services', 'service-discovery');
+        $category = new CatalogCategoryEntity($catalog, 'Dispute', 'dispute', 'services.dispute', 1);
+        $category->setPublished(true);
+        $category->setWorkflowState('published');
+
+        $draft = new CaseDraftEntity('actor-123', 'services');
+        $draft->setCatalogCategory($category);
+        $draft->setSuppliedFacts(['serviceDispute' => ['description' => 'Original claim.']]);
+        $case = new CaseEntity($draft, $category);
+        $case->transitionTo(CaseStatus::NeedsInformation);
+        $case->appendFollowUp('Here is the requested detail.');
+        $case->transitionTo(CaseStatus::Processing);
+
+        self::assertSame('Original claim.', $case->getSuppliedFacts()['serviceDispute']['description']);
+        self::assertSame([['message' => 'Here is the requested detail.']], $case->getSuppliedFacts()['followUp']);
+        self::assertSame(CaseStatus::Processing, $case->getStatus());
+    }
 }

@@ -16,6 +16,17 @@ final class CaseRepository extends ServiceEntityRepository
         parent::__construct($registry, CaseEntity::class);
     }
 
+    /** @return list<CaseEntity> */
+    public function findActorCases(string $actorId): array
+    {
+        $actorId = trim($actorId);
+        if ('' === $actorId) {
+            return [];
+        }
+
+        return $this->findBy(['actorId' => $actorId], ['id' => 'DESC']);
+    }
+
     public function findActorCase(string $caseReference, string $actorId): ?CaseEntity
     {
         $case = $this->findOneBy([

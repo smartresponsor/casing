@@ -127,6 +127,17 @@ final class CaseEntity
         return $this->suppliedFacts;
     }
 
+    public function appendFollowUp(string $message): void
+    {
+        $followUps = $this->suppliedFacts['followUp'] ?? [];
+        if (!is_array($followUps)) {
+            $followUps = [];
+        }
+        $followUps[] = ['message' => $message];
+        $this->suppliedFacts['followUp'] = $followUps;
+        $this->touchModified();
+    }
+
     public function getContributionData(): array
     {
         return $this->contributionData;

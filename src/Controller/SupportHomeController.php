@@ -83,6 +83,9 @@ final readonly class SupportHomeController
                 ],
             ],
             'data' => [
+                'headerActions' => [
+                    ['label' => 'My cases', 'href' => '/support/case', 'variant' => 'default', 'operation' => 'index', 'enabled' => true, 'visibility' => 'visible'],
+                ],
                 'columns' => [
                     ['key' => 'context', 'label' => 'Context', 'type' => 'text'],
                     ['key' => 'request', 'label' => 'Request', 'type' => 'text'],
