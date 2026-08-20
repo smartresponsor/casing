@@ -30,37 +30,43 @@ final readonly class SupportHomeController
         $actorId = $this->actors->requireActorId($request);
         $rows = [];
         $returnCategory = $this->catalogs->publishedCategory('products', 'products.return');
-        if (null !== $returnCategory) {
+        $returnTypes = $this->catalogs->publishedTypes('products', 'products.return');
+        if (null !== $returnCategory && [] !== $returnTypes) {
             $rows[] = [
                 'id' => 'product-return',
                 'context' => 'Product',
                 'request' => $returnCategory->getName(),
                 'description' => 'Request help returning a product from one of your orders.',
                 'href' => '/support/product/return',
+                'supportTypes' => $returnTypes,
                 'availableItems' => count($this->subjects->listForActor($actorId)),
             ];
         }
 
         $disputeCategory = $this->catalogs->publishedCategory('services', 'services.dispute');
-        if (null !== $disputeCategory) {
+        $disputeTypes = $this->catalogs->publishedTypes('services', 'services.dispute');
+        if (null !== $disputeCategory && [] !== $disputeTypes) {
             $rows[] = [
                 'id' => 'service-dispute',
                 'context' => 'Service',
                 'request' => $disputeCategory->getName(),
                 'description' => 'Open a dispute about a payment associated with one of your service orders.',
                 'href' => '/support/service/dispute',
+                'supportTypes' => $disputeTypes,
                 'availableItems' => count($this->servicePayments->listForActor($actorId)),
             ];
         }
 
         $leadDisputeCategory = $this->catalogs->publishedCategory('leads', 'leads.dispute');
-        if (null !== $leadDisputeCategory) {
+        $leadDisputeTypes = $this->catalogs->publishedTypes('leads', 'leads.dispute');
+        if (null !== $leadDisputeCategory && [] !== $leadDisputeTypes) {
             $rows[] = [
                 'id' => 'lead-dispute',
                 'context' => 'Lead',
                 'request' => $leadDisputeCategory->getName(),
                 'description' => 'Dispute a lead that is already associated with your vendor relationship.',
                 'href' => '/support/lead/dispute',
+                'supportTypes' => $leadDisputeTypes,
                 'availableItems' => count($this->leadSubjects->listForActor($actorId)),
             ];
         }
