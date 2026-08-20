@@ -61,6 +61,47 @@ final readonly class LeadDisputeSupportController
     }
 
     /** @return array<string, mixed> */
+    #[Route('/support/lead/dispute/lead/{leadReference}', name: 'casing_support_lead_dispute_context', methods: ['GET', 'POST'], defaults: ['_view_controlled' => true])]
+    public function contextual(Request $request, string $leadReference): array
+    {
+        $actorId = $this->actors->requireActorId($request);
+        $subject = $this->subjects->resolve($actorId, $leadReference);
+        if (!$subject instanceof LeadSubject) {
+            throw new AccessDeniedHttpException('We could not associate this lead with your account.');
+        }
+
+        $reasons = $this->catalogs->publishedChildren('leads', 'leads.dispute');
+        $claim = new LeadDisputeClaimData();
+        $claim->subject = $subject;
+        $form = $this->forms->create(LeadDisputeClaimType::class, $claim, ['subjects' => [$subject], 'reasons' => $reasons]);
+        if ($request->isMethod('POST')) {
+            $payload = $this->requestPayload($request);
+            $payload['subject'] = hash('sha256', $subject->leadReference);
+            $form->submit($payload);
+            if ($form->isValid()) {
+                $category = $this->catalogs->publishedCategory('leads', $claim->reasonPath);
+                if (null === $category || !str_starts_with($category->getPath(), 'leads.dispute.')) {
+                    throw new \DomainException('The selected lead dispute reason is not available.');
+                }
+
+                $draft = $this->intake->start($actorId, 'leads');
+                $this->intake->selectCategory($draft, $category);
+                $this->disputes->associateLead($draft, $subject->leadReference);
+                $this->disputes->recordCustomerClaim($draft, $claim->description);
+
+                return $this->reviewPayload($draft);
+            }
+        }
+
+        $payload = $this->formPayload($claim, [$subject], $reasons, null);
+        $payload['data']['action'] = sprintf('/support/lead/dispute/lead/%s', rawurlencode($leadReference));
+        $payload['data']['contextLocked'] = true;
+        $payload['data']['verifiedContext'] = $subject->toArray();
+
+        return $payload;
+    }
+
+    /** @return array<string, mixed> */
     #[Route('/support/lead/dispute/{draftReference}', name: 'casing_support_lead_dispute_review', methods: ['GET'], defaults: ['_view_controlled' => true])]
     public function review(Request $request, string $draftReference): array
     {

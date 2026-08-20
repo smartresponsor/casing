@@ -61,6 +61,45 @@ final readonly class ProductReturnSupportController
     }
 
     /** @return array<string, mixed> */
+    #[Route('/support/product/return/order/{orderReference}/item/{itemReference}', name: 'casing_support_product_return_context', methods: ['GET', 'POST'], defaults: ['_view_controlled' => true])]
+    public function contextual(Request $request, string $orderReference, string $itemReference): array
+    {
+        $actorId = $this->actors->requireActorId($request);
+        $subject = $this->subjects->resolve($actorId, $orderReference, $itemReference);
+        if (!$subject instanceof PurchasedProductSubject) {
+            throw new AccessDeniedHttpException('We could not associate this purchased product with your account.');
+        }
+
+        $claim = new ProductReturnClaimData();
+        $claim->subject = $subject;
+        $form = $this->forms->create(ProductReturnClaimType::class, $claim, ['subjects' => [$subject]]);
+        if ($request->isMethod('POST')) {
+            $payload = $this->requestPayload($request);
+            $payload['subject'] = self::subjectToken($subject);
+            $form->submit($payload);
+            if ($form->isValid()) {
+                $category = $this->catalogs->publishedCategory('products', 'products.return');
+                if (null === $category) {
+                    throw new \DomainException('Product return support is not currently available.');
+                }
+
+                $draft = $this->intake->start($actorId, 'products');
+                $this->intake->selectCategory($draft, $category);
+                $this->returns->associatePurchasedProduct($draft, $subject->orderReference, $subject->itemReference);
+                $this->returns->recordCustomerClaim($draft, $claim->reason, $claim->quantity);
+
+                return $this->reviewPayload($draft);
+            }
+        }
+
+        $payload = $this->formPayload($form, [$subject], sprintf('/support/product/return/order/%s/item/%s', rawurlencode($orderReference), rawurlencode($itemReference)));
+        $payload['data']['contextLocked'] = true;
+        $payload['data']['verifiedContext'] = $subject->toArray();
+
+        return $payload;
+    }
+
+    /** @return array<string, mixed> */
     #[Route('/support/product/return/{draftReference}', name: 'casing_support_product_return_review', methods: ['GET'], defaults: ['_view_controlled' => true])]
     public function review(Request $request, string $draftReference): array
     {

@@ -34,6 +34,8 @@ final class ProductReturnIntakeTest extends TestCase
 
         self::assertCount(1, $resolver->listForActor('actor-1'));
         self::assertSame([], $resolver->listForActor('actor-2'));
+        self::assertCount(1, $resolver->listForActorOrder('actor-1', 'ORD-TEST-1'));
+        self::assertSame([], $resolver->listForActorOrder('actor-2', 'ORD-TEST-1'));
         self::assertNotNull($resolver->resolve('actor-1', 'ORD-TEST-1', 'SKU-RETURN-1'));
         self::assertNull($resolver->resolve('actor-2', 'ORD-TEST-1', 'SKU-RETURN-1'));
         self::assertNull($resolver->resolve('actor-1', 'ORD-TEST-1', 'SKU-OTHER'));
@@ -47,6 +49,11 @@ final class ProductReturnIntakeTest extends TestCase
                 $subject = $this->resolve($actorId, 'ORD-TEST-1', 'SKU-RETURN-1');
 
                 return null === $subject ? [] : [$subject];
+            }
+
+            public function listForActorOrder(string $actorId, string $orderReference): array
+            {
+                return array_values(array_filter($this->listForActor($actorId), static fn (PurchasedProductSubject $subject): bool => $subject->orderReference === $orderReference || $subject->orderNumber === $orderReference));
             }
 
             public function resolve(string $actorId, string $orderReference, string $itemReference): ?PurchasedProductSubject

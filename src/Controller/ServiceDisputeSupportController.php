@@ -58,6 +58,46 @@ final readonly class ServiceDisputeSupportController
     }
 
     /** @return array<string, mixed> */
+    #[Route('/support/service/dispute/payment/{paymentReference}', name: 'casing_support_service_dispute_context', methods: ['GET', 'POST'], defaults: ['_view_controlled' => true])]
+    public function contextual(Request $request, string $paymentReference): array
+    {
+        $actorId = $this->actors->requireActorId($request);
+        $subject = $this->subjects->resolve($actorId, $paymentReference);
+        if (!$subject instanceof ServicePaymentSubject) {
+            throw new AccessDeniedHttpException('We could not associate this payment with your account.');
+        }
+
+        $claim = new ServiceDisputeClaimData();
+        $claim->subject = $subject;
+        $form = $this->forms->create(ServiceDisputeClaimType::class, $claim, ['subjects' => [$subject]]);
+        if ($request->isMethod('POST')) {
+            $payload = $this->requestPayload($request);
+            $payload['subject'] = hash('sha256', $subject->paymentReference);
+            $form->submit($payload);
+            if ($form->isValid()) {
+                $category = $this->catalogs->publishedCategory('services', 'services.dispute');
+                if (null === $category) {
+                    throw new \DomainException('Service dispute support is not currently available.');
+                }
+
+                $draft = $this->intake->start($actorId, 'services');
+                $this->intake->selectCategory($draft, $category);
+                $this->disputes->associatePayment($draft, $subject->paymentReference);
+                $this->disputes->recordCustomerClaim($draft, $claim->description);
+
+                return $this->reviewPayload($draft);
+            }
+        }
+
+        $payload = $this->formPayload($claim, [$subject], null);
+        $payload['data']['action'] = sprintf('/support/service/dispute/payment/%s', rawurlencode($paymentReference));
+        $payload['data']['contextLocked'] = true;
+        $payload['data']['verifiedContext'] = $subject->toArray();
+
+        return $payload;
+    }
+
+    /** @return array<string, mixed> */
     #[Route('/support/service/dispute/{draftReference}', name: 'casing_support_service_dispute_review', methods: ['GET'], defaults: ['_view_controlled' => true])]
     public function review(Request $request, string $draftReference): array
     {

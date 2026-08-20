@@ -12,4 +12,7 @@ interface PurchasedProductSubjectResolverInterface
     public function listForActor(string $actorId): array;
 
     public function resolve(string $actorId, string $orderReference, string $itemReference): ?PurchasedProductSubject;
+
+    /** @return list<PurchasedProductSubject> */
+    public function listForActorOrder(string $actorId, string $orderReference): array;
 }

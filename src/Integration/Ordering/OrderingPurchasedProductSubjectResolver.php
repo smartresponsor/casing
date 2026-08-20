@@ -38,6 +38,30 @@ final readonly class OrderingPurchasedProductSubjectResolver implements Purchase
         return $subjects;
     }
 
+    public function listForActorOrder(string $actorId, string $orderReference): array
+    {
+        $actorId = trim($actorId);
+        $orderReference = trim($orderReference);
+        if ('' === $actorId || '' === $orderReference) {
+            return [];
+        }
+
+        $subjects = [];
+        foreach ($this->orders->findByCustomerId($actorId) as $order) {
+            if (!$order instanceof OrderEntity || !$this->matchesOrderReference($order, $orderReference)) {
+                continue;
+            }
+            foreach ($order->getItems() as $item) {
+                if ($item instanceof OrderItemEntity) {
+                    $subjects[] = $this->subject($order, $item);
+                }
+            }
+            break;
+        }
+
+        return $subjects;
+    }
+
     public function resolve(string $actorId, string $orderReference, string $itemReference): ?PurchasedProductSubject
     {
         $actorId = trim($actorId);
