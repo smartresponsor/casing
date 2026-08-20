@@ -55,8 +55,9 @@ final readonly class ProductReturnIntakeService
 
         $contributions = $draft->getContributionData();
         $contributions['cataloging.support_type'] = [
-            'catalogCode' => 'products',
-            'categoryPath' => 'products.return',
+            'catalogCode' => 'retailing',
+            'categoryPath' => 'retailing.product',
+            'supportKind' => 'return',
             'typeCode' => $typeCode,
         ];
         $draft->setContributionData($contributions);

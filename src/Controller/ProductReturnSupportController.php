@@ -37,19 +37,19 @@ final readonly class ProductReturnSupportController
     {
         $actorId = $this->actors->requireActorId($request);
         $subjects = $this->subjects->listForActor($actorId);
-        $types = $this->catalogs->publishedTypes('products', 'products.return');
+        $types = $this->catalogs->publishedSupportTypes('retailing', 'retailing.product', 'return');
         $claim = new ProductReturnClaimData();
         $form = $this->forms->create(ProductReturnClaimType::class, $claim, ['subjects' => $subjects, 'types' => $types]);
 
         if ($request->isMethod('POST')) {
             $form->submit($this->requestPayload($request));
             if ($form->isValid() && $claim->subject instanceof PurchasedProductSubject) {
-                $category = $this->catalogs->publishedCategory('products', 'products.return');
-                if (null === $category || !$this->catalogs->isPublishedType('products', 'products.return', $claim->typeCode)) {
+                $category = $this->catalogs->publishedCategory('retailing', 'retailing.product');
+                if (null === $category || !$this->catalogs->isPublishedSupportType('retailing', 'retailing.product', 'return', $claim->typeCode)) {
                     throw new \DomainException('Product return support is not currently available.');
                 }
 
-                $draft = $this->intake->start($actorId, 'products');
+                $draft = $this->intake->start($actorId, 'retailing.product');
                 $this->intake->selectCategory($draft, $category);
                 $this->returns->associatePurchasedProduct($draft, $claim->subject->orderReference, $claim->subject->itemReference);
                 $this->returns->recordCustomerClaim($draft, $claim->typeCode, $claim->reason, $claim->quantity);
@@ -71,7 +71,7 @@ final readonly class ProductReturnSupportController
             throw new AccessDeniedHttpException('We could not associate this purchased product with your account.');
         }
 
-        $types = $this->catalogs->publishedTypes('products', 'products.return');
+        $types = $this->catalogs->publishedSupportTypes('retailing', 'retailing.product', 'return');
         $claim = new ProductReturnClaimData();
         $claim->subject = $subject;
         $form = $this->forms->create(ProductReturnClaimType::class, $claim, ['subjects' => [$subject], 'types' => $types]);
@@ -80,12 +80,12 @@ final readonly class ProductReturnSupportController
             $payload['subject'] = self::subjectToken($subject);
             $form->submit($payload);
             if ($form->isValid()) {
-                $category = $this->catalogs->publishedCategory('products', 'products.return');
-                if (null === $category || !$this->catalogs->isPublishedType('products', 'products.return', $claim->typeCode)) {
+                $category = $this->catalogs->publishedCategory('retailing', 'retailing.product');
+                if (null === $category || !$this->catalogs->isPublishedSupportType('retailing', 'retailing.product', 'return', $claim->typeCode)) {
                     throw new \DomainException('Product return support is not currently available.');
                 }
 
-                $draft = $this->intake->start($actorId, 'products');
+                $draft = $this->intake->start($actorId, 'retailing.product');
                 $this->intake->selectCategory($draft, $category);
                 $this->returns->associatePurchasedProduct($draft, $subject->orderReference, $subject->itemReference);
                 $this->returns->recordCustomerClaim($draft, $claim->typeCode, $claim->reason, $claim->quantity);
@@ -117,14 +117,14 @@ final readonly class ProductReturnSupportController
         $actorId = $this->actors->requireActorId($request);
         $draft = $this->requireProductReturnDraft($draftReference, $actorId);
         $subjects = $this->subjects->listForActor($actorId);
-        $types = $this->catalogs->publishedTypes('products', 'products.return');
+        $types = $this->catalogs->publishedSupportTypes('retailing', 'retailing.product', 'return');
         $claim = $this->claimFromDraft($draft, $subjects);
         $form = $this->forms->create(ProductReturnClaimType::class, $claim, ['subjects' => $subjects, 'types' => $types]);
 
         if ($request->isMethod('POST')) {
             $form->submit($this->requestPayload($request));
             if ($form->isValid() && $claim->subject instanceof PurchasedProductSubject) {
-                if (!$this->catalogs->isPublishedType('products', 'products.return', $claim->typeCode)) {
+                if (!$this->catalogs->isPublishedSupportType('retailing', 'retailing.product', 'return', $claim->typeCode)) {
                     throw new \DomainException('Product return support is not currently available.');
                 }
                 $this->returns->associatePurchasedProduct($draft, $claim->subject->orderReference, $claim->subject->itemReference);
@@ -164,7 +164,7 @@ final readonly class ProductReturnSupportController
     private function requireProductReturnDraft(string $draftReference, string $actorId): CaseDraftEntity
     {
         $draft = $this->intake->resume($draftReference, $actorId);
-        if (!$draft instanceof CaseDraftEntity || 'products' !== $draft->getBusinessContext() || 'return' !== $draft->getCatalogCategory()?->getSlug()) {
+        if (!$draft instanceof CaseDraftEntity || 'retailing.product' !== $draft->getBusinessContext() || 'product' !== $draft->getCatalogCategory()?->getSlug()) {
             throw new AccessDeniedHttpException('We could not associate this case draft with your account.');
         }
 
@@ -210,7 +210,7 @@ final readonly class ProductReturnSupportController
         ], $subjects);
         $typeOptions = array_map(
             static fn (array $type): array => ['label' => $type['label'], 'value' => $type['code']],
-            $this->catalogs->publishedTypes('products', 'products.return'),
+            $this->catalogs->publishedSupportTypes('retailing', 'retailing.product', 'return'),
         );
         $errors = [];
         foreach ($form->getErrors(true) as $error) {

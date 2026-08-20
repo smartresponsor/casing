@@ -29,13 +29,14 @@ final readonly class SupportHomeController
     {
         $actorId = $this->actors->requireActorId($request);
         $rows = [];
-        $returnCategory = $this->catalogs->publishedCategory('products', 'products.return');
-        $returnTypes = $this->catalogs->publishedTypes('products', 'products.return');
-        if (null !== $returnCategory && [] !== $returnTypes) {
+        $returnCategory = $this->catalogs->publishedCategory('retailing', 'retailing.product');
+        $returnLabel = $this->catalogs->publishedSupportLabel('retailing', 'retailing.product', 'return');
+        $returnTypes = $this->catalogs->publishedSupportTypes('retailing', 'retailing.product', 'return');
+        if (null !== $returnCategory && null !== $returnLabel && [] !== $returnTypes) {
             $rows[] = [
                 'id' => 'product-return',
-                'context' => 'Product',
-                'request' => $returnCategory->getName(),
+                'context' => $returnCategory->getName(),
+                'request' => $returnLabel,
                 'description' => 'Request help returning a product from one of your orders.',
                 'href' => '/support/product/return',
                 'supportTypes' => $returnTypes,
@@ -43,13 +44,14 @@ final readonly class SupportHomeController
             ];
         }
 
-        $disputeCategory = $this->catalogs->publishedCategory('services', 'services.dispute');
-        $disputeTypes = $this->catalogs->publishedTypes('services', 'services.dispute');
-        if (null !== $disputeCategory && [] !== $disputeTypes) {
+        $disputeCategory = $this->catalogs->publishedCategory('retailing', 'retailing.service');
+        $disputeLabel = $this->catalogs->publishedSupportLabel('retailing', 'retailing.service', 'dispute');
+        $disputeTypes = $this->catalogs->publishedSupportTypes('retailing', 'retailing.service', 'dispute');
+        if (null !== $disputeCategory && null !== $disputeLabel && [] !== $disputeTypes) {
             $rows[] = [
                 'id' => 'service-dispute',
-                'context' => 'Service',
-                'request' => $disputeCategory->getName(),
+                'context' => $disputeCategory->getName(),
+                'request' => $disputeLabel,
                 'description' => 'Open a dispute about a payment associated with one of your service orders.',
                 'href' => '/support/service/dispute',
                 'supportTypes' => $disputeTypes,

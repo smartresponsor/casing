@@ -22,25 +22,30 @@ final class SupportHomeControllerTest extends TestCase
 {
     public function testSupportHomeRequiresPublishedTypeVocabularyAndExposesIt(): void
     {
-        $productCatalog = new CatalogCatalogEntity('products', 'Products', 'product-commerce');
-        $productReturn = new CatalogCategoryEntity($productCatalog, 'Return', 'return', 'products.return', 1);
-        $productReturn->setPublished(true);
-        $productReturn->setWorkflowState('published');
-        $productReturn->setMetadata([
-            'schema' => 'catalog-category-types@1',
-            'types' => [['code' => 'damaged', 'label' => 'Damaged']],
+        $retailingCatalog = new CatalogCatalogEntity('retailing', 'Retailing', 'retailing-classification');
+        $product = new CatalogCategoryEntity($retailingCatalog, 'Product', 'product', 'retailing.product', 0);
+        $product->setPublished(true);
+        $product->setWorkflowState('published');
+        $product->setMetadata([
+            'schema' => 'retailing-category@1',
+            'support' => [
+                'return' => [
+                    'label' => 'Return',
+                    'types' => [['code' => 'damaged', 'label' => 'Damaged']],
+                ],
+            ],
         ]);
 
-        $serviceCatalog = new CatalogCatalogEntity('services', 'Services', 'service-discovery');
-        $serviceDispute = new CatalogCategoryEntity($serviceCatalog, 'Dispute', 'dispute', 'services.dispute', 1);
-        $serviceDispute->setPublished(true);
-        $serviceDispute->setWorkflowState('published');
+        $service = new CatalogCategoryEntity($retailingCatalog, 'Service', 'service', 'retailing.service', 0);
+        $service->setPublished(true);
+        $service->setWorkflowState('published');
+        $service->setMetadata(['schema' => 'retailing-category@1', 'support' => []]);
 
         $lookup = $this->createStub(CatalogCategoryLookupServiceInterface::class);
         $lookup->method('publishedByCatalogAndPath')->willReturnCallback(
             static fn (string $catalogCode, string $path): ?CatalogCategoryEntity => match ($catalogCode.'.'.$path) {
-                'products.products.return' => $productReturn,
-                'services.services.dispute' => $serviceDispute,
+                'retailing.retailing.product' => $product,
+                'retailing.retailing.service' => $service,
                 default => null,
             },
         );
@@ -67,6 +72,8 @@ final class SupportHomeControllerTest extends TestCase
 
         self::assertCount(1, $payload['data']['rows']);
         self::assertSame('product-return', $payload['data']['rows'][0]['id']);
+        self::assertSame('Product', $payload['data']['rows'][0]['context']);
+        self::assertSame('Return', $payload['data']['rows'][0]['request']);
         self::assertSame([['code' => 'damaged', 'label' => 'Damaged']], $payload['data']['rows'][0]['supportTypes']);
     }
 }

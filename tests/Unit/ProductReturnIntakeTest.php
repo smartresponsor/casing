@@ -88,8 +88,9 @@ final class ProductReturnIntakeTest extends TestCase
         ], $draft->getSubjectReferences());
         self::assertSame('ORD-TEST-1', $draft->getContributionData()['ordering.return_subject']['orderNumber']);
         self::assertSame([
-            'catalogCode' => 'products',
-            'categoryPath' => 'products.return',
+            'catalogCode' => 'retailing',
+            'categoryPath' => 'retailing.product',
+            'supportKind' => 'return',
             'typeCode' => 'damaged',
         ], $draft->getContributionData()['cataloging.support_type']);
         self::assertSame(['reason' => 'Arrived damaged.', 'quantity' => 1], $draft->getSuppliedFacts()['return']);

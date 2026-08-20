@@ -51,8 +51,9 @@ final readonly class ServiceDisputeIntakeService
 
         $contributions = $draft->getContributionData();
         $contributions['cataloging.support_type'] = [
-            'catalogCode' => 'services',
-            'categoryPath' => 'services.dispute',
+            'catalogCode' => 'retailing',
+            'categoryPath' => 'retailing.service',
+            'supportKind' => 'dispute',
             'typeCode' => $typeCode,
         ];
         $draft->setContributionData($contributions);

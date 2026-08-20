@@ -15,12 +15,12 @@ final class CaseBoundaryTest extends TestCase
 {
     public function testSubmittedCaseCopiesDraftEnvelopeWithoutPromotingFactsToVerifiedState(): void
     {
-        $catalog = new CatalogCatalogEntity('products', 'Products', 'product-commerce');
-        $category = new CatalogCategoryEntity($catalog, 'Return', 'return', 'products.return', 1);
+        $catalog = new CatalogCatalogEntity('retailing', 'Retailing', 'retailing-classification');
+        $category = new CatalogCategoryEntity($catalog, 'Product', 'product', 'retailing.product', 0);
         $category->setPublished(true);
         $category->setWorkflowState('published');
 
-        $draft = new CaseDraftEntity('actor-123', 'products');
+        $draft = new CaseDraftEntity('actor-123', 'retailing.product');
         $draft->setCatalogCategory($category);
         $draft->setDescription('Package arrived damaged.');
         $draft->setSuppliedFacts(['claimedAmount' => '49.95']);
@@ -30,7 +30,7 @@ final class CaseBoundaryTest extends TestCase
         $case = new CaseEntity($draft, $category);
 
         self::assertSame('actor-123', $case->getActorId());
-        self::assertSame('products', $case->getBusinessContext());
+        self::assertSame('retailing.product', $case->getBusinessContext());
         self::assertSame(['claimedAmount' => '49.95'], $case->getSuppliedFacts());
         self::assertSame(['shipping' => ['trackingReference' => 'carrier-owned-value']], $case->getContributionData());
         self::assertSame(['attachment-1'], $case->getAttachmentReferences());
@@ -39,12 +39,12 @@ final class CaseBoundaryTest extends TestCase
 
     public function testCaseFollowUpIsAppendedWithoutReplacingSubmittedFacts(): void
     {
-        $catalog = new CatalogCatalogEntity('services', 'Services', 'service-discovery');
-        $category = new CatalogCategoryEntity($catalog, 'Dispute', 'dispute', 'services.dispute', 1);
+        $catalog = new CatalogCatalogEntity('retailing', 'Retailing', 'retailing-classification');
+        $category = new CatalogCategoryEntity($catalog, 'Service', 'service', 'retailing.service', 0);
         $category->setPublished(true);
         $category->setWorkflowState('published');
 
-        $draft = new CaseDraftEntity('actor-123', 'services');
+        $draft = new CaseDraftEntity('actor-123', 'retailing.service');
         $draft->setCatalogCategory($category);
         $draft->setSuppliedFacts(['serviceDispute' => ['description' => 'Original claim.']]);
         $case = new CaseEntity($draft, $category);
@@ -59,11 +59,11 @@ final class CaseBoundaryTest extends TestCase
 
     public function testLifecycleRejectsInvalidStatusJump(): void
     {
-        $catalog = new CatalogCatalogEntity('products', 'Products', 'product-commerce');
-        $category = new CatalogCategoryEntity($catalog, 'Return', 'return', 'products.return', 1);
+        $catalog = new CatalogCatalogEntity('retailing', 'Retailing', 'retailing-classification');
+        $category = new CatalogCategoryEntity($catalog, 'Product', 'product', 'retailing.product', 0);
         $category->setPublished(true);
         $category->setWorkflowState('published');
-        $draft = new CaseDraftEntity('actor-123', 'products');
+        $draft = new CaseDraftEntity('actor-123', 'retailing.product');
         $draft->setCatalogCategory($category);
         $case = new CaseEntity($draft, $category);
 

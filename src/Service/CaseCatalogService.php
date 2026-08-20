@@ -79,4 +79,73 @@ final class CaseCatalogService
 
         return false;
     }
+
+    /** @return list<array{code: string, label: string}> */
+    public function publishedSupportTypes(string $catalogCode, string $categoryPath, string $supportKind, string $tenant = 'default'): array
+    {
+        $definition = $this->publishedSupportDefinition($catalogCode, $categoryPath, $supportKind, $tenant);
+        if (null === $definition || !is_array($definition['types'] ?? null)) {
+            return [];
+        }
+
+        $types = [];
+        $seen = [];
+        foreach ($definition['types'] as $type) {
+            if (!is_array($type)) {
+                continue;
+            }
+            $code = strtolower(trim((string) ($type['code'] ?? '')));
+            $label = trim((string) ($type['label'] ?? ''));
+            if ('' === $code || '' === $label || isset($seen[$code])) {
+                continue;
+            }
+            $seen[$code] = true;
+            $types[] = ['code' => $code, 'label' => $label];
+        }
+
+        return $types;
+    }
+
+    public function publishedSupportLabel(string $catalogCode, string $categoryPath, string $supportKind, string $tenant = 'default'): ?string
+    {
+        $definition = $this->publishedSupportDefinition($catalogCode, $categoryPath, $supportKind, $tenant);
+        if (null === $definition) {
+            return null;
+        }
+
+        $label = trim((string) ($definition['label'] ?? ''));
+
+        return '' === $label ? null : $label;
+    }
+
+    public function isPublishedSupportType(string $catalogCode, string $categoryPath, string $supportKind, string $typeCode, string $tenant = 'default'): bool
+    {
+        $typeCode = strtolower(trim($typeCode));
+        foreach ($this->publishedSupportTypes($catalogCode, $categoryPath, $supportKind, $tenant) as $type) {
+            if ($type['code'] === $typeCode) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /** @return array<string, mixed>|null */
+    private function publishedSupportDefinition(string $catalogCode, string $categoryPath, string $supportKind, string $tenant): ?array
+    {
+        $category = $this->publishedCategory($catalogCode, $categoryPath, $tenant);
+        if (!$category instanceof CatalogCategoryEntity) {
+            return null;
+        }
+
+        $metadata = $category->getMetadata();
+        if ('retailing-category@1' !== ($metadata['schema'] ?? null) || !is_array($metadata['support'] ?? null)) {
+            return null;
+        }
+
+        $supportKind = strtolower(trim($supportKind));
+        $definition = $metadata['support'][$supportKind] ?? null;
+
+        return is_array($definition) ? $definition : null;
+    }
 }
