@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "1205bb02c10d22f1b8dfc8930424adb4",
+    "content-hash": "d90962dee0e7eb7b4c0198096ad0ad1a",
     "packages": [
         {
             "name": "administering/administration",
@@ -599,7 +599,7 @@
             "dist": {
                 "type": "path",
                 "url": "../Cataloging",
-                "reference": "6d1b0534379f0b4f024673b8f4b5aa811d1ddef7"
+                "reference": "5a700f58f0dae79c6951769de359783c4745158b"
             },
             "require": {
                 "api-platform/doctrine-orm": "^4.3",

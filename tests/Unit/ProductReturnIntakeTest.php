@@ -32,6 +32,8 @@ final class ProductReturnIntakeTest extends TestCase
 
         $resolver = new OrderingPurchasedProductSubjectResolver(new OrderReadRepository($entityManager));
 
+        self::assertCount(1, $resolver->listForActor('actor-1'));
+        self::assertSame([], $resolver->listForActor('actor-2'));
         self::assertNotNull($resolver->resolve('actor-1', 'ORD-TEST-1', 'SKU-RETURN-1'));
         self::assertNull($resolver->resolve('actor-2', 'ORD-TEST-1', 'SKU-RETURN-1'));
         self::assertNull($resolver->resolve('actor-1', 'ORD-TEST-1', 'SKU-OTHER'));
@@ -40,6 +42,13 @@ final class ProductReturnIntakeTest extends TestCase
     public function testVerifiedSubjectAndCustomerClaimRemainSeparate(): void
     {
         $resolver = new class implements PurchasedProductSubjectResolverInterface {
+            public function listForActor(string $actorId): array
+            {
+                $subject = $this->resolve($actorId, 'ORD-TEST-1', 'SKU-RETURN-1');
+
+                return null === $subject ? [] : [$subject];
+            }
+
             public function resolve(string $actorId, string $orderReference, string $itemReference): ?PurchasedProductSubject
             {
                 if ('actor-1' !== $actorId) {
