@@ -12,6 +12,7 @@
     "doctrine/doctrine-bundle": "^3.2",
     "doctrine/doctrine-migrations-bundle": "^4.0",
     "doctrine/orm": "^3.3",
+    "easycorp/easyadmin-bundle": "^5.0",
     "interfacing/interface": "*@dev",
     "objecting/object": "*@dev",
     "ordering/order": "*@dev",

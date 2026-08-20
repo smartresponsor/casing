@@ -117,6 +117,11 @@ final class CaseEntity
         return $this->description;
     }
 
+    public function getCategoryPath(): string
+    {
+        return $this->catalogCategory->getPath();
+    }
+
     public function getSubjectReferences(): array
     {
         return $this->subjectReferences;
@@ -153,10 +158,35 @@ final class CaseEntity
         return $this->status;
     }
 
+    public function getStatusValue(): string
+    {
+        return $this->status->value;
+    }
+
     public function transitionTo(CaseStatus $status): void
     {
         $this->status = $status;
         $this->setObjectStatus($status->value);
         $this->touchModified();
+    }
+
+    public function canTransitionTo(CaseStatus $target): bool
+    {
+        return in_array($target, match ($this->status) {
+            CaseStatus::Submitted => [CaseStatus::Processing, CaseStatus::Closed],
+            CaseStatus::Processing => [CaseStatus::NeedsInformation, CaseStatus::Resolved, CaseStatus::Closed],
+            CaseStatus::NeedsInformation => [CaseStatus::Processing, CaseStatus::Resolved, CaseStatus::Closed],
+            CaseStatus::Resolved => [CaseStatus::Closed, CaseStatus::Processing],
+            CaseStatus::Closed => [],
+        }, true);
+    }
+
+    public function transitionToAllowed(CaseStatus $status): void
+    {
+        if (!$this->canTransitionTo($status)) {
+            throw new \DomainException(sprintf('Case cannot transition from %s to %s.', $this->status->value, $status->value));
+        }
+
+        $this->transitionTo($status);
     }
 }

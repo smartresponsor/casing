@@ -56,4 +56,20 @@ final class CaseBoundaryTest extends TestCase
         self::assertSame([['message' => 'Here is the requested detail.']], $case->getSuppliedFacts()['followUp']);
         self::assertSame(CaseStatus::Processing, $case->getStatus());
     }
+
+    public function testLifecycleRejectsInvalidStatusJump(): void
+    {
+        $catalog = new CatalogCatalogEntity('products', 'Products', 'product-commerce');
+        $category = new CatalogCategoryEntity($catalog, 'Return', 'return', 'products.return', 1);
+        $category->setPublished(true);
+        $category->setWorkflowState('published');
+        $draft = new CaseDraftEntity('actor-123', 'products');
+        $draft->setCatalogCategory($category);
+        $case = new CaseEntity($draft, $category);
+
+        self::assertTrue($case->canTransitionTo(CaseStatus::Processing));
+        self::assertFalse($case->canTransitionTo(CaseStatus::Resolved));
+        $this->expectException(\DomainException::class);
+        $case->transitionToAllowed(CaseStatus::Resolved);
+    }
 }

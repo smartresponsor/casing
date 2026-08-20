@@ -33,7 +33,7 @@ final readonly class CaseCenterService
     public function provideInformation(string $caseReference, string $actorId, string $message): CaseEntity
     {
         $case = $this->requireActorCase($caseReference, $actorId);
-        if (CaseStatus::NeedsInformation !== $case->getStatus()) {
+        if (CaseStatus::NeedsInformation !== $case->getStatus() || !$case->canTransitionTo(CaseStatus::Processing)) {
             throw new \DomainException('This case is not waiting for additional information.');
         }
 
@@ -43,7 +43,7 @@ final readonly class CaseCenterService
         }
 
         $case->appendFollowUp($message);
-        $case->transitionTo(CaseStatus::Processing);
+        $case->transitionToAllowed(CaseStatus::Processing);
         $this->cases->save($case);
 
         return $case;
