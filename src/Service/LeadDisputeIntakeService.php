@@ -37,12 +37,24 @@ final readonly class LeadDisputeIntakeService
         $this->persist($draft);
     }
 
-    public function recordCustomerClaim(CaseDraftEntity $draft, string $description): void
+    public function recordCustomerClaim(CaseDraftEntity $draft, string $typeCode, string $description): void
     {
+        $typeCode = trim($typeCode);
         $description = trim($description);
+        if ('' === $typeCode) {
+            throw new \InvalidArgumentException('Lead dispute type is required.');
+        }
         if ('' === $description) {
             throw new \InvalidArgumentException('Lead dispute description is required.');
         }
+
+        $contributions = $draft->getContributionData();
+        $contributions['cataloging.support_type'] = [
+            'catalogCode' => 'leads',
+            'categoryPath' => 'leads.dispute',
+            'typeCode' => $typeCode,
+        ];
+        $draft->setContributionData($contributions);
 
         $facts = $draft->getSuppliedFacts();
         $facts['leadDispute'] = ['description' => $description];

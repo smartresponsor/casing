@@ -39,15 +39,27 @@ final readonly class ProductReturnIntakeService
         $this->entityManager->flush();
     }
 
-    public function recordCustomerClaim(CaseDraftEntity $draft, string $reason, ?int $quantity = null): void
+    public function recordCustomerClaim(CaseDraftEntity $draft, string $typeCode, string $reason, ?int $quantity = null): void
     {
+        $typeCode = trim($typeCode);
         $reason = trim($reason);
+        if ('' === $typeCode) {
+            throw new \InvalidArgumentException('Return type is required.');
+        }
         if ('' === $reason) {
             throw new \InvalidArgumentException('Return reason is required.');
         }
         if (null !== $quantity && $quantity < 1) {
             throw new \InvalidArgumentException('Return quantity must be greater than zero.');
         }
+
+        $contributions = $draft->getContributionData();
+        $contributions['cataloging.support_type'] = [
+            'catalogCode' => 'products',
+            'categoryPath' => 'products.return',
+            'typeCode' => $typeCode,
+        ];
+        $draft->setContributionData($contributions);
 
         $facts = $draft->getSuppliedFacts();
         $facts['return'] = ['reason' => $reason, 'quantity' => $quantity];

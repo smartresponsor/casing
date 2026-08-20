@@ -36,19 +36,20 @@ final readonly class ServiceDisputeSupportController
     {
         $actorId = $this->actors->requireActorId($request);
         $subjects = $this->subjects->listForActor($actorId);
+        $types = $this->catalogs->publishedTypes('services', 'services.dispute');
         $claim = new ServiceDisputeClaimData();
-        $form = $this->forms->create(ServiceDisputeClaimType::class, $claim, ['subjects' => $subjects]);
+        $form = $this->forms->create(ServiceDisputeClaimType::class, $claim, ['subjects' => $subjects, 'types' => $types]);
         if ($request->isMethod('POST')) {
             $form->submit($this->requestPayload($request));
             if ($form->isValid() && $claim->subject instanceof ServicePaymentSubject) {
                 $category = $this->catalogs->publishedCategory('services', 'services.dispute');
-                if (null === $category) {
+                if (null === $category || !$this->catalogs->isPublishedType('services', 'services.dispute', $claim->typeCode)) {
                     throw new \DomainException('Service dispute support is not currently available.');
                 }
                 $draft = $this->intake->start($actorId, 'services');
                 $this->intake->selectCategory($draft, $category);
                 $this->disputes->associatePayment($draft, $claim->subject->paymentReference);
-                $this->disputes->recordCustomerClaim($draft, $claim->description);
+                $this->disputes->recordCustomerClaim($draft, $claim->typeCode, $claim->description);
 
                 return $this->reviewPayload($draft);
             }
@@ -67,23 +68,24 @@ final readonly class ServiceDisputeSupportController
             throw new AccessDeniedHttpException('We could not associate this payment with your account.');
         }
 
+        $types = $this->catalogs->publishedTypes('services', 'services.dispute');
         $claim = new ServiceDisputeClaimData();
         $claim->subject = $subject;
-        $form = $this->forms->create(ServiceDisputeClaimType::class, $claim, ['subjects' => [$subject]]);
+        $form = $this->forms->create(ServiceDisputeClaimType::class, $claim, ['subjects' => [$subject], 'types' => $types]);
         if ($request->isMethod('POST')) {
             $payload = $this->requestPayload($request);
             $payload['subject'] = hash('sha256', $subject->paymentReference);
             $form->submit($payload);
             if ($form->isValid()) {
                 $category = $this->catalogs->publishedCategory('services', 'services.dispute');
-                if (null === $category) {
+                if (null === $category || !$this->catalogs->isPublishedType('services', 'services.dispute', $claim->typeCode)) {
                     throw new \DomainException('Service dispute support is not currently available.');
                 }
 
                 $draft = $this->intake->start($actorId, 'services');
                 $this->intake->selectCategory($draft, $category);
                 $this->disputes->associatePayment($draft, $subject->paymentReference);
-                $this->disputes->recordCustomerClaim($draft, $claim->description);
+                $this->disputes->recordCustomerClaim($draft, $claim->typeCode, $claim->description);
 
                 return $this->reviewPayload($draft);
             }
@@ -111,13 +113,17 @@ final readonly class ServiceDisputeSupportController
         $actorId = $this->actors->requireActorId($request);
         $draft = $this->requireDraft($draftReference, $actorId);
         $subjects = $this->subjects->listForActor($actorId);
+        $types = $this->catalogs->publishedTypes('services', 'services.dispute');
         $claim = $this->claimFromDraft($draft, $subjects);
-        $form = $this->forms->create(ServiceDisputeClaimType::class, $claim, ['subjects' => $subjects]);
+        $form = $this->forms->create(ServiceDisputeClaimType::class, $claim, ['subjects' => $subjects, 'types' => $types]);
         if ($request->isMethod('POST')) {
             $form->submit($this->requestPayload($request));
             if ($form->isValid() && $claim->subject instanceof ServicePaymentSubject) {
+                if (!$this->catalogs->isPublishedType('services', 'services.dispute', $claim->typeCode)) {
+                    throw new \DomainException('Service dispute support is not currently available.');
+                }
                 $this->disputes->associatePayment($draft, $claim->subject->paymentReference);
-                $this->disputes->recordCustomerClaim($draft, $claim->description);
+                $this->disputes->recordCustomerClaim($draft, $claim->typeCode, $claim->description);
 
                 return $this->reviewPayload($draft);
             }
@@ -164,6 +170,8 @@ final readonly class ServiceDisputeSupportController
                 break;
             }
         }
+        $catalogType = $draft->getContributionData()['cataloging.support_type'] ?? [];
+        $claim->typeCode = is_array($catalogType) ? (string) ($catalogType['typeCode'] ?? '') : '';
         $facts = $draft->getSuppliedFacts()['serviceDispute'] ?? [];
         $claim->description = is_array($facts) ? (string) ($facts['description'] ?? '') : '';
 
@@ -179,6 +187,10 @@ final readonly class ServiceDisputeSupportController
             'label' => sprintf('%s · %s %s · %s', $subject->orderNumber, $subject->amount, $subject->currency, $subject->status),
             'value' => hash('sha256', $subject->paymentReference),
         ], $subjects);
+        $typeOptions = array_map(
+            static fn (array $type): array => ['label' => $type['label'], 'value' => $type['code']],
+            $this->catalogs->publishedTypes('services', 'services.dispute'),
+        );
 
         return [
             '_view' => $this->view(null === $draftReference ? 'create' : 'edit', 'form'),
@@ -189,6 +201,7 @@ final readonly class ServiceDisputeSupportController
                 'method' => 'POST',
                 'formFields' => [
                     ['nameEntity' => 'subject', 'label' => 'Payment', 'type' => 'select', 'value' => $claim->subject instanceof ServicePaymentSubject ? hash('sha256', $claim->subject->paymentReference) : null, 'required' => true, 'options' => $options],
+                    ['nameEntity' => 'typeCode', 'label' => 'Dispute type', 'type' => 'select', 'value' => $claim->typeCode, 'required' => true, 'options' => $typeOptions],
                     ['nameEntity' => 'description', 'label' => 'Describe the dispute', 'type' => 'textarea', 'value' => $claim->description, 'required' => true, 'options' => []],
                 ],
             ],
@@ -204,6 +217,7 @@ final readonly class ServiceDisputeSupportController
             'interface' => $this->content('Review service dispute', 'Verified payment context is shown separately from your statement.'),
             'data' => [
                 'draftReference' => $draft->getDraftReference(),
+                'supportType' => $draft->getContributionData()['cataloging.support_type'] ?? null,
                 'verifiedContext' => $draft->getContributionData()['paying.service_dispute_subject'] ?? null,
                 'suppliedFacts' => $draft->getSuppliedFacts()['serviceDispute'] ?? null,
                 'headerActions' => [
@@ -223,7 +237,7 @@ final readonly class ServiceDisputeSupportController
             return $payload;
         }
 
-        return array_intersect_key($request->request->all(), array_flip(['subject', 'description']));
+        return array_intersect_key($request->request->all(), array_flip(['subject', 'typeCode', 'description']));
     }
 
     /** @return array<string, string> */

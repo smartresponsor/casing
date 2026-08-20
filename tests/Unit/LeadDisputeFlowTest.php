@@ -9,6 +9,8 @@ use App\Casing\Form\LeadDisputeClaimType;
 use App\Casing\Integration\Relating\LeadSubjectResolver;
 use App\Casing\Service\CaseCatalogService;
 use App\Casing\Value\LeadSubject;
+use App\Cataloging\Entity\Catalog\CatalogCatalogEntity;
+use App\Cataloging\Entity\Catalog\CatalogCategoryEntity;
 use App\Cataloging\ServiceInterface\CatalogCatalogTreeReadServiceInterface;
 use App\Cataloging\ServiceInterface\CatalogCategoryLookupServiceInterface;
 use App\Entity\Lead;
@@ -42,27 +44,27 @@ final class LeadDisputeFlowTest extends TestCase
     public function testFormAcceptsOnlyProvidedLeadAndCatalogReasonChoices(): void
     {
         $subject = new LeadSubject('lead-1', 'converted', 70);
-        $reasons = [
-            ['title' => 'Invalid', 'path' => 'leads.dispute.invalid', 'slug' => 'invalid'],
-            ['title' => 'Duplicate', 'path' => 'leads.dispute.duplicate', 'slug' => 'duplicate'],
+        $types = [
+            ['code' => 'invalid', 'label' => 'Invalid'],
+            ['code' => 'duplicate', 'label' => 'Duplicate'],
         ];
         $data = new LeadDisputeClaimData();
-        $form = Forms::createFormFactory()->create(LeadDisputeClaimType::class, $data, ['subjects' => [$subject], 'reasons' => $reasons]);
+        $form = Forms::createFormFactory()->create(LeadDisputeClaimType::class, $data, ['subjects' => [$subject], 'types' => $types]);
         $form->submit([
             'subject' => hash('sha256', $subject->leadReference),
-            'reasonPath' => 'leads.dispute.invalid',
+            'typeCode' => 'invalid',
             'description' => 'The lead does not match the requested service.',
         ]);
 
         self::assertTrue($form->isValid());
         self::assertSame($subject, $data->subject);
-        self::assertSame('leads.dispute.invalid', $data->reasonPath);
+        self::assertSame('invalid', $data->typeCode);
 
         $tampered = new LeadDisputeClaimData();
-        $tamperedForm = Forms::createFormFactory()->create(LeadDisputeClaimType::class, $tampered, ['subjects' => [$subject], 'reasons' => $reasons]);
+        $tamperedForm = Forms::createFormFactory()->create(LeadDisputeClaimType::class, $tampered, ['subjects' => [$subject], 'types' => $types]);
         $tamperedForm->submit([
             'subject' => hash('sha256', 'other-lead'),
-            'reasonPath' => 'leads.dispute.not-published',
+            'typeCode' => 'not-published',
             'description' => 'Tampered request.',
         ]);
 
@@ -70,41 +72,32 @@ final class LeadDisputeFlowTest extends TestCase
         self::assertNull($tampered->subject);
     }
 
-    public function testLeadDisputeReasonsComeFromPublishedCatalogChildren(): void
+    public function testLeadDisputeTypesComeFromPublishedCategoryMetadata(): void
     {
-        $trees = new class implements CatalogCatalogTreeReadServiceInterface {
-            public function byCode(string $catalogCode, string $tenant = 'default'): ?array
-            {
-                if ('leads' !== $catalogCode) {
-                    return null;
-                }
+        $catalog = new CatalogCatalogEntity('leads', 'Leads', 'lead-discovery');
+        $category = new CatalogCategoryEntity($catalog, 'Dispute', 'dispute', 'leads.dispute', 1);
+        $category->setPublished(true);
+        $category->setWorkflowState('published');
+        $category->setMetadata([
+            'schema' => 'catalog-category-types@1',
+            'types' => [
+                ['code' => 'invalid', 'label' => 'Invalid'],
+                ['code' => 'duplicate', 'label' => 'Duplicate'],
+            ],
+        ]);
 
-                return [
-                    'catalog' => ['code' => 'leads', 'name' => 'Leads', 'purpose' => 'lead-discovery'],
-                    'root' => [
-                        'title' => 'Leads',
-                        'slug' => 'leads',
-                        'path' => 'leads',
-                        'children' => [[
-                            'title' => 'Dispute',
-                            'slug' => 'dispute',
-                            'path' => 'leads.dispute',
-                            'children' => [
-                                ['title' => 'Invalid', 'slug' => 'invalid', 'path' => 'leads.dispute.invalid', 'children' => []],
-                                ['title' => 'Duplicate', 'slug' => 'duplicate', 'path' => 'leads.dispute.duplicate', 'children' => []],
-                            ],
-                        ]],
-                    ],
-                    'nodes' => [],
-                ];
-            }
-        };
+        $trees = $this->createStub(CatalogCatalogTreeReadServiceInterface::class);
         $lookup = $this->createStub(CatalogCategoryLookupServiceInterface::class);
+        $lookup->method('publishedByCatalogAndPath')->willReturnCallback(
+            static fn (string $catalogCode, string $path): ?CatalogCategoryEntity => 'leads' === $catalogCode && 'leads.dispute' === $path ? $category : null,
+        );
         $catalogs = new CaseCatalogService($trees, $lookup);
 
         self::assertSame([
-            ['title' => 'Invalid', 'path' => 'leads.dispute.invalid', 'slug' => 'invalid'],
-            ['title' => 'Duplicate', 'path' => 'leads.dispute.duplicate', 'slug' => 'duplicate'],
-        ], $catalogs->publishedChildren('leads', 'leads.dispute'));
+            ['code' => 'invalid', 'label' => 'Invalid'],
+            ['code' => 'duplicate', 'label' => 'Duplicate'],
+        ], $catalogs->publishedTypes('leads', 'leads.dispute'));
+        self::assertTrue($catalogs->isPublishedType('leads', 'leads.dispute', 'invalid'));
+        self::assertFalse($catalogs->isPublishedType('leads', 'leads.dispute', 'missing'));
     }
 }

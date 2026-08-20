@@ -16,6 +16,13 @@ final class ServiceDisputeClaimType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        $typeChoices = [];
+        foreach ($options['types'] as $type) {
+            if (is_array($type) && isset($type['label'], $type['code'])) {
+                $typeChoices[(string) $type['label']] = (string) $type['code'];
+            }
+        }
+
         $builder
             ->add('subject', ChoiceType::class, [
                 'label' => 'Payment',
@@ -23,6 +30,11 @@ final class ServiceDisputeClaimType extends AbstractType
                 'choice_label' => static fn (ServicePaymentSubject $subject): string => sprintf('%s · %s %s · %s', $subject->orderNumber, $subject->amount, $subject->currency, $subject->status),
                 'choice_value' => static fn (?ServicePaymentSubject $subject): string => null === $subject ? '' : hash('sha256', $subject->paymentReference),
                 'placeholder' => 'Select a payment from your orders',
+            ])
+            ->add('typeCode', ChoiceType::class, [
+                'label' => 'Dispute type',
+                'choices' => $typeChoices,
+                'placeholder' => 'Select a dispute type',
             ])
             ->add('description', TextareaType::class, [
                 'label' => 'Describe the dispute',
@@ -32,7 +44,8 @@ final class ServiceDisputeClaimType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver): void
     {
-        $resolver->setDefaults(['data_class' => ServiceDisputeClaimData::class, 'subjects' => []]);
+        $resolver->setDefaults(['data_class' => ServiceDisputeClaimData::class, 'subjects' => [], 'types' => []]);
         $resolver->setAllowedTypes('subjects', 'array');
+        $resolver->setAllowedTypes('types', 'array');
     }
 }

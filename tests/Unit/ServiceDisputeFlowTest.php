@@ -47,14 +47,33 @@ final class ServiceDisputeFlowTest extends TestCase
     public function testFormRejectsPaymentOutsideProvidedActorScopedChoices(): void
     {
         $subject = new \App\Casing\Value\ServicePaymentSubject('payment-1', 'order-1', 'ORD-1', 'completed', '50.00', 'USD', null);
+        $types = [['code' => 'billing', 'label' => 'Billing']];
         $data = new ServiceDisputeClaimData();
-        $form = Forms::createFormFactory()->create(ServiceDisputeClaimType::class, $data, ['subjects' => [$subject]]);
+        $form = Forms::createFormFactory()->create(ServiceDisputeClaimType::class, $data, ['subjects' => [$subject], 'types' => $types]);
         $form->submit([
             'subject' => hash('sha256', 'other-payment'),
+            'typeCode' => 'billing',
             'description' => 'I dispute this charge.',
         ]);
 
         self::assertFalse($form->isValid());
         self::assertNull($data->subject);
+    }
+
+    public function testFormRejectsUnknownCatalogType(): void
+    {
+        $subject = new \App\Casing\Value\ServicePaymentSubject('payment-1', 'order-1', 'ORD-1', 'completed', '50.00', 'USD', null);
+        $data = new ServiceDisputeClaimData();
+        $form = Forms::createFormFactory()->create(ServiceDisputeClaimType::class, $data, [
+            'subjects' => [$subject],
+            'types' => [['code' => 'billing', 'label' => 'Billing']],
+        ]);
+        $form->submit([
+            'subject' => hash('sha256', $subject->paymentReference),
+            'typeCode' => 'invented',
+            'description' => 'Tampered dispute type.',
+        ]);
+
+        self::assertFalse($form->isValid());
     }
 }

@@ -13,6 +13,9 @@ final class ProductReturnClaimData
     public ?PurchasedProductSubject $subject = null;
 
     #[Assert\NotBlank]
+    public string $typeCode = '';
+
+    #[Assert\NotBlank]
     #[Assert\Length(max: 1000)]
     public string $reason = '';
 

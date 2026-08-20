@@ -13,6 +13,9 @@ final class ServiceDisputeClaimData
     public ?ServicePaymentSubject $subject = null;
 
     #[Assert\NotBlank]
+    public string $typeCode = '';
+
+    #[Assert\NotBlank]
     #[Assert\Length(max: 2000)]
     public string $description = '';
 }

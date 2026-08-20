@@ -17,6 +17,13 @@ final class ProductReturnClaimType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        $typeChoices = [];
+        foreach ($options['types'] as $type) {
+            if (is_array($type) && isset($type['label'], $type['code'])) {
+                $typeChoices[(string) $type['label']] = (string) $type['code'];
+            }
+        }
+
         $builder
             ->add('subject', ChoiceType::class, [
                 'label' => 'Purchased product',
@@ -24,6 +31,11 @@ final class ProductReturnClaimType extends AbstractType
                 'choice_label' => static fn (PurchasedProductSubject $subject): string => sprintf('%s · %s · %s %s', $subject->orderNumber, $subject->itemReference, $subject->unitPrice, $subject->currency),
                 'choice_value' => static fn (?PurchasedProductSubject $subject): string => null === $subject ? '' : hash('sha256', $subject->orderReference."\0".$subject->itemReference),
                 'placeholder' => 'Select a purchased product',
+            ])
+            ->add('typeCode', ChoiceType::class, [
+                'label' => 'Return type',
+                'choices' => $typeChoices,
+                'placeholder' => 'Select a return type',
             ])
             ->add('reason', TextareaType::class, [
                 'label' => 'Why do you want to return it?',
@@ -41,7 +53,9 @@ final class ProductReturnClaimType extends AbstractType
         $resolver->setDefaults([
             'data_class' => ProductReturnClaimData::class,
             'subjects' => [],
+            'types' => [],
         ]);
         $resolver->setAllowedTypes('subjects', 'array');
+        $resolver->setAllowedTypes('types', 'array');
     }
 }

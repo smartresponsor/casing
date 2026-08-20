@@ -16,10 +16,10 @@ final class LeadDisputeClaimType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $reasonChoices = [];
-        foreach ($options['reasons'] as $reason) {
-            if (is_array($reason) && isset($reason['title'], $reason['path'])) {
-                $reasonChoices[(string) $reason['title']] = (string) $reason['path'];
+        $typeChoices = [];
+        foreach ($options['types'] as $type) {
+            if (is_array($type) && isset($type['label'], $type['code'])) {
+                $typeChoices[(string) $type['label']] = (string) $type['code'];
             }
         }
 
@@ -31,9 +31,9 @@ final class LeadDisputeClaimType extends AbstractType
                 'choice_value' => static fn (?LeadSubject $subject): string => null === $subject ? '' : hash('sha256', $subject->leadReference),
                 'placeholder' => 'Select a lead associated with your account',
             ])
-            ->add('reasonPath', ChoiceType::class, [
+            ->add('typeCode', ChoiceType::class, [
                 'label' => 'Dispute reason',
-                'choices' => $reasonChoices,
+                'choices' => $typeChoices,
                 'placeholder' => 'Select a reason',
             ])
             ->add('description', TextareaType::class, [
@@ -44,8 +44,8 @@ final class LeadDisputeClaimType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver): void
     {
-        $resolver->setDefaults(['data_class' => LeadDisputeClaimData::class, 'subjects' => [], 'reasons' => []]);
+        $resolver->setDefaults(['data_class' => LeadDisputeClaimData::class, 'subjects' => [], 'types' => []]);
         $resolver->setAllowedTypes('subjects', 'array');
-        $resolver->setAllowedTypes('reasons', 'array');
+        $resolver->setAllowedTypes('types', 'array');
     }
 }

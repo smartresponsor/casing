@@ -38,12 +38,24 @@ final readonly class ServiceDisputeIntakeService
         $this->persist($draft);
     }
 
-    public function recordCustomerClaim(CaseDraftEntity $draft, string $description): void
+    public function recordCustomerClaim(CaseDraftEntity $draft, string $typeCode, string $description): void
     {
+        $typeCode = trim($typeCode);
         $description = trim($description);
+        if ('' === $typeCode) {
+            throw new \InvalidArgumentException('Dispute type is required.');
+        }
         if ('' === $description) {
             throw new \InvalidArgumentException('Dispute description is required.');
         }
+
+        $contributions = $draft->getContributionData();
+        $contributions['cataloging.support_type'] = [
+            'catalogCode' => 'services',
+            'categoryPath' => 'services.dispute',
+            'typeCode' => $typeCode,
+        ];
+        $draft->setContributionData($contributions);
 
         $facts = $draft->getSuppliedFacts();
         $facts['serviceDispute'] = ['description' => $description];

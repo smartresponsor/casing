@@ -16,10 +16,14 @@ final class ProductReturnClaimTypeTest extends TestCase
     {
         $subject = $this->subject();
         $data = new ProductReturnClaimData();
-        $form = Forms::createFormFactory()->create(ProductReturnClaimType::class, $data, ['subjects' => [$subject]]);
+        $form = Forms::createFormFactory()->create(ProductReturnClaimType::class, $data, [
+            'subjects' => [$subject],
+            'types' => [['code' => 'damaged', 'label' => 'Damaged']],
+        ]);
 
         $form->submit([
             'subject' => $this->token($subject),
+            'typeCode' => 'damaged',
             'reason' => 'Package arrived damaged.',
             'quantity' => '1',
         ]);
@@ -27,6 +31,7 @@ final class ProductReturnClaimTypeTest extends TestCase
         self::assertTrue($form->isSubmitted());
         self::assertTrue($form->isValid());
         self::assertSame($subject, $data->subject);
+        self::assertSame('damaged', $data->typeCode);
         self::assertSame('Package arrived damaged.', $data->reason);
         self::assertSame(1, $data->quantity);
     }
@@ -35,10 +40,14 @@ final class ProductReturnClaimTypeTest extends TestCase
     {
         $subject = $this->subject();
         $data = new ProductReturnClaimData();
-        $form = Forms::createFormFactory()->create(ProductReturnClaimType::class, $data, ['subjects' => [$subject]]);
+        $form = Forms::createFormFactory()->create(ProductReturnClaimType::class, $data, [
+            'subjects' => [$subject],
+            'types' => [['code' => 'damaged', 'label' => 'Damaged']],
+        ]);
 
         $form->submit([
             'subject' => hash('sha256', 'not-an-actor-owned-subject'),
+            'typeCode' => 'damaged',
             'reason' => 'Return requested.',
             'quantity' => '1',
         ]);

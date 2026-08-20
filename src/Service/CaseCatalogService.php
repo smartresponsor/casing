@@ -37,6 +37,49 @@ final class CaseCatalogService
         return $this->categoryLookup->publishedByCatalogAndPath($catalogCode, $path, $tenant);
     }
 
+    /** @return list<array{code: string, label: string}> */
+    public function publishedTypes(string $catalogCode, string $categoryPath, string $tenant = 'default'): array
+    {
+        $category = $this->publishedCategory($catalogCode, $categoryPath, $tenant);
+        if (!$category instanceof CatalogCategoryEntity) {
+            return [];
+        }
+
+        $metadata = $category->getMetadata();
+        if ('catalog-category-types@1' !== ($metadata['schema'] ?? null) || !is_array($metadata['types'] ?? null)) {
+            return [];
+        }
+
+        $types = [];
+        $seen = [];
+        foreach ($metadata['types'] as $type) {
+            if (!is_array($type)) {
+                continue;
+            }
+            $code = strtolower(trim((string) ($type['code'] ?? '')));
+            $label = trim((string) ($type['label'] ?? ''));
+            if ('' === $code || '' === $label || isset($seen[$code])) {
+                continue;
+            }
+            $seen[$code] = true;
+            $types[] = ['code' => $code, 'label' => $label];
+        }
+
+        return $types;
+    }
+
+    public function isPublishedType(string $catalogCode, string $categoryPath, string $typeCode, string $tenant = 'default'): bool
+    {
+        $typeCode = trim($typeCode);
+        foreach ($this->publishedTypes($catalogCode, $categoryPath, $tenant) as $type) {
+            if ($type['code'] === $typeCode) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     /** @return list<array{title: string, path: string, slug: string}> */
     public function publishedChildren(string $catalogCode, string $parentPath, string $tenant = 'default'): array
     {

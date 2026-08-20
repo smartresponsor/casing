@@ -599,7 +599,7 @@
             "dist": {
                 "type": "path",
                 "url": "../Cataloging",
-                "reference": "0c1dea7fb23fa50ad62fe55ef84c48ce5f095201"
+                "reference": "c4a3ad5fd913511e9f4178887f00ef95056620a0"
             },
             "require": {
                 "api-platform/doctrine-orm": "^4.3",

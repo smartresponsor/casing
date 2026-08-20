@@ -80,14 +80,37 @@ final class ProductReturnIntakeTest extends TestCase
         $draft = new CaseDraftEntity('actor-1', 'products');
 
         $service->associatePurchasedProduct($draft, 'ORD-TEST-1', 'SKU-RETURN-1');
-        $service->recordCustomerClaim($draft, 'Arrived damaged.', 1);
+        $service->recordCustomerClaim($draft, 'damaged', 'Arrived damaged.', 1);
 
         self::assertSame([
             ['component' => 'ordering', 'type' => 'order', 'id' => 'order-slug-1'],
             ['component' => 'ordering', 'type' => 'order-item', 'id' => 'SKU-RETURN-1'],
         ], $draft->getSubjectReferences());
         self::assertSame('ORD-TEST-1', $draft->getContributionData()['ordering.return_subject']['orderNumber']);
+        self::assertSame([
+            'catalogCode' => 'products',
+            'categoryPath' => 'products.return',
+            'typeCode' => 'damaged',
+        ], $draft->getContributionData()['cataloging.support_type']);
         self::assertSame(['reason' => 'Arrived damaged.', 'quantity' => 1], $draft->getSuppliedFacts()['return']);
         self::assertSame('review', $draft->getCurrentStep());
+    }
+
+    public function testProductReturnFormRejectsUnknownCatalogType(): void
+    {
+        $subject = new PurchasedProductSubject('order-1', 'ORD-1', 'SKU-1', 1, 'USD', '25.00', 'delivered');
+        $data = new \App\Casing\Dto\ProductReturnClaimData();
+        $form = \Symfony\Component\Form\Forms::createFormFactory()->create(\App\Casing\Form\ProductReturnClaimType::class, $data, [
+            'subjects' => [$subject],
+            'types' => [['code' => 'damaged', 'label' => 'Damaged']],
+        ]);
+        $form->submit([
+            'subject' => hash('sha256', $subject->orderReference."\0".$subject->itemReference),
+            'typeCode' => 'invented',
+            'reason' => 'Tampered return type.',
+            'quantity' => 1,
+        ]);
+
+        self::assertFalse($form->isValid());
     }
 }

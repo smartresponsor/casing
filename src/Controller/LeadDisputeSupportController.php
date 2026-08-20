@@ -36,28 +36,28 @@ final readonly class LeadDisputeSupportController
     {
         $actorId = $this->actors->requireActorId($request);
         $subjects = $this->subjects->listForActor($actorId);
-        $reasons = $this->catalogs->publishedChildren('leads', 'leads.dispute');
+        $types = $this->catalogs->publishedTypes('leads', 'leads.dispute');
         $claim = new LeadDisputeClaimData();
-        $form = $this->forms->create(LeadDisputeClaimType::class, $claim, ['subjects' => $subjects, 'reasons' => $reasons]);
+        $form = $this->forms->create(LeadDisputeClaimType::class, $claim, ['subjects' => $subjects, 'types' => $types]);
 
         if ($request->isMethod('POST')) {
             $form->submit($this->requestPayload($request));
             if ($form->isValid() && $claim->subject instanceof LeadSubject) {
-                $category = $this->catalogs->publishedCategory('leads', $claim->reasonPath);
-                if (null === $category || !str_starts_with($category->getPath(), 'leads.dispute.')) {
+                $category = $this->catalogs->publishedCategory('leads', 'leads.dispute');
+                if (null === $category || !$this->catalogs->isPublishedType('leads', 'leads.dispute', $claim->typeCode)) {
                     throw new \DomainException('The selected lead dispute reason is not available.');
                 }
 
                 $draft = $this->intake->start($actorId, 'leads');
                 $this->intake->selectCategory($draft, $category);
                 $this->disputes->associateLead($draft, $claim->subject->leadReference);
-                $this->disputes->recordCustomerClaim($draft, $claim->description);
+                $this->disputes->recordCustomerClaim($draft, $claim->typeCode, $claim->description);
 
                 return $this->reviewPayload($draft);
             }
         }
 
-        return $this->formPayload($claim, $subjects, $reasons, null);
+        return $this->formPayload($claim, $subjects, $types, null);
     }
 
     /** @return array<string, mixed> */
@@ -70,30 +70,30 @@ final readonly class LeadDisputeSupportController
             throw new AccessDeniedHttpException('We could not associate this lead with your account.');
         }
 
-        $reasons = $this->catalogs->publishedChildren('leads', 'leads.dispute');
+        $types = $this->catalogs->publishedTypes('leads', 'leads.dispute');
         $claim = new LeadDisputeClaimData();
         $claim->subject = $subject;
-        $form = $this->forms->create(LeadDisputeClaimType::class, $claim, ['subjects' => [$subject], 'reasons' => $reasons]);
+        $form = $this->forms->create(LeadDisputeClaimType::class, $claim, ['subjects' => [$subject], 'types' => $types]);
         if ($request->isMethod('POST')) {
             $payload = $this->requestPayload($request);
             $payload['subject'] = hash('sha256', $subject->leadReference);
             $form->submit($payload);
             if ($form->isValid()) {
-                $category = $this->catalogs->publishedCategory('leads', $claim->reasonPath);
-                if (null === $category || !str_starts_with($category->getPath(), 'leads.dispute.')) {
+                $category = $this->catalogs->publishedCategory('leads', 'leads.dispute');
+                if (null === $category || !$this->catalogs->isPublishedType('leads', 'leads.dispute', $claim->typeCode)) {
                     throw new \DomainException('The selected lead dispute reason is not available.');
                 }
 
                 $draft = $this->intake->start($actorId, 'leads');
                 $this->intake->selectCategory($draft, $category);
                 $this->disputes->associateLead($draft, $subject->leadReference);
-                $this->disputes->recordCustomerClaim($draft, $claim->description);
+                $this->disputes->recordCustomerClaim($draft, $claim->typeCode, $claim->description);
 
                 return $this->reviewPayload($draft);
             }
         }
 
-        $payload = $this->formPayload($claim, [$subject], $reasons, null);
+        $payload = $this->formPayload($claim, [$subject], $types, null);
         $payload['data']['action'] = sprintf('/support/lead/dispute/lead/%s', rawurlencode($leadReference));
         $payload['data']['contextLocked'] = true;
         $payload['data']['verifiedContext'] = $subject->toArray();
@@ -115,26 +115,26 @@ final readonly class LeadDisputeSupportController
         $actorId = $this->actors->requireActorId($request);
         $draft = $this->requireDraft($draftReference, $actorId);
         $subjects = $this->subjects->listForActor($actorId);
-        $reasons = $this->catalogs->publishedChildren('leads', 'leads.dispute');
+        $types = $this->catalogs->publishedTypes('leads', 'leads.dispute');
         $claim = $this->claimFromDraft($draft, $subjects);
-        $form = $this->forms->create(LeadDisputeClaimType::class, $claim, ['subjects' => $subjects, 'reasons' => $reasons]);
+        $form = $this->forms->create(LeadDisputeClaimType::class, $claim, ['subjects' => $subjects, 'types' => $types]);
 
         if ($request->isMethod('POST')) {
             $form->submit($this->requestPayload($request));
             if ($form->isValid() && $claim->subject instanceof LeadSubject) {
-                $category = $this->catalogs->publishedCategory('leads', $claim->reasonPath);
-                if (null === $category || !str_starts_with($category->getPath(), 'leads.dispute.')) {
+                $category = $this->catalogs->publishedCategory('leads', 'leads.dispute');
+                if (null === $category || !$this->catalogs->isPublishedType('leads', 'leads.dispute', $claim->typeCode)) {
                     throw new \DomainException('The selected lead dispute reason is not available.');
                 }
                 $this->intake->selectCategory($draft, $category);
                 $this->disputes->associateLead($draft, $claim->subject->leadReference);
-                $this->disputes->recordCustomerClaim($draft, $claim->description);
+                $this->disputes->recordCustomerClaim($draft, $claim->typeCode, $claim->description);
 
                 return $this->reviewPayload($draft);
             }
         }
 
-        return $this->formPayload($claim, $subjects, $reasons, $draft->getDraftReference());
+        return $this->formPayload($claim, $subjects, $types, $draft->getDraftReference());
     }
 
     /** @return array<string, mixed> */
@@ -157,7 +157,7 @@ final readonly class LeadDisputeSupportController
     {
         $draft = $this->intake->resume($draftReference, $actorId);
         $path = $draft?->getCatalogCategory()?->getPath() ?? '';
-        if (!$draft instanceof CaseDraftEntity || 'leads' !== $draft->getBusinessContext() || !str_starts_with($path, 'leads.dispute.')) {
+        if (!$draft instanceof CaseDraftEntity || 'leads' !== $draft->getBusinessContext() || 'leads.dispute' !== $path) {
             throw new AccessDeniedHttpException('We could not associate this case draft with your account.');
         }
 
@@ -176,7 +176,8 @@ final readonly class LeadDisputeSupportController
                 break;
             }
         }
-        $claim->reasonPath = $draft->getCatalogCategory()?->getPath() ?? '';
+        $catalogType = $draft->getContributionData()['cataloging.support_type'] ?? [];
+        $claim->typeCode = is_array($catalogType) ? (string) ($catalogType['typeCode'] ?? '') : '';
         $facts = $draft->getSuppliedFacts()['leadDispute'] ?? [];
         $claim->description = is_array($facts) ? (string) ($facts['description'] ?? '') : '';
 
@@ -184,18 +185,18 @@ final readonly class LeadDisputeSupportController
     }
 
     /**
-     * @param list<LeadSubject>                                      $subjects
-     * @param list<array{title: string, path: string, slug: string}> $reasons
+     * @param list<LeadSubject>                        $subjects
+     * @param list<array{code: string, label: string}> $types
      *
      * @return array<string, mixed>
      */
-    private function formPayload(LeadDisputeClaimData $claim, array $subjects, array $reasons, ?string $draftReference): array
+    private function formPayload(LeadDisputeClaimData $claim, array $subjects, array $types, ?string $draftReference): array
     {
         $subjectOptions = array_map(static fn (LeadSubject $subject): array => [
             'label' => sprintf('%s · %s · score %d', $subject->leadReference, $subject->status, $subject->score),
             'value' => hash('sha256', $subject->leadReference),
         ], $subjects);
-        $reasonOptions = array_map(static fn (array $reason): array => ['label' => $reason['title'], 'value' => $reason['path']], $reasons);
+        $typeOptions = array_map(static fn (array $type): array => ['label' => $type['label'], 'value' => $type['code']], $types);
 
         return [
             '_view' => $this->view(null === $draftReference ? 'create' : 'edit', 'form'),
@@ -206,7 +207,7 @@ final readonly class LeadDisputeSupportController
                 'method' => 'POST',
                 'formFields' => [
                     ['nameEntity' => 'subject', 'label' => 'Lead', 'type' => 'select', 'value' => $claim->subject instanceof LeadSubject ? hash('sha256', $claim->subject->leadReference) : null, 'required' => true, 'options' => $subjectOptions],
-                    ['nameEntity' => 'reasonPath', 'label' => 'Dispute reason', 'type' => 'select', 'value' => $claim->reasonPath, 'required' => true, 'options' => $reasonOptions],
+                    ['nameEntity' => 'typeCode', 'label' => 'Dispute reason', 'type' => 'select', 'value' => $claim->typeCode, 'required' => true, 'options' => $typeOptions],
                     ['nameEntity' => 'description', 'label' => 'Describe the issue', 'type' => 'textarea', 'value' => $claim->description, 'required' => true, 'options' => []],
                 ],
             ],
@@ -223,6 +224,7 @@ final readonly class LeadDisputeSupportController
             'data' => [
                 'draftReference' => $draft->getDraftReference(),
                 'supportCategory' => $draft->getCatalogCategory()?->getPath(),
+                'supportType' => $draft->getContributionData()['cataloging.support_type'] ?? null,
                 'verifiedContext' => $draft->getContributionData()['relating.lead_dispute_subject'] ?? null,
                 'suppliedFacts' => $draft->getSuppliedFacts()['leadDispute'] ?? null,
                 'headerActions' => [
@@ -242,7 +244,7 @@ final readonly class LeadDisputeSupportController
             return $payload;
         }
 
-        return array_intersect_key($request->request->all(), array_flip(['subject', 'reasonPath', 'description']));
+        return array_intersect_key($request->request->all(), array_flip(['subject', 'typeCode', 'description']));
     }
 
     /** @return array<string, string> */

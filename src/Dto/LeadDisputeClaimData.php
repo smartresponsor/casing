@@ -13,7 +13,7 @@ final class LeadDisputeClaimData
     public ?LeadSubject $subject = null;
 
     #[Assert\NotBlank]
-    public string $reasonPath = '';
+    public string $typeCode = '';
 
     #[Assert\NotBlank]
     #[Assert\Length(max: 2000)]
