@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Casing\Controller;
 
 use App\Casing\Contract\PurchasedProductSubjectResolverInterface;
+use App\Casing\Contract\ServicePaymentSubjectResolverInterface;
 use App\Casing\Service\CaseActorAccessService;
 use App\Casing\Service\CaseCatalogService;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,6 +17,7 @@ final readonly class SupportHomeController
         private CaseActorAccessService $actors,
         private CaseCatalogService $catalogs,
         private PurchasedProductSubjectResolverInterface $subjects,
+        private ServicePaymentSubjectResolverInterface $servicePayments,
     ) {
     }
 
@@ -34,6 +36,18 @@ final readonly class SupportHomeController
                 'description' => 'Request help returning a product from one of your orders.',
                 'href' => '/support/product/return',
                 'availableItems' => count($this->subjects->listForActor($actorId)),
+            ];
+        }
+
+        $disputeCategory = $this->catalogs->publishedCategory('services', 'services.dispute');
+        if (null !== $disputeCategory) {
+            $rows[] = [
+                'id' => 'service-dispute',
+                'context' => 'Service',
+                'request' => $disputeCategory->getName(),
+                'description' => 'Open a dispute about a payment associated with one of your service orders.',
+                'href' => '/support/service/dispute',
+                'availableItems' => count($this->servicePayments->listForActor($actorId)),
             ];
         }
 
