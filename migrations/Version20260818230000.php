@@ -74,6 +74,10 @@ final class Version20260818230000 extends AbstractMigration
         ];
 
         foreach ($required as $table => $columns) {
+            if (!$this->tableExists($table)) {
+                continue;
+            }
+
             foreach ($columns as $column) {
                 $this->abortIf(
                     !$this->columnExists($table, $column),
