@@ -6,6 +6,7 @@ namespace App\Casing\Tests\Unit;
 
 use App\Casing\Entity\CaseDraftEntity;
 use App\Casing\Entity\CaseEntity;
+use App\Casing\Entity\CaseInformationRequestEntity;
 use App\Casing\Enum\CaseStatus;
 use App\Cataloging\Entity\Catalog\CatalogCatalogEntity;
 use App\Cataloging\Entity\Catalog\CatalogCategoryEntity;
@@ -55,6 +56,27 @@ final class CaseBoundaryTest extends TestCase
         self::assertSame('Original claim.', $case->getSuppliedFacts()['serviceDispute']['description']);
         self::assertSame([['message' => 'Here is the requested detail.']], $case->getSuppliedFacts()['followUp']);
         self::assertSame(CaseStatus::Processing, $case->getStatus());
+    }
+
+    public function testInformationRequestRecordsQuestionAndSingleCustomerAnswer(): void
+    {
+        $catalog = new CatalogCatalogEntity('retailing', 'Retailing', 'retailing-classification');
+        $category = new CatalogCategoryEntity($catalog, 'Service', 'service', 'retailing.service', 0);
+        $category->setPublished(true);
+        $category->setWorkflowState('published');
+        $draft = new CaseDraftEntity('actor-123', 'retailing.service');
+        $draft->setCatalogCategory($category);
+        $case = new CaseEntity($draft, $category);
+
+        $request = new CaseInformationRequestEntity($case, 'Please provide the invoice number.');
+        $request->answer('Invoice 12345.');
+
+        self::assertSame('Please provide the invoice number.', $request->getQuestion());
+        self::assertSame('Invoice 12345.', $request->getAnswer());
+        self::assertNotNull($request->getAnsweredAt());
+
+        $this->expectException(\DomainException::class);
+        $request->answer('Second answer must not replace the first one.');
     }
 
     public function testLifecycleRejectsInvalidStatusJump(): void

@@ -7,6 +7,7 @@ namespace App\Casing\Controller\Admin;
 use App\Casing\Entity\CaseEntity;
 use App\Casing\Enum\CaseStatus;
 use App\Casing\Repository\CaseRepository;
+use App\Casing\Service\CaseInformationRequestService;
 use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminRoute;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
@@ -16,6 +17,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ArrayField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
@@ -23,8 +27,10 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[IsGranted('ROLE_ADMIN')]
 final class CaseCrudController extends AbstractCrudController
 {
-    public function __construct(private readonly CaseRepository $cases)
-    {
+    public function __construct(
+        private readonly CaseRepository $cases,
+        private readonly CaseInformationRequestService $informationRequests,
+    ) {
     }
 
     public static function getEntityFqcn(): string
@@ -44,7 +50,9 @@ final class CaseCrudController extends AbstractCrudController
     public function configureActions(Actions $actions): Actions
     {
         $processing = $this->transitionAction('processing', 'Start processing', CaseStatus::Processing, 'fa fa-play');
-        $needsInformation = $this->transitionAction('needsInformation', 'Request information', CaseStatus::NeedsInformation, 'fa fa-circle-question');
+        $needsInformation = Action::new('needsInformation', 'Request information', 'fa fa-circle-question')
+            ->linkToCrudAction('needsInformation')
+            ->displayIf(static fn (CaseEntity $case): bool => $case->canTransitionTo(CaseStatus::NeedsInformation));
         $resolved = $this->transitionAction('resolved', 'Resolve', CaseStatus::Resolved, 'fa fa-check');
         $closed = $this->transitionAction('closed', 'Close', CaseStatus::Closed, 'fa fa-lock');
         $reopen = $this->transitionAction('reopen', 'Reopen', CaseStatus::Processing, 'fa fa-rotate-left');
@@ -83,10 +91,32 @@ final class CaseCrudController extends AbstractCrudController
         return $this->applyTransition($context, CaseStatus::Processing, 'Case moved to processing.');
     }
 
-    #[AdminRoute(path: '/{entityId}/needs-information', name: 'needs_information', options: ['methods' => ['POST']])]
-    public function needsInformation(AdminContext $context): Response
+    #[AdminRoute(path: '/{entityId}/needs-information', name: 'needs_information', options: ['methods' => ['GET', 'POST']])]
+    public function needsInformation(AdminContext $context, Request $request): Response
     {
-        return $this->applyTransition($context, CaseStatus::NeedsInformation, 'Case is waiting for customer information.');
+        $entity = $context->getEntity()->getInstance();
+        if (!$entity instanceof CaseEntity) {
+            throw $this->createNotFoundException();
+        }
+
+        $form = $this->createFormBuilder()
+            ->add('question', TextareaType::class, ['label' => 'Question for customer'])
+            ->add('submit', SubmitType::class, ['label' => 'Request information'])
+            ->getForm();
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $data = $form->getData();
+            $this->informationRequests->request($entity, (string) ($data['question'] ?? ''));
+            $this->addFlash('success', 'Information request sent to customer.');
+
+            return $this->redirect($context->getReferrer() ?? '/admin');
+        }
+
+        return $this->render('admin/case/request_information.html.twig', [
+            'case' => $entity,
+            'form' => $form,
+        ]);
     }
 
     #[AdminRoute(path: '/{entityId}/resolved', name: 'resolved', options: ['methods' => ['POST']])]

@@ -5,13 +5,14 @@ declare(strict_types=1);
 namespace App\Casing\Service;
 
 use App\Casing\Entity\CaseEntity;
-use App\Casing\Enum\CaseStatus;
 use App\Casing\Repository\CaseRepository;
 
 final readonly class CaseCenterService
 {
-    public function __construct(private CaseRepository $cases)
-    {
+    public function __construct(
+        private CaseRepository $cases,
+        private CaseInformationRequestService $informationRequests,
+    ) {
     }
 
     /** @return list<CaseEntity> */
@@ -33,19 +34,13 @@ final readonly class CaseCenterService
     public function provideInformation(string $caseReference, string $actorId, string $message): CaseEntity
     {
         $case = $this->requireActorCase($caseReference, $actorId);
-        if (CaseStatus::NeedsInformation !== $case->getStatus() || !$case->canTransitionTo(CaseStatus::Processing)) {
-            throw new \DomainException('This case is not waiting for additional information.');
-        }
-
-        $message = trim($message);
-        if ('' === $message) {
-            throw new \InvalidArgumentException('Additional information is required.');
-        }
-
-        $case->appendFollowUp($message);
-        $case->transitionToAllowed(CaseStatus::Processing);
-        $this->cases->save($case);
+        $this->informationRequests->answer($case, $message);
 
         return $case;
+    }
+
+    public function openInformationRequest(CaseEntity $case): ?\App\Casing\Entity\CaseInformationRequestEntity
+    {
+        return $this->informationRequests->openForCase($case);
     }
 }

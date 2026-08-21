@@ -56,8 +56,9 @@ final readonly class CaseCenterController
     public function information(Request $request, string $caseReference): array
     {
         $actorId = $this->actors->requireActorId($request);
-        $payload = $request->request->all('case_information');
-        $message = (string) ($payload['message'] ?? $request->request->get('message', ''));
+        $payload = $request->getPayload()->all();
+        $formPayload = is_array($payload['case_information'] ?? null) ? $payload['case_information'] : [];
+        $message = (string) ($formPayload['message'] ?? $payload['message'] ?? '');
         $case = $this->cases->provideInformation($caseReference, $actorId, $message);
 
         return $this->detailPayload($case);
@@ -67,12 +68,10 @@ final readonly class CaseCenterController
     private function detailPayload(CaseEntity $case): array
     {
         $actions = [];
+        $informationRequest = $this->cases->openInformationRequest($case);
         $source = $this->sourceContext($case);
         if (null !== $source) {
             $actions[] = ['label' => 'Source', 'href' => $source, 'variant' => 'default', 'operation' => 'show', 'enabled' => true, 'visibility' => 'visible'];
-        }
-        if (CaseStatus::NeedsInformation === $case->getStatus()) {
-            $actions[] = ['label' => 'Provide information', 'href' => sprintf('/support/case/%s/information', rawurlencode($case->getCaseReference())), 'variant' => 'primary', 'operation' => 'update', 'method' => 'POST', 'enabled' => true, 'visibility' => 'visible'];
         }
 
         return [
@@ -88,12 +87,16 @@ final readonly class CaseCenterController
                 'suppliedFacts' => $case->getSuppliedFacts(),
                 'attachmentReferences' => $case->getAttachmentReferences(),
                 'sourceReferences' => $case->getSubjectReferences(),
-                'informationForm' => CaseStatus::NeedsInformation === $case->getStatus() ? [
+                'informationRequest' => null !== $informationRequest ? [
+                    'question' => $informationRequest->getQuestion(),
+                    'requestedAt' => $informationRequest->getRequestedAt()->format(DATE_ATOM),
+                ] : null,
+                'informationForm' => CaseStatus::NeedsInformation === $case->getStatus() && null !== $informationRequest ? [
                     'action' => sprintf('/support/case/%s/information', rawurlencode($case->getCaseReference())),
                     'method' => 'POST',
                     'fields' => [[
                         'nameEntity' => 'message',
-                        'label' => 'Additional information',
+                        'label' => 'Your response',
                         'type' => 'textarea',
                         'value' => '',
                         'required' => true,
