@@ -22,6 +22,56 @@ final readonly class ContextualSupportController
     }
 
     /** @return array<string, mixed> */
+    #[Route('/support/order', name: 'casing_support_order_list', methods: ['GET'], defaults: ['_view_controlled' => true])]
+    public function orders(Request $request): array
+    {
+        $actorId = $this->actors->requireActorId($request);
+        $orders = [];
+
+        foreach ($this->products->listForActor($actorId) as $product) {
+            $key = $product->orderReference;
+            $orders[$key] ??= [
+                'reference' => $product->orderReference,
+                'number' => $product->orderNumber,
+                'status' => $product->orderStatus,
+                'availableItems' => 0,
+            ];
+            ++$orders[$key]['availableItems'];
+        }
+
+        foreach ($this->payments->listForActor($actorId) as $payment) {
+            $key = $payment->orderReference;
+            $orders[$key] ??= [
+                'reference' => $payment->orderReference,
+                'number' => $payment->orderNumber,
+                'status' => $payment->status,
+                'availableItems' => 0,
+            ];
+            ++$orders[$key]['availableItems'];
+        }
+
+        $rows = array_map(static fn (array $order): array => [
+            'id' => $order['reference'],
+            'context' => 'Order',
+            'request' => $order['number'],
+            'description' => sprintf('Status: %s', $order['status']),
+            'href' => '/support/order/'.rawurlencode((string) $order['reference']),
+            'availableItems' => $order['availableItems'],
+        ], array_values($orders));
+
+        return [
+            '_view' => ['surface' => 'support', 'operation' => 'index', 'intent' => 'order-context', 'format' => 'auto', 'component' => 'Casing'],
+            'interface' => ['locations' => ['shell.main.content' => [[
+                'type' => 'text',
+                'label' => 'Order help',
+                'description' => 'Choose one of your orders to see the support actions currently available for it.',
+            ]]]],
+            'data' => ['rows' => $rows],
+            'meta' => ['title' => 'Order help'],
+        ];
+    }
+
+    /** @return array<string, mixed> */
     #[Route('/support/order/{orderReference}', name: 'casing_support_order_context', methods: ['GET'], defaults: ['_view_controlled' => true])]
     public function order(Request $request, string $orderReference): array
     {
