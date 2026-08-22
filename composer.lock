@@ -4431,7 +4431,7 @@
             "dist": {
                 "type": "path",
                 "url": "../Relating",
-                "reference": "3fe50eb9d405d98d4a5b1ba9a9c74994d0502846"
+                "reference": "f8483b6a02f7c004f64db86e7b3d5051910bb4c3"
             },
             "require": {
                 "doctrine/orm": "^3.0",
