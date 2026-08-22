@@ -12,6 +12,7 @@ use App\Casing\Value\PurchasedProductSubject;
 use App\Ordering\Entity\Order\OrderEntity;
 use App\Ordering\Entity\Order\OrderItemEntity;
 use App\Ordering\ReadModel\Repository\OrderReadRepository;
+use App\Ordering\ReadModel\Service\CustomerOrderReadService;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use PHPUnit\Framework\TestCase;
@@ -30,7 +31,7 @@ final class ProductReturnIntakeTest extends TestCase
         $entityManager = $this->createStub(EntityManagerInterface::class);
         $entityManager->method('getRepository')->willReturn($repository);
 
-        $resolver = new OrderingPurchasedProductSubjectResolver(new OrderReadRepository($entityManager));
+        $resolver = new OrderingPurchasedProductSubjectResolver(new CustomerOrderReadService(new OrderReadRepository($entityManager)));
 
         self::assertCount(1, $resolver->listForActor('actor-1'));
         self::assertSame([], $resolver->listForActor('actor-2'));

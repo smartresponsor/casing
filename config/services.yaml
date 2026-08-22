@@ -7,8 +7,6 @@ services:
     App\Casing\Contract\CaseFormContributionInterface:
       tags: ['casing.form_contribution']
 
-  App\Ordering\ReadModel\Repository\OrderReadRepository: ~
-
   App\Casing\Contract\PurchasedProductSubjectResolverInterface:
     alias: App\Casing\Integration\Ordering\OrderingPurchasedProductSubjectResolver
 

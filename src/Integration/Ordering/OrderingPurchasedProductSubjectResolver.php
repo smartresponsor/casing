@@ -6,13 +6,13 @@ namespace App\Casing\Integration\Ordering;
 
 use App\Casing\Contract\PurchasedProductSubjectResolverInterface;
 use App\Casing\Value\PurchasedProductSubject;
-use App\Ordering\Entity\Order\OrderEntity;
-use App\Ordering\Entity\Order\OrderItemEntity;
-use App\Ordering\ReadModel\Repository\OrderReadRepository;
+use App\Ordering\ReadModel\ServiceInterface\CustomerOrderReadServiceInterface;
+use App\Ordering\ReadModel\View\CustomerOrderDetail;
+use App\Ordering\ReadModel\View\CustomerOrderItemSummary;
 
 final readonly class OrderingPurchasedProductSubjectResolver implements PurchasedProductSubjectResolverInterface
 {
-    public function __construct(private OrderReadRepository $orders)
+    public function __construct(private CustomerOrderReadServiceInterface $orders)
     {
     }
 
@@ -24,14 +24,9 @@ final readonly class OrderingPurchasedProductSubjectResolver implements Purchase
         }
 
         $subjects = [];
-        foreach ($this->orders->findByCustomerId($actorId) as $order) {
-            if (!$order instanceof OrderEntity) {
-                continue;
-            }
-            foreach ($order->getItems() as $item) {
-                if ($item instanceof OrderItemEntity) {
-                    $subjects[] = $this->subject($order, $item);
-                }
+        foreach ($this->orders->listDetailsForCustomer($actorId) as $order) {
+            foreach ($order->items as $item) {
+                $subjects[] = $this->subject($order, $item);
             }
         }
 
@@ -46,20 +41,15 @@ final readonly class OrderingPurchasedProductSubjectResolver implements Purchase
             return [];
         }
 
-        $subjects = [];
-        foreach ($this->orders->findByCustomerId($actorId) as $order) {
-            if (!$order instanceof OrderEntity || !$this->matchesOrderReference($order, $orderReference)) {
-                continue;
-            }
-            foreach ($order->getItems() as $item) {
-                if ($item instanceof OrderItemEntity) {
-                    $subjects[] = $this->subject($order, $item);
-                }
-            }
-            break;
+        $order = $this->orders->findDetailForCustomer($actorId, $orderReference);
+        if (!$order instanceof CustomerOrderDetail) {
+            return [];
         }
 
-        return $subjects;
+        return array_map(
+            fn (CustomerOrderItemSummary $item): PurchasedProductSubject => $this->subject($order, $item),
+            $order->items,
+        );
     }
 
     public function resolve(string $actorId, string $orderReference, string $itemReference): ?PurchasedProductSubject
@@ -71,42 +61,30 @@ final readonly class OrderingPurchasedProductSubjectResolver implements Purchase
             return null;
         }
 
-        foreach ($this->orders->findByCustomerId($actorId) as $order) {
-            if (!$order instanceof OrderEntity || !$this->matchesOrderReference($order, $orderReference)) {
-                continue;
-            }
+        $order = $this->orders->findDetailForCustomer($actorId, $orderReference);
+        if (!$order instanceof CustomerOrderDetail) {
+            return null;
+        }
 
-            foreach ($order->getItems() as $item) {
-                if ($item instanceof OrderItemEntity && $itemReference === $item->getSku()) {
-                    return $this->subject($order, $item);
-                }
+        foreach ($order->items as $item) {
+            if ($itemReference === $item->reference) {
+                return $this->subject($order, $item);
             }
         }
 
         return null;
     }
 
-    private function subject(OrderEntity $order, OrderItemEntity $item): PurchasedProductSubject
+    private function subject(CustomerOrderDetail $order, CustomerOrderItemSummary $item): PurchasedProductSubject
     {
         return new PurchasedProductSubject(
-            orderReference: $order->getSlug(),
-            orderNumber: $order->getNumber(),
-            itemReference: $item->getSku(),
-            quantity: $item->getQuantity(),
-            currency: $item->getCurrency(),
-            unitPrice: $item->getUnitPrice(),
-            orderStatus: $order->getStatus(),
+            orderReference: $order->reference,
+            orderNumber: $order->number,
+            itemReference: $item->reference,
+            quantity: $item->quantity,
+            currency: $item->currency,
+            unitPrice: $item->unitPrice,
+            orderStatus: $order->status,
         );
-    }
-
-    private function matchesOrderReference(OrderEntity $order, string $reference): bool
-    {
-        if ($reference === $order->getSlug() || $reference === $order->getNumber()) {
-            return true;
-        }
-
-        $id = $order->getId();
-
-        return null !== $id && $reference === (string) $id;
     }
 }

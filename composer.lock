@@ -3177,7 +3177,7 @@
             "dist": {
                 "type": "path",
                 "url": "../Ordering",
-                "reference": "b88d9d679185e5f18b6e5c941fc28bc90cbe0a7a"
+                "reference": "4f88ede4c2b62df1d675b88f5e888474fbc51748"
             },
             "require": {
                 "api-platform/core": "^4.0",
