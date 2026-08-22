@@ -17,7 +17,7 @@
     "objecting/object": "*@dev",
     "ordering/order": "*@dev",
     "paying/payment": "*@dev",
-    "smartresponsor/relating": "*@dev",
+    "relating/relation": "*@dev",
     "shipping/shipment": "*@dev",
     "symfony/dependency-injection": "^8.1",
     "symfony/form": "^8.1",
