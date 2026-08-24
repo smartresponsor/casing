@@ -6,8 +6,8 @@ namespace App\Casing\Controller\Admin;
 
 use App\Casing\Entity\CaseEntity;
 use App\Casing\Enum\CaseStatus;
-use App\Casing\Repository\CaseRepository;
 use App\Casing\Service\CaseInformationRequestService;
+use App\Casing\Service\CaseLifecycleService;
 use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminRoute;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
@@ -28,8 +28,8 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 final class CaseCrudController extends AbstractCrudController
 {
     public function __construct(
-        private readonly CaseRepository $cases,
         private readonly CaseInformationRequestService $informationRequests,
+        private readonly CaseLifecycleService $lifecycle,
     ) {
     }
 
@@ -152,8 +152,7 @@ final class CaseCrudController extends AbstractCrudController
             throw $this->createNotFoundException();
         }
 
-        $entity->transitionToAllowed($target);
-        $this->cases->save($entity);
+        $this->lifecycle->transition($entity, $target);
         $this->addFlash('success', $message);
 
         return $this->redirect($context->getReferrer() ?? '/admin');
