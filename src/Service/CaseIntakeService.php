@@ -6,8 +6,10 @@ namespace App\Casing\Service;
 
 use App\Casing\Entity\CaseDraftEntity;
 use App\Casing\Entity\CaseEntity;
+use App\Casing\Event\Domain\CaseOpenedEvent;
 use App\Casing\Repository\CaseDraftRepository;
 use App\Casing\Repository\CaseRepository;
+use App\Casing\Service\Outbox\CaseOutboxWriter;
 use App\Cataloging\Entity\Catalog\CatalogCategoryEntity;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -18,6 +20,7 @@ final class CaseIntakeService
         private readonly CaseDraftRepository $drafts,
         private readonly CaseRepository $cases,
         private readonly CaseCatalogService $catalogs,
+        private readonly CaseOutboxWriter $outbox,
     ) {
     }
 
@@ -103,6 +106,14 @@ final class CaseIntakeService
 
             $case = new CaseEntity($draft, $category);
             $this->cases->save($case, false);
+            $event = new CaseOpenedEvent(
+                $case->getCaseReference(),
+                $case->getActorId(),
+                $case->getBusinessContext(),
+                $case->getCategoryPath(),
+                (new \DateTimeImmutable())->format(DATE_ATOM),
+            );
+            $this->outbox->store($case->getCaseReference(), CaseOpenedEvent::class, get_object_vars($event));
             $this->drafts->remove($draft, false);
             $this->entityManager->flush();
 
