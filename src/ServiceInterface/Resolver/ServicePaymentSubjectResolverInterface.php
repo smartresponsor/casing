@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Casing\Contract;
+namespace App\Casing\ServiceInterface\Resolver;
 
 use App\Casing\Value\ServicePaymentSubject;
 

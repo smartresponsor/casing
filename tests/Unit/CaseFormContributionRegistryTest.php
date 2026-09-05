@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Casing\Tests\Unit;
 
-use App\Casing\Contract\CaseFormContributionRegistry;
-use App\Casing\Contribution\PaymentCaseFormContributionProvider;
-use App\Casing\Contribution\ShippingCaseFormContributionProvider;
+use App\Casing\Form\Contribution\PaymentCaseFormContributionProvider;
+use App\Casing\Form\Contribution\ShippingCaseFormContributionProvider;
 use App\Casing\Service\CaseFormContributionService;
+use App\Casing\Service\Form\CaseFormContributionRegistry;
 use App\Paying\Dto\Payment\PaymentPlacementFormData;
 use App\Paying\Form\PaymentPlacementType;
 use App\Shipping\DTO\ShipmentPlacementFormData;

@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Casing\Tests\Unit;
 
-use App\Casing\Contract\PurchasedProductSubjectResolverInterface;
-use App\Casing\Contract\ServicePaymentSubjectResolverInterface;
 use App\Casing\Controller\ContextualSupportController;
 use App\Casing\Service\CaseActorAccessService;
+use App\Casing\ServiceInterface\Resolver\PurchasedProductSubjectResolverInterface;
+use App\Casing\ServiceInterface\Resolver\ServicePaymentSubjectResolverInterface;
 use App\Casing\Value\PurchasedProductSubject;
 use App\Casing\Value\ServicePaymentSubject;
 use PHPUnit\Framework\TestCase;

@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Casing\Controller;
 
-use App\Casing\Contract\PurchasedProductSubjectResolverInterface;
-use App\Casing\Dto\ProductReturnClaimData;
+use App\Casing\DTO\Claim\ProductReturnClaimDTO;
 use App\Casing\Entity\CaseDraftEntity;
-use App\Casing\Form\ProductReturnClaimType;
+use App\Casing\Form\Claim\ProductReturnClaimType;
 use App\Casing\Service\CaseActorAccessService;
 use App\Casing\Service\CaseCatalogService;
 use App\Casing\Service\CaseIntakeService;
 use App\Casing\Service\ProductReturnIntakeService;
+use App\Casing\ServiceInterface\Resolver\PurchasedProductSubjectResolverInterface;
 use App\Casing\Value\PurchasedProductSubject;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
@@ -38,7 +38,7 @@ final readonly class ProductReturnSupportController
         $actorId = $this->actors->requireActorId($request);
         $subjects = $this->subjects->listForActor($actorId);
         $types = $this->catalogs->publishedSupportTypes('retailing', 'retailing.product', 'return');
-        $claim = new ProductReturnClaimData();
+        $claim = new ProductReturnClaimDTO();
         $form = $this->forms->create(ProductReturnClaimType::class, $claim, ['subjects' => $subjects, 'types' => $types]);
 
         if ($request->isMethod('POST')) {
@@ -72,7 +72,7 @@ final readonly class ProductReturnSupportController
         }
 
         $types = $this->catalogs->publishedSupportTypes('retailing', 'retailing.product', 'return');
-        $claim = new ProductReturnClaimData();
+        $claim = new ProductReturnClaimDTO();
         $claim->subject = $subject;
         $form = $this->forms->create(ProductReturnClaimType::class, $claim, ['subjects' => [$subject], 'types' => $types]);
         if ($request->isMethod('POST')) {
@@ -172,9 +172,9 @@ final readonly class ProductReturnSupportController
     }
 
     /** @param list<PurchasedProductSubject> $subjects */
-    private function claimFromDraft(CaseDraftEntity $draft, array $subjects): ProductReturnClaimData
+    private function claimFromDraft(CaseDraftEntity $draft, array $subjects): ProductReturnClaimDTO
     {
-        $claim = new ProductReturnClaimData();
+        $claim = new ProductReturnClaimDTO();
         $subjectData = $draft->getContributionData()['ordering.return_subject'] ?? [];
         $orderReference = is_array($subjectData) ? (string) ($subjectData['orderReference'] ?? '') : '';
         $itemReference = is_array($subjectData) ? (string) ($subjectData['itemReference'] ?? '') : '';
@@ -203,7 +203,7 @@ final readonly class ProductReturnSupportController
     private function formPayload(FormInterface $form, array $subjects, string $action, ?string $draftReference = null): array
     {
         $claim = $form->getData();
-        $claim = $claim instanceof ProductReturnClaimData ? $claim : new ProductReturnClaimData();
+        $claim = $claim instanceof ProductReturnClaimDTO ? $claim : new ProductReturnClaimDTO();
         $options = array_map(static fn (PurchasedProductSubject $subject): array => [
             'label' => sprintf('%s · %s · %s %s', $subject->orderNumber, $subject->itemReference, $subject->unitPrice, $subject->currency),
             'value' => self::subjectToken($subject),

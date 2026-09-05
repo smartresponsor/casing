@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Casing\Tests\Unit;
 
-use App\Casing\Dto\ProductReturnClaimData;
-use App\Casing\Form\ProductReturnClaimType;
+use App\Casing\DTO\Claim\ProductReturnClaimDTO;
+use App\Casing\Form\Claim\ProductReturnClaimType;
 use App\Casing\Value\PurchasedProductSubject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Form\Forms;
@@ -15,7 +15,7 @@ final class ProductReturnClaimTypeTest extends TestCase
     public function testActorScopedSubjectTokenMapsBackToVerifiedProjection(): void
     {
         $subject = $this->subject();
-        $data = new ProductReturnClaimData();
+        $data = new ProductReturnClaimDTO();
         $form = Forms::createFormFactory()->create(ProductReturnClaimType::class, $data, [
             'subjects' => [$subject],
             'types' => [['code' => 'damaged', 'label' => 'Damaged']],
@@ -39,7 +39,7 @@ final class ProductReturnClaimTypeTest extends TestCase
     public function testUnknownSubjectTokenIsRejectedByTheChoiceField(): void
     {
         $subject = $this->subject();
-        $data = new ProductReturnClaimData();
+        $data = new ProductReturnClaimDTO();
         $form = Forms::createFormFactory()->create(ProductReturnClaimType::class, $data, [
             'subjects' => [$subject],
             'types' => [['code' => 'damaged', 'label' => 'Damaged']],

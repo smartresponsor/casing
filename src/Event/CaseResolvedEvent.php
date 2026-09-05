@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Casing\Event\Domain;
+namespace App\Casing\Event;
 
 final readonly class CaseResolvedEvent
 {

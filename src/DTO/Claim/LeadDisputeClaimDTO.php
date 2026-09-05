@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace App\Casing\Dto;
+namespace App\Casing\DTO\Claim;
 
 use App\Casing\Value\LeadSubject;
 use Symfony\Component\Validator\Constraints as Assert;
 
-final class LeadDisputeClaimData
+final class LeadDisputeClaimDTO
 {
     #[Assert\NotNull]
     public ?LeadSubject $subject = null;

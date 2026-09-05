@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Casing\Tests\Unit;
 
-use App\Casing\Dto\LeadDisputeClaimData;
-use App\Casing\Form\LeadDisputeClaimType;
-use App\Casing\Integration\Relating\LeadSubjectResolver;
+use App\Casing\DTO\Claim\LeadDisputeClaimDTO;
+use App\Casing\Form\Claim\LeadDisputeClaimType;
 use App\Casing\Service\CaseCatalogService;
+use App\Casing\Service\Resolver\Relating\LeadSubjectResolver;
 use App\Casing\Value\LeadSubject;
 use App\Cataloging\Entity\Catalog\CatalogCatalogEntity;
 use App\Cataloging\Entity\Catalog\CatalogCategoryEntity;
@@ -48,7 +48,7 @@ final class LeadDisputeFlowTest extends TestCase
             ['code' => 'invalid', 'label' => 'Invalid'],
             ['code' => 'duplicate', 'label' => 'Duplicate'],
         ];
-        $data = new LeadDisputeClaimData();
+        $data = new LeadDisputeClaimDTO();
         $form = Forms::createFormFactory()->create(LeadDisputeClaimType::class, $data, ['subjects' => [$subject], 'types' => $types]);
         $form->submit([
             'subject' => hash('sha256', $subject->leadReference),
@@ -60,7 +60,7 @@ final class LeadDisputeFlowTest extends TestCase
         self::assertSame($subject, $data->subject);
         self::assertSame('invalid', $data->typeCode);
 
-        $tampered = new LeadDisputeClaimData();
+        $tampered = new LeadDisputeClaimDTO();
         $tamperedForm = Forms::createFormFactory()->create(LeadDisputeClaimType::class, $tampered, ['subjects' => [$subject], 'types' => $types]);
         $tamperedForm->submit([
             'subject' => hash('sha256', 'other-lead'),

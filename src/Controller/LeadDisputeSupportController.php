@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Casing\Controller;
 
-use App\Casing\Contract\LeadSubjectResolverInterface;
-use App\Casing\Dto\LeadDisputeClaimData;
+use App\Casing\DTO\Claim\LeadDisputeClaimDTO;
 use App\Casing\Entity\CaseDraftEntity;
-use App\Casing\Form\LeadDisputeClaimType;
+use App\Casing\Form\Claim\LeadDisputeClaimType;
 use App\Casing\Service\CaseActorAccessService;
 use App\Casing\Service\CaseCatalogService;
 use App\Casing\Service\CaseIntakeService;
 use App\Casing\Service\LeadDisputeIntakeService;
+use App\Casing\ServiceInterface\Resolver\LeadSubjectResolverInterface;
 use App\Casing\Value\LeadSubject;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -37,7 +37,7 @@ final readonly class LeadDisputeSupportController
         $actorId = $this->actors->requireActorId($request);
         $subjects = $this->subjects->listForActor($actorId);
         $types = $this->catalogs->publishedTypes('leads', 'leads.dispute');
-        $claim = new LeadDisputeClaimData();
+        $claim = new LeadDisputeClaimDTO();
         $form = $this->forms->create(LeadDisputeClaimType::class, $claim, ['subjects' => $subjects, 'types' => $types]);
 
         if ($request->isMethod('POST')) {
@@ -71,7 +71,7 @@ final readonly class LeadDisputeSupportController
         }
 
         $types = $this->catalogs->publishedTypes('leads', 'leads.dispute');
-        $claim = new LeadDisputeClaimData();
+        $claim = new LeadDisputeClaimDTO();
         $claim->subject = $subject;
         $form = $this->forms->create(LeadDisputeClaimType::class, $claim, ['subjects' => [$subject], 'types' => $types]);
         if ($request->isMethod('POST')) {
@@ -165,9 +165,9 @@ final readonly class LeadDisputeSupportController
     }
 
     /** @param list<LeadSubject> $subjects */
-    private function claimFromDraft(CaseDraftEntity $draft, array $subjects): LeadDisputeClaimData
+    private function claimFromDraft(CaseDraftEntity $draft, array $subjects): LeadDisputeClaimDTO
     {
-        $claim = new LeadDisputeClaimData();
+        $claim = new LeadDisputeClaimDTO();
         $stored = $draft->getContributionData()['relating.lead_dispute_subject'] ?? [];
         $leadReference = is_array($stored) ? (string) ($stored['leadReference'] ?? '') : '';
         foreach ($subjects as $subject) {
@@ -190,7 +190,7 @@ final readonly class LeadDisputeSupportController
      *
      * @return array<string, mixed>
      */
-    private function formPayload(LeadDisputeClaimData $claim, array $subjects, array $types, ?string $draftReference): array
+    private function formPayload(LeadDisputeClaimDTO $claim, array $subjects, array $types, ?string $draftReference): array
     {
         $subjectOptions = array_map(static fn (LeadSubject $subject): array => [
             'label' => sprintf('%s · %s · score %d', $subject->leadReference, $subject->status, $subject->score),

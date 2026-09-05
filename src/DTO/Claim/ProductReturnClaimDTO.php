@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace App\Casing\Dto;
+namespace App\Casing\DTO\Claim;
 
 use App\Casing\Value\PurchasedProductSubject;
 use Symfony\Component\Validator\Constraints as Assert;
 
-final class ProductReturnClaimData
+final class ProductReturnClaimDTO
 {
     #[Assert\NotNull]
     public ?PurchasedProductSubject $subject = null;

@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Casing\Controller;
 
-use App\Casing\Contract\ServicePaymentSubjectResolverInterface;
-use App\Casing\Dto\ServiceDisputeClaimData;
+use App\Casing\DTO\Claim\ServiceDisputeClaimDTO;
 use App\Casing\Entity\CaseDraftEntity;
-use App\Casing\Form\ServiceDisputeClaimType;
+use App\Casing\Form\Claim\ServiceDisputeClaimType;
 use App\Casing\Service\CaseActorAccessService;
 use App\Casing\Service\CaseCatalogService;
 use App\Casing\Service\CaseIntakeService;
 use App\Casing\Service\ServiceDisputeIntakeService;
+use App\Casing\ServiceInterface\Resolver\ServicePaymentSubjectResolverInterface;
 use App\Casing\Value\ServicePaymentSubject;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -37,7 +37,7 @@ final readonly class ServiceDisputeSupportController
         $actorId = $this->actors->requireActorId($request);
         $subjects = $this->subjects->listForActor($actorId);
         $types = $this->catalogs->publishedSupportTypes('retailing', 'retailing.service', 'dispute');
-        $claim = new ServiceDisputeClaimData();
+        $claim = new ServiceDisputeClaimDTO();
         $form = $this->forms->create(ServiceDisputeClaimType::class, $claim, ['subjects' => $subjects, 'types' => $types]);
         if ($request->isMethod('POST')) {
             $form->submit($this->requestPayload($request));
@@ -69,7 +69,7 @@ final readonly class ServiceDisputeSupportController
         }
 
         $types = $this->catalogs->publishedSupportTypes('retailing', 'retailing.service', 'dispute');
-        $claim = new ServiceDisputeClaimData();
+        $claim = new ServiceDisputeClaimDTO();
         $claim->subject = $subject;
         $form = $this->forms->create(ServiceDisputeClaimType::class, $claim, ['subjects' => [$subject], 'types' => $types]);
         if ($request->isMethod('POST')) {
@@ -159,9 +159,9 @@ final readonly class ServiceDisputeSupportController
     }
 
     /** @param list<ServicePaymentSubject> $subjects */
-    private function claimFromDraft(CaseDraftEntity $draft, array $subjects): ServiceDisputeClaimData
+    private function claimFromDraft(CaseDraftEntity $draft, array $subjects): ServiceDisputeClaimDTO
     {
-        $claim = new ServiceDisputeClaimData();
+        $claim = new ServiceDisputeClaimDTO();
         $stored = $draft->getContributionData()['paying.service_dispute_subject'] ?? [];
         $paymentReference = is_array($stored) ? (string) ($stored['paymentReference'] ?? '') : '';
         foreach ($subjects as $subject) {
@@ -181,7 +181,7 @@ final readonly class ServiceDisputeSupportController
     /** @param list<ServicePaymentSubject> $subjects
      * @return array<string, mixed>
      */
-    private function formPayload(ServiceDisputeClaimData $claim, array $subjects, ?string $draftReference): array
+    private function formPayload(ServiceDisputeClaimDTO $claim, array $subjects, ?string $draftReference): array
     {
         $options = array_map(static fn (ServicePaymentSubject $subject): array => [
             'label' => sprintf('%s · %s %s · %s', $subject->orderNumber, $subject->amount, $subject->currency, $subject->status),

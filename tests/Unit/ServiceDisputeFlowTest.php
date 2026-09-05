@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Casing\Tests\Unit;
 
-use App\Casing\Dto\ServiceDisputeClaimData;
-use App\Casing\Form\ServiceDisputeClaimType;
-use App\Casing\Integration\Paying\ServicePaymentSubjectResolver;
+use App\Casing\DTO\Claim\ServiceDisputeClaimDTO;
+use App\Casing\Form\Claim\ServiceDisputeClaimType;
+use App\Casing\Service\Resolver\Paying\ServicePaymentSubjectResolver;
 use App\Ordering\Entity\Order\OrderEntity;
 use App\Ordering\ReadModel\Repository\OrderReadRepository;
 use App\Paying\Entity\PaymentEntity;
@@ -48,7 +48,7 @@ final class ServiceDisputeFlowTest extends TestCase
     {
         $subject = new \App\Casing\Value\ServicePaymentSubject('payment-1', 'order-1', 'ORD-1', 'completed', '50.00', 'USD', null);
         $types = [['code' => 'billing', 'label' => 'Billing']];
-        $data = new ServiceDisputeClaimData();
+        $data = new ServiceDisputeClaimDTO();
         $form = Forms::createFormFactory()->create(ServiceDisputeClaimType::class, $data, ['subjects' => [$subject], 'types' => $types]);
         $form->submit([
             'subject' => hash('sha256', 'other-payment'),
@@ -63,7 +63,7 @@ final class ServiceDisputeFlowTest extends TestCase
     public function testFormRejectsUnknownCatalogType(): void
     {
         $subject = new \App\Casing\Value\ServicePaymentSubject('payment-1', 'order-1', 'ORD-1', 'completed', '50.00', 'USD', null);
-        $data = new ServiceDisputeClaimData();
+        $data = new ServiceDisputeClaimDTO();
         $form = Forms::createFormFactory()->create(ServiceDisputeClaimType::class, $data, [
             'subjects' => [$subject],
             'types' => [['code' => 'billing', 'label' => 'Billing']],
