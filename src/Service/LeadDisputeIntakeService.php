@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Casing\Service;
 
-use App\Casing\Contract\LeadSubjectResolverInterface;
 use App\Casing\Entity\CaseDraftEntity;
+use App\Casing\ServiceInterface\Resolver\LeadSubjectResolverInterface;
 use Doctrine\ORM\EntityManagerInterface;
 
 final readonly class LeadDisputeIntakeService

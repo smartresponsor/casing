@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Casing\Contribution;
+namespace App\Casing\Form\Contribution;
 
-use App\Casing\Contract\CaseFormContributionInterface;
+use App\Casing\FormInterface\Contribution\CaseFormContributionInterface;
 use App\Shipping\DTO\ShipmentPlacementFormData;
 use App\Shipping\Form\ShipmentPlacementType;
 

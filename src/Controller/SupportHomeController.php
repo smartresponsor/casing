@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\Casing\Controller;
 
-use App\Casing\Contract\LeadSubjectResolverInterface;
-use App\Casing\Contract\PurchasedProductSubjectResolverInterface;
-use App\Casing\Contract\ServicePaymentSubjectResolverInterface;
 use App\Casing\Service\CaseActorAccessService;
 use App\Casing\Service\CaseCatalogService;
+use App\Casing\ServiceInterface\Resolver\LeadSubjectResolverInterface;
+use App\Casing\ServiceInterface\Resolver\PurchasedProductSubjectResolverInterface;
+use App\Casing\ServiceInterface\Resolver\ServicePaymentSubjectResolverInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 

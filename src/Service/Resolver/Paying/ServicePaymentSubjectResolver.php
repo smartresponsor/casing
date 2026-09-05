@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Casing\Integration\Paying;
+namespace App\Casing\Service\Resolver\Paying;
 
-use App\Casing\Contract\ServicePaymentSubjectResolverInterface;
+use App\Casing\ServiceInterface\Resolver\ServicePaymentSubjectResolverInterface;
 use App\Casing\Value\ServicePaymentSubject;
 use App\Ordering\Entity\Order\OrderEntity;
 use App\Ordering\ReadModel\Repository\OrderReadRepository;

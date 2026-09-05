@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Casing\Integration\Relating;
+namespace App\Casing\Service\Resolver\Relating;
 
-use App\Casing\Contract\LeadSubjectResolverInterface;
+use App\Casing\ServiceInterface\Resolver\LeadSubjectResolverInterface;
 use App\Casing\Value\LeadSubject;
 use App\Entity\Lead;
 use App\Service\VendorLeadReadServiceInterface;

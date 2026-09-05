@@ -2,7 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Casing\Contract;
+namespace App\Casing\Service\Form;
+
+use App\Casing\FormInterface\Contribution\CaseFormContributionInterface;
 
 final class CaseFormContributionRegistry
 {

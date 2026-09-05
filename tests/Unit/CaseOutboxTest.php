@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Casing\Tests\Unit;
 
 use App\Casing\Entity\CaseOutboxMessageEntity;
-use App\Casing\Event\Domain\CaseOpenedEvent;
+use App\Casing\Event\CaseOpenedEvent;
 use App\Casing\Service\Outbox\CaseOutboxProcessor;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Casing\Service;
 
-use App\Casing\Contract\ServicePaymentSubjectResolverInterface;
 use App\Casing\Entity\CaseDraftEntity;
+use App\Casing\ServiceInterface\Resolver\ServicePaymentSubjectResolverInterface;
 use Doctrine\ORM\EntityManagerInterface;
 
 final readonly class ServiceDisputeIntakeService

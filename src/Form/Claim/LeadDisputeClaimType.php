@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace App\Casing\Form;
+namespace App\Casing\Form\Claim;
 
-use App\Casing\Dto\ServiceDisputeClaimData;
-use App\Casing\Value\ServicePaymentSubject;
+use App\Casing\DTO\Claim\LeadDisputeClaimDTO;
+use App\Casing\Value\LeadSubject;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-final class ServiceDisputeClaimType extends AbstractType
+final class LeadDisputeClaimType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -25,26 +25,26 @@ final class ServiceDisputeClaimType extends AbstractType
 
         $builder
             ->add('subject', ChoiceType::class, [
-                'label' => 'Payment',
+                'label' => 'Lead',
                 'choices' => $options['subjects'],
-                'choice_label' => static fn (ServicePaymentSubject $subject): string => sprintf('%s · %s %s · %s', $subject->orderNumber, $subject->amount, $subject->currency, $subject->status),
-                'choice_value' => static fn (?ServicePaymentSubject $subject): string => null === $subject ? '' : hash('sha256', $subject->paymentReference),
-                'placeholder' => 'Select a payment from your orders',
+                'choice_label' => static fn (LeadSubject $subject): string => sprintf('%s · %s · score %d', $subject->leadReference, $subject->status, $subject->score),
+                'choice_value' => static fn (?LeadSubject $subject): string => null === $subject ? '' : hash('sha256', $subject->leadReference),
+                'placeholder' => 'Select a lead associated with your account',
             ])
             ->add('typeCode', ChoiceType::class, [
-                'label' => 'Dispute type',
+                'label' => 'Dispute reason',
                 'choices' => $typeChoices,
-                'placeholder' => 'Select a dispute type',
+                'placeholder' => 'Select a reason',
             ])
             ->add('description', TextareaType::class, [
-                'label' => 'Describe the dispute',
+                'label' => 'Describe the issue',
                 'attr' => ['rows' => 6],
             ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
-        $resolver->setDefaults(['data_class' => ServiceDisputeClaimData::class, 'subjects' => [], 'types' => []]);
+        $resolver->setDefaults(['data_class' => LeadDisputeClaimDTO::class, 'subjects' => [], 'types' => []]);
         $resolver->setAllowedTypes('subjects', 'array');
         $resolver->setAllowedTypes('types', 'array');
     }

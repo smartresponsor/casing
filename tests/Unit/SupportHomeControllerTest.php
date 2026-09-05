@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace App\Casing\Tests\Unit;
 
-use App\Casing\Contract\LeadSubjectResolverInterface;
-use App\Casing\Contract\PurchasedProductSubjectResolverInterface;
-use App\Casing\Contract\ServicePaymentSubjectResolverInterface;
 use App\Casing\Controller\SupportHomeController;
 use App\Casing\Service\CaseActorAccessService;
 use App\Casing\Service\CaseCatalogService;
+use App\Casing\ServiceInterface\Resolver\LeadSubjectResolverInterface;
+use App\Casing\ServiceInterface\Resolver\PurchasedProductSubjectResolverInterface;
+use App\Casing\ServiceInterface\Resolver\ServicePaymentSubjectResolverInterface;
 use App\Cataloging\Entity\Catalog\CatalogCatalogEntity;
 use App\Cataloging\Entity\Catalog\CatalogCategoryEntity;
 use App\Cataloging\ServiceInterface\CatalogCatalogTreeReadServiceInterface;

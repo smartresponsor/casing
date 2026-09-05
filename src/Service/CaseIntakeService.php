@@ -6,7 +6,7 @@ namespace App\Casing\Service;
 
 use App\Casing\Entity\CaseDraftEntity;
 use App\Casing\Entity\CaseEntity;
-use App\Casing\Event\Domain\CaseOpenedEvent;
+use App\Casing\Event\CaseOpenedEvent;
 use App\Casing\Repository\CaseDraftRepository;
 use App\Casing\Repository\CaseRepository;
 use App\Casing\Service\Outbox\CaseOutboxWriter;

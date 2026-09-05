@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Casing\Contract;
+namespace App\Casing\FormInterface\Contribution;
 
 use Symfony\Component\Form\FormTypeInterface;
 

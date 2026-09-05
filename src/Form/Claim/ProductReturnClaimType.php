@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Casing\Form;
+namespace App\Casing\Form\Claim;
 
-use App\Casing\Dto\ProductReturnClaimData;
+use App\Casing\DTO\Claim\ProductReturnClaimDTO;
 use App\Casing\Value\PurchasedProductSubject;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -51,7 +51,7 @@ final class ProductReturnClaimType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => ProductReturnClaimData::class,
+            'data_class' => ProductReturnClaimDTO::class,
             'subjects' => [],
             'types' => [],
         ]);

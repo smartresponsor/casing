@@ -6,7 +6,7 @@ namespace App\Casing\Service;
 
 use App\Casing\Entity\CaseEntity;
 use App\Casing\Enum\CaseStatus;
-use App\Casing\Event\Domain\CaseResolvedEvent;
+use App\Casing\Event\CaseResolvedEvent;
 use App\Casing\Repository\CaseRepository;
 use App\Casing\Service\Outbox\CaseOutboxWriter;
 use Doctrine\ORM\EntityManagerInterface;

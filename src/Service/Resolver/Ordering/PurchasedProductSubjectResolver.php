@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace App\Casing\Integration\Ordering;
+namespace App\Casing\Service\Resolver\Ordering;
 
-use App\Casing\Contract\PurchasedProductSubjectResolverInterface;
+use App\Casing\ServiceInterface\Resolver\PurchasedProductSubjectResolverInterface;
 use App\Casing\Value\PurchasedProductSubject;
 use App\Ordering\ReadModel\ServiceInterface\CustomerOrderReadServiceInterface;
 use App\Ordering\ReadModel\View\CustomerOrderDetail;
 use App\Ordering\ReadModel\View\CustomerOrderItemSummary;
 
-final readonly class OrderingPurchasedProductSubjectResolver implements PurchasedProductSubjectResolverInterface
+final readonly class PurchasedProductSubjectResolver implements PurchasedProductSubjectResolverInterface
 {
     public function __construct(private CustomerOrderReadServiceInterface $orders)
     {

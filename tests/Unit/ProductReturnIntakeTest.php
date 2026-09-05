@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Casing\Tests\Unit;
 
-use App\Casing\Contract\PurchasedProductSubjectResolverInterface;
 use App\Casing\Entity\CaseDraftEntity;
-use App\Casing\Integration\Ordering\OrderingPurchasedProductSubjectResolver;
 use App\Casing\Service\ProductReturnIntakeService;
+use App\Casing\Service\Resolver\Ordering\PurchasedProductSubjectResolver;
+use App\Casing\ServiceInterface\Resolver\PurchasedProductSubjectResolverInterface;
 use App\Casing\Value\PurchasedProductSubject;
 use App\Ordering\Entity\Order\OrderEntity;
 use App\Ordering\Entity\Order\OrderItemEntity;
@@ -31,7 +31,7 @@ final class ProductReturnIntakeTest extends TestCase
         $entityManager = $this->createStub(EntityManagerInterface::class);
         $entityManager->method('getRepository')->willReturn($repository);
 
-        $resolver = new OrderingPurchasedProductSubjectResolver(new CustomerOrderReadService(new OrderReadRepository($entityManager)));
+        $resolver = new PurchasedProductSubjectResolver(new CustomerOrderReadService(new OrderReadRepository($entityManager)));
 
         self::assertCount(1, $resolver->listForActor('actor-1'));
         self::assertSame([], $resolver->listForActor('actor-2'));
@@ -101,8 +101,8 @@ final class ProductReturnIntakeTest extends TestCase
     public function testProductReturnFormRejectsUnknownCatalogType(): void
     {
         $subject = new PurchasedProductSubject('order-1', 'ORD-1', 'SKU-1', 1, 'USD', '25.00', 'delivered');
-        $data = new \App\Casing\Dto\ProductReturnClaimData();
-        $form = \Symfony\Component\Form\Forms::createFormFactory()->create(\App\Casing\Form\ProductReturnClaimType::class, $data, [
+        $data = new \App\Casing\DTO\Claim\ProductReturnClaimDTO();
+        $form = \Symfony\Component\Form\Forms::createFormFactory()->create(\App\Casing\Form\Claim\ProductReturnClaimType::class, $data, [
             'subjects' => [$subject],
             'types' => [['code' => 'damaged', 'label' => 'Damaged']],
         ]);

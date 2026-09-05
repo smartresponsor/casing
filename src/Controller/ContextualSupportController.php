@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Casing\Controller;
 
-use App\Casing\Contract\PurchasedProductSubjectResolverInterface;
-use App\Casing\Contract\ServicePaymentSubjectResolverInterface;
 use App\Casing\Service\CaseActorAccessService;
+use App\Casing\ServiceInterface\Resolver\PurchasedProductSubjectResolverInterface;
+use App\Casing\ServiceInterface\Resolver\ServicePaymentSubjectResolverInterface;
 use App\Casing\Value\ServicePaymentSubject;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;

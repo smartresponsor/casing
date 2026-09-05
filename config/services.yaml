@@ -4,17 +4,17 @@ services:
     autoconfigure: true
 
   _instanceof:
-    App\Casing\Contract\CaseFormContributionInterface:
+    App\Casing\FormInterface\Contribution\CaseFormContributionInterface:
       tags: ['casing.form_contribution']
 
-  App\Casing\Contract\PurchasedProductSubjectResolverInterface:
-    alias: App\Casing\Integration\Ordering\OrderingPurchasedProductSubjectResolver
+  App\Casing\ServiceInterface\Resolver\PurchasedProductSubjectResolverInterface:
+    alias: App\Casing\Service\Resolver\Ordering\PurchasedProductSubjectResolver
 
-  App\Casing\Contract\ServicePaymentSubjectResolverInterface:
-    alias: App\Casing\Integration\Paying\ServicePaymentSubjectResolver
+  App\Casing\ServiceInterface\Resolver\ServicePaymentSubjectResolverInterface:
+    alias: App\Casing\Service\Resolver\Paying\ServicePaymentSubjectResolver
 
-  App\Casing\Contract\LeadSubjectResolverInterface:
-    alias: App\Casing\Integration\Relating\LeadSubjectResolver
+  App\Casing\ServiceInterface\Resolver\LeadSubjectResolverInterface:
+    alias: App\Casing\Service\Resolver\Relating\LeadSubjectResolver
 
   App\Casing\:
     resource: '../src/'
@@ -24,11 +24,9 @@ services:
       - '../src/Entity/'
       - '../src/Enum/'
       - '../src/Value/'
-      - '../src/Contract/CaseFormContributionInterface.php'
-      - '../src/Contract/PurchasedProductSubjectResolverInterface.php'
-      - '../src/Contract/ServicePaymentSubjectResolverInterface.php'
-      - '../src/Contract/LeadSubjectResolverInterface.php'
+      - '../src/FormInterface/'
+      - '../src/ServiceInterface/'
 
-  App\Casing\Contract\CaseFormContributionRegistry:
+  App\Casing\Service\Form\CaseFormContributionRegistry:
     arguments:
       $providers: !tagged_iterator casing.form_contribution

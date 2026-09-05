@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Casing\Service\Outbox;
 
 use App\Casing\Entity\CaseOutboxMessageEntity;
-use App\Casing\Event\Domain\CaseOpenedEvent;
-use App\Casing\Event\Domain\CaseResolvedEvent;
+use App\Casing\Event\CaseOpenedEvent;
+use App\Casing\Event\CaseResolvedEvent;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 

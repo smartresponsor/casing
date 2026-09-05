@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace App\Casing\Dto;
+namespace App\Casing\DTO\Claim;
 
 use App\Casing\Value\ServicePaymentSubject;
 use Symfony\Component\Validator\Constraints as Assert;
 
-final class ServiceDisputeClaimData
+final class ServiceDisputeClaimDTO
 {
     #[Assert\NotNull]
     public ?ServicePaymentSubject $subject = null;

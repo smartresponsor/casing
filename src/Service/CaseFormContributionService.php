@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Casing\Service;
 
-use App\Casing\Contract\CaseFormContributionRegistry;
+use App\Casing\Service\Form\CaseFormContributionRegistry;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
 

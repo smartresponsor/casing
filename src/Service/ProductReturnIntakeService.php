@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Casing\Service;
 
-use App\Casing\Contract\PurchasedProductSubjectResolverInterface;
 use App\Casing\Entity\CaseDraftEntity;
+use App\Casing\ServiceInterface\Resolver\PurchasedProductSubjectResolverInterface;
 use Doctrine\ORM\EntityManagerInterface;
 
 final readonly class ProductReturnIntakeService
