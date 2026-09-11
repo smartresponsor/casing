@@ -15,17 +15,12 @@ use Symfony\Component\Uid\Ulid;
 
 #[ORM\Entity(repositoryClass: CaseRepository::class)]
 #[ORM\Table(name: 'case_record')]
-#[ORM\Index(name: 'idx_case_actor_status', columns: ['actor_id', 'status'])]
+#[ORM\Index(name: 'idx_case_actor_status', columns: ['actor_id', 'case_status'])]
 final class CaseEntity
 {
     use ObjectIdentityEmbeddableTrait;
     use ObjectAuditEmbeddableTrait;
     use ObjectStateEmbeddableTrait;
-
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column(type: 'integer')]
-    private ?int $id = null;
 
     #[ORM\Column(name: 'case_reference', type: 'string', length: 26, unique: true)]
     private string $caseReference;
@@ -62,7 +57,7 @@ final class CaseEntity
     #[ORM\Column(name: 'attachment_references', type: 'json')]
     private array $attachmentReferences;
 
-    #[ORM\Column(type: 'string', length: 32, enumType: CaseStatus::class)]
+    #[ORM\Column(name: 'case_status', type: 'string', length: 32, enumType: CaseStatus::class)]
     private CaseStatus $status = CaseStatus::Submitted;
 
     public function __construct(CaseDraftEntity $draft, CatalogCategoryEntity $catalogCategory)
@@ -80,11 +75,6 @@ final class CaseEntity
         $this->initializeObjectIdentity(objectSlug: 'case-'.$this->caseReference);
         $this->initializeObjectAudit();
         $this->initializeObjectState(objectStatus: $this->status->value);
-    }
-
-    public function getId(): ?int
-    {
-        return $this->id;
     }
 
     public function getCaseReference(): string

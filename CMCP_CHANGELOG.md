@@ -94,4 +94,26 @@
 - Continuation decision: do not patch Cataloging, Objecting, or Cruding from this Casing-only task. Resolve the identity collision in its owning repository and authorize the generic CRUD migration separately, then rerun Casing acceptance.
 - No staging, commit, push, destructive operation, dependency update, or sibling-repository mutation was performed.
 
+## engine-20260906000821-casing-38eae7 — iteration 3/3 continuation
+
+- Scope guard applied: all operations in this iteration were confined to Casing; no sibling repository was read or modified.
+- Starting state: branch `feature/facting-case-lifecycle-20260823`, clean worktree.
+- `composer test`: passed, 72 tests and 602 assertions.
+- `composer cs:check`: passed, 0 of 64 files require changes.
+- Changed-PHP lint: passed; there were no changed PHP files.
+- `composer validate --strict --check-lock`: manifest and lock are consistent; strict exit 1 remains solely because ten internal dependencies use unbound `*@dev` constraints.
+- Continuation decision: the previously recorded Cataloging/Objecting runtime blocker is no longer present in the installed composition. The next bounded Casing action is release-hardening of internal dependency constraints; the EasyAdmin-to-Cruding migration remains a separate cross-component action.
+- This journal update is intentionally left uncommitted. No staging, commit, push, destructive operation, or sibling-repository mutation was performed in this iteration.
+
+## engine-20260911143157-casing-6d3ed4 — iteration 4 continuation
+
+- Console MCP workspace access restored for `D:\PhpstormProjects\www\Casing`; the earlier runtime-path blocker is closed.
+- Verification exposed a current Shipping contract drift: `ShipmentPlacementFormData` was renamed by Shipping Canon003 to `ShipmentPlacementFormDTO`.
+- Updated only Casing integration code and tests to consume the current Shipping-owned DTO; no sibling repository was modified.
+- Preserved and verified the pending Casing identity/schema changes: local duplicate Objecting IDs removed, `case_status` qualified, and the matching PostgreSQL migration style-normalized.
+- `composer test`: passed, 72 tests and 602 assertions.
+- `composer cs:check`: passed, 0 of 65 files require changes.
+- Changed/untracked PHP lint: passed.
+- `composer validate --strict --check-lock`: manifest and lock are consistent; strict exit 1 remains solely for ten pre-existing unbound internal `*@dev` constraints.
+- `.gating/` remains an untracked local enforcement copy and is intentionally excluded from the product commit.
 
