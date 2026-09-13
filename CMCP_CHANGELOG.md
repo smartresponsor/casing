@@ -35,6 +35,13 @@
 - Pre-existing untracked `.gating/` remains untouched and excluded from integration.
 - Remaining RC-critical debt is explicit rather than hidden: raise line/method coverage out of Canon040 HIGH_TEST_DEBT and replace unbound internal development constraints when authoritative package versions/branches are selected.
 
+### Iteration 5 — final acceptance and handoff
+
+- Created signed commit `99a83f8` (`Harden Casing RC quality contracts`) containing only the owned Casing changes; the pre-existing untracked `.gating/` tree was excluded.
+- Post-commit acceptance reran successfully: PHPStan reports no errors; PHPUnit passes 73 tests / 605 assertions.
+- Push was attempted through Console MCP but correctly blocked by its dirty-worktree guard because `.gating/` remains untracked; no force, deletion, staging, or ownership assumption was used to bypass that safeguard.
+- Final implementation verdict: the bounded hardening change is complete and committed locally. Full RC readiness remains explicitly open on Canon040 line/method coverage debt and authoritative replacement of internal `*@dev` constraints; remote publication is additionally blocked until the existing `.gating/` worktree state is resolved by its owner.
+
 ## engine-20260906000504-casing-ccf194
 
 ### Iteration 1 — reconnaissance and baseline
