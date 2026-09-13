@@ -1,5 +1,40 @@
 # CMCP Execution Journal
 
+## 2026-09-13 — Casing repository implementation
+
+### Iteration 1 — reconnaissance and baseline
+
+- Read current Casing documentation, Composer/PHPUnit/PHP-CS-Fixer configuration, lifecycle/outbox code, architecture/unit tests, service/route configuration, and the existing CMCP journal.
+- Read current Objecting, Cruding, Viewing, Interfacing, Gating, and Canonization contracts, including normative Canon001, Canon019, Canon021, Canon022, Canon023, Canon024, Canon029, Canon039, and the guard matrix.
+- Baseline: branch `feature/facting-case-lifecycle-20260823`; pre-existing untracked `.gating/` left untouched; `composer test` passed 72 tests / 602 assertions; `composer cs:check` passed; strict Composer validation is structurally valid but warns on existing internal `*@dev` constraints.
+- Canon mapping: role-first `App\\Casing\\` tree aligns with Canon001/019; EasyAdmin `CaseCrudController` is permitted by Canon021; Canon022 standalone baseline is not applicable because Casing has no standalone Symfony boot surface; local path repositories satisfy Canon023; Canon024/029/039 expose missing production-manifest, PHPStan execution, and persistent branch-coverage contracts.
+- RC-critical work: correct DTO service-discovery casing and materialize missing production/static-analysis/test-coverage contracts. Growth remains separate: SLA/assignment/playbooks/agent-workspace and AI-assisted case capabilities.
+
+### Iteration 2 — material implementation
+
+- Corrected Symfony service discovery from non-existent `src/Dto/` to canonical `src/DTO/`, preventing DTO classes from being discovered as services on case-sensitive filesystems.
+- Added an architecture regression test for the DTO exclusion.
+- Added repository-owned PHPStan configuration plus Composer `phpstan` script for Canon029.
+- Added persistent path/branch coverage execution through `test:coverage` for Canon039.
+- Added `composer.prod.json` without sibling path repositories for the Canon024 production package contract.
+
+### Iteration 3 — verification and fix
+
+- Initial PHPStan execution exposed two calls to removed EasyAdmin `AdminContext::getReferrer()` and an unsafe Symfony recursive form-error union dereference; both runtime-significant findings were fixed.
+- Added an explicit `CaseEntity` EasyAdmin generic declaration and request-header based admin referrer fallback.
+- PHPStan now passes at the repository-owned level-5 floor without a generated baseline; only narrow Doctrine hydration false positives are exempted and PHPDoc certainty is disabled for defensive runtime checks.
+- `composer test`: passed 73 tests / 605 assertions; `composer cs:check`: passed; changed/untracked PHP syntax lint passed.
+- Persistent coverage execution now succeeds after creating `var/coverage/` before PHPUnit writes the summary.
+- Measured coverage is lines 33.47%, methods 28.89%, branches 68.29%; Canon040 therefore classifies Casing as HIGH_TEST_DEBT because lines and methods remain below 50%.
+
+### Iteration 4 — debt closure and integration
+
+- Completed the mandatory dependency-contract pass by reading available Objecting, Cruding, Viewing and Interfacing README/Composer/AGENTS/manifest material; Interfacing has no `MANIFEST.json` at the expected root.
+- Current gates: PHPStan green, PHPUnit green, PHP-CS-Fixer green, persistent path/branch coverage execution green, syntax lint green.
+- `composer validate --strict --check-lock` confirms the manifest/lock are structurally valid but exits 1 solely for ten pre-existing unbound internal `*@dev` constraints; no sibling version was guessed.
+- Pre-existing untracked `.gating/` remains untouched and excluded from integration.
+- Remaining RC-critical debt is explicit rather than hidden: raise line/method coverage out of Canon040 HIGH_TEST_DEBT and replace unbound internal development constraints when authoritative package versions/branches are selected.
+
 ## engine-20260906000504-casing-ccf194
 
 ### Iteration 1 — reconnaissance and baseline

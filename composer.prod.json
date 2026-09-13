@@ -1,0 +1,41 @@
+{
+  "name": "casing/case",
+  "description": "SmartResponsor case intake and lifecycle component",
+  "type": "symfony-bundle",
+  "license": "proprietary",
+  "require": {
+    "php": "^8.4",
+    "attaching/attachment": "*@dev",
+    "cataloging/catalog": "*@dev",
+    "cruding/crud": "*@dev",
+    "doctrine/dbal": "^4.3",
+    "doctrine/doctrine-bundle": "^3.2",
+    "doctrine/doctrine-migrations-bundle": "^4.0",
+    "doctrine/orm": "^3.3",
+    "easycorp/easyadmin-bundle": "^5.0",
+    "interfacing/interface": "*@dev",
+    "objecting/object": "*@dev",
+    "ordering/order": "*@dev",
+    "paying/payment": "*@dev",
+    "relating/relation": "*@dev",
+    "shipping/shipment": "*@dev",
+    "symfony/dependency-injection": "^8.1",
+    "symfony/form": "^8.1",
+    "symfony/framework-bundle": "^8.1",
+    "symfony/http-foundation": "^8.1",
+    "symfony/http-kernel": "^8.1",
+    "symfony/routing": "^8.1",
+    "symfony/security-bundle": "^8.1",
+    "symfony/uid": "^8.1",
+    "symfony/validator": "^8.1",
+    "viewing/view": "*@dev"
+  },
+  "autoload": {"psr-4": {"App\\Casing\\": "src/"}},
+  "config": {
+    "allow-plugins": {"symfony/runtime": true},
+    "sort-packages": true
+  },
+  "extra": {"symfony": {"bundle": "App\\Casing\\CasingBundle"}},
+  "minimum-stability": "dev",
+  "prefer-stable": true
+}

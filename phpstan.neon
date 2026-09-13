@@ -1,0 +1,14 @@
+parameters:
+    level: 5
+    paths:
+        - src
+        - tests
+    tmpDir: var/phpstan
+    treatPhpDocTypesAsCertain: false
+    ignoreErrors:
+        -
+            identifier: property.unusedType
+            path: src/Entity/*
+        -
+            identifier: property.onlyWritten
+            path: src/Entity/CaseOutboxMessageEntity.php
