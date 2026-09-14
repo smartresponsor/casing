@@ -16,15 +16,19 @@ services:
   App\Casing\ServiceInterface\Resolver\LeadSubjectResolverInterface:
     alias: App\Casing\Service\Resolver\Relating\LeadSubjectResolver
 
+  App\Casing\RepositoryInterface\CaseOutboxMessageRepositoryInterface:
+    alias: App\Casing\Repository\CaseOutboxMessageRepository
+
   App\Casing\:
     resource: '../src/'
     exclude:
       - '../src/DependencyInjection/'
-      - '../src/Dto/'
+      - '../src/DTO/'
       - '../src/Entity/'
       - '../src/Enum/'
       - '../src/Value/'
       - '../src/FormInterface/'
+      - '../src/RepositoryInterface/'
       - '../src/ServiceInterface/'
 
   App\Casing\Service\Form\CaseFormContributionRegistry:

@@ -23,6 +23,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
+/** @extends AbstractCrudController<CaseEntity> */
 #[AdminRoute(path: '', name: 'case')]
 #[IsGranted('ROLE_ADMIN')]
 final class CaseCrudController extends AbstractCrudController
@@ -110,7 +111,7 @@ final class CaseCrudController extends AbstractCrudController
             $this->informationRequests->request($entity, (string) ($data['question'] ?? ''));
             $this->addFlash('success', 'Information request sent to customer.');
 
-            return $this->redirect($context->getReferrer() ?? '/admin');
+            return $this->redirect($this->referrer($context));
         }
 
         return $this->render('admin/case/request_information.html.twig', [
@@ -155,6 +156,12 @@ final class CaseCrudController extends AbstractCrudController
         $this->lifecycle->transition($entity, $target);
         $this->addFlash('success', $message);
 
-        return $this->redirect($context->getReferrer() ?? '/admin');
+        return $this->redirect($this->referrer($context));
+    }
+
+    /** @param AdminContext<CaseEntity> $context */
+    private function referrer(AdminContext $context): string
+    {
+        return $context->getRequest()->headers->get('referer') ?: '/admin';
     }
 }

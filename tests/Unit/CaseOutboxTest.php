@@ -6,9 +6,9 @@ namespace App\Casing\Tests\Unit;
 
 use App\Casing\Entity\CaseOutboxMessageEntity;
 use App\Casing\Event\CaseOpenedEvent;
+use App\Casing\RepositoryInterface\CaseOutboxMessageRepositoryInterface;
 use App\Casing\Service\Outbox\CaseOutboxProcessor;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\EntityRepository;
 use PHPUnit\Framework\TestCase;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
@@ -28,17 +28,13 @@ final class CaseOutboxTest extends TestCase
             ],
         );
 
-        $repository = $this->createMock(EntityRepository::class);
+        $repository = $this->createMock(CaseOutboxMessageRepositoryInterface::class);
         $repository->expects(self::once())
-            ->method('findBy')
-            ->with([], ['id' => 'ASC'], 100)
+            ->method('findDispatchable')
+            ->with(100)
             ->willReturn([$message]);
 
         $entityManager = $this->createMock(EntityManagerInterface::class);
-        $entityManager->expects(self::once())
-            ->method('getRepository')
-            ->with(CaseOutboxMessageEntity::class)
-            ->willReturn($repository);
         $entityManager->expects(self::once())->method('flush');
 
         $dispatcher = $this->createMock(EventDispatcherInterface::class);
@@ -54,7 +50,34 @@ final class CaseOutboxTest extends TestCase
             )
             ->willReturnArgument(0);
 
-        self::assertSame(1, (new CaseOutboxProcessor($entityManager, $dispatcher))->process());
+        self::assertSame(1, (new CaseOutboxProcessor($entityManager, $repository, $dispatcher))->process());
         self::assertFalse($message->isPending());
+    }
+
+    public function testUnsupportedEventTypeFailsObservablyAndRemainsPending(): void
+    {
+        $message = new CaseOutboxMessageEntity('01CASE', 'unsupported.event', []);
+
+        $repository = $this->createMock(CaseOutboxMessageRepositoryInterface::class);
+        $repository->expects(self::once())
+            ->method('findDispatchable')
+            ->with(100)
+            ->willReturn([$message]);
+
+        $entityManager = $this->createMock(EntityManagerInterface::class);
+        $entityManager->expects(self::never())->method('flush');
+        $dispatcher = $this->createMock(EventDispatcherInterface::class);
+        $dispatcher->expects(self::never())->method('dispatch');
+
+        $processor = new CaseOutboxProcessor($entityManager, $repository, $dispatcher);
+
+        try {
+            $processor->process();
+            self::fail('Unsupported event types must fail observably.');
+        } catch (\UnexpectedValueException $exception) {
+            self::assertStringContainsString('unsupported.event', $exception->getMessage());
+        }
+
+        self::assertTrue($message->isPending());
     }
 }

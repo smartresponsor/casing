@@ -13,6 +13,7 @@ use App\Casing\Service\CaseIntakeService;
 use App\Casing\Service\ProductReturnIntakeService;
 use App\Casing\ServiceInterface\Resolver\PurchasedProductSubjectResolverInterface;
 use App\Casing\Value\PurchasedProductSubject;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -214,7 +215,9 @@ final readonly class ProductReturnSupportController
         );
         $errors = [];
         foreach ($form->getErrors(true) as $error) {
-            $errors[] = $error->getMessage();
+            if ($error instanceof FormError) {
+                $errors[] = $error->getMessage();
+            }
         }
 
         return [

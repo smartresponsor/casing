@@ -80,4 +80,13 @@ final class StructureGuardTest extends TestCase
             self::assertStringEndsWith('DTO', $classMatch[1], sprintf('DTO class "%s" must use the DTO suffix.', $classMatch[1]));
         }
     }
+
+    public function testServiceDiscoveryExcludesCanonicalDtoDirectory(): void
+    {
+        $services = file_get_contents(dirname(__DIR__, 2).'/config/services.yaml');
+
+        self::assertIsString($services);
+        self::assertStringContainsString("- '../src/DTO/'", $services);
+        self::assertStringNotContainsString("- '../src/Dto/'", $services);
+    }
 }

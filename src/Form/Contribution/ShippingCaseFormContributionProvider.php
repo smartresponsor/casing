@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Casing\Form\Contribution;
 
 use App\Casing\FormInterface\Contribution\CaseFormContributionInterface;
-use App\Shipping\DTO\ShipmentPlacementFormData;
+use App\Shipping\DTO\ShipmentPlacementFormDTO;
 use App\Shipping\Form\ShipmentPlacementType;
 
 final class ShippingCaseFormContributionProvider implements CaseFormContributionInterface
@@ -22,18 +22,18 @@ final class ShippingCaseFormContributionProvider implements CaseFormContribution
 
     public function dataClass(): string
     {
-        return ShipmentPlacementFormData::class;
+        return ShipmentPlacementFormDTO::class;
     }
 
     public function createData(): object
     {
-        return new ShipmentPlacementFormData();
+        return new ShipmentPlacementFormDTO();
     }
 
     public function normalize(object $data): array
     {
-        if (!$data instanceof ShipmentPlacementFormData) {
-            throw new \InvalidArgumentException('Shipping contribution data must use ShipmentPlacementFormData.');
+        if (!$data instanceof ShipmentPlacementFormDTO) {
+            throw new \InvalidArgumentException('Shipping contribution data must use ShipmentPlacementFormDTO.');
         }
 
         return get_object_vars($data);

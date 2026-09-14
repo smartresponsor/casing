@@ -10,7 +10,7 @@ use App\Casing\Service\CaseFormContributionService;
 use App\Casing\Service\Form\CaseFormContributionRegistry;
 use App\Paying\Dto\Payment\PaymentPlacementFormData;
 use App\Paying\Form\PaymentPlacementType;
-use App\Shipping\DTO\ShipmentPlacementFormData;
+use App\Shipping\DTO\ShipmentPlacementFormDTO;
 use App\Shipping\Form\ShipmentPlacementType;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Form\Forms;
@@ -26,8 +26,8 @@ final class CaseFormContributionRegistryTest extends TestCase
 
         $shipping = $registry->get('shipping.placement');
         self::assertSame(ShipmentPlacementType::class, $shipping->formType());
-        self::assertSame(ShipmentPlacementFormData::class, $shipping->dataClass());
-        self::assertInstanceOf(ShipmentPlacementFormData::class, $shipping->createData());
+        self::assertSame(ShipmentPlacementFormDTO::class, $shipping->dataClass());
+        self::assertInstanceOf(ShipmentPlacementFormDTO::class, $shipping->createData());
 
         $payment = $registry->get('payment.placement');
         self::assertSame(PaymentPlacementType::class, $payment->formType());
