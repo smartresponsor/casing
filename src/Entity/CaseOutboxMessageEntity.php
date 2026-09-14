@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace App\Casing\Entity;
 
+use App\Casing\Repository\CaseOutboxMessageRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Uid\Uuid;
 
-#[ORM\Entity]
+#[ORM\Entity(repositoryClass: CaseOutboxMessageRepository::class)]
 #[ORM\Table(name: 'case_outbox_message')]
 #[ORM\Index(name: 'idx_case_outbox_pending', columns: ['dispatched', 'available_at', 'id'])]
 final class CaseOutboxMessageEntity

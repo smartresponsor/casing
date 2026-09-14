@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7727d13c585cd447fae8e12f16db1304",
+    "content-hash": "57db3a188d414cd44034e32541db50aa",
     "packages": [
         {
             "name": "administering/administration",
@@ -532,16 +532,16 @@
                 "reference": "8c5750170804ea87008be9a041188e4bec3ebdbd"
             },
             "require": {
-                "collectioning/collection": "dev-main || dev-master",
-                "cruding/crud": "dev-tabling-action-boundary-refactor-v2 || dev-main || dev-master",
+                "collectioning/collection": "dev-master",
+                "cruding/crud": "dev-master",
                 "doctrine/dbal": "^4.3",
                 "doctrine/doctrine-bundle": "^3.2",
                 "doctrine/doctrine-migrations-bundle": "^4.0",
                 "doctrine/orm": "^3.3",
                 "easycorp/easyadmin-bundle": "^5.0",
                 "ext-fileinfo": "*",
-                "interfacing/interface": "dev-main || dev-master",
-                "objecting/object": "dev-release/objecting-field-pack-normalization-20260910 || dev-main || dev-master",
+                "interfacing/interface": "dev-master",
+                "objecting/object": "dev-master",
                 "php": "^8.4",
                 "symfony/config": "^8.1",
                 "symfony/console": "^8.1",
@@ -558,8 +558,8 @@
                 "symfony/serializer": "^8.1",
                 "symfony/validator": "^8.1",
                 "symfony/yaml": "^8.1",
-                "tabling/table": "dev-backend-table-actions || dev-backend-table-metadata || dev-initial-platform-primitive || dev-main || dev-master",
-                "viewing/view": "dev-rc/viewing-master-sync-20260911 || dev-main || dev-master"
+                "tabling/table": "dev-master",
+                "viewing/view": "dev-master"
             },
             "require-dev": {
                 "doctrine/doctrine-fixtures-bundle": "^4.3",
@@ -904,7 +904,7 @@
             "dist": {
                 "type": "path",
                 "url": "../Collectioning",
-                "reference": "9fc56c8626ae5d2dd751cbf45fa28c8869095a7f"
+                "reference": "4aaf4248e328488baa9f0654d32e96db7edacee4"
             },
             "require": {
                 "doctrine/doctrine-bundle": "^3.2",
@@ -1048,10 +1048,10 @@
             "dist": {
                 "type": "path",
                 "url": "../Cruding",
-                "reference": "bc8c92fcea3c83fa6521d61b738641b5686d0487"
+                "reference": "46cfe44c3f0e8a9f7284c89742556c96400dec5f"
             },
             "require": {
-                "collectioning/collection": "dev-main || dev-master",
+                "collectioning/collection": "dev-master",
                 "doctrine/doctrine-bundle": "^3.2",
                 "doctrine/orm": "^3.0",
                 "php": "^8.4",
@@ -1067,7 +1067,7 @@
                 "symfony/twig-bundle": "^8.1",
                 "symfony/validator": "^8.1",
                 "symfony/yaml": "^8.1",
-                "tabling/table": "dev-backend-table-actions || dev-backend-table-metadata || dev-initial-platform-primitive || dev-main || dev-master"
+                "tabling/table": "dev-master"
             },
             "require-dev": {
                 "friendsofphp/php-cs-fixer": "^3.95",
@@ -2039,16 +2039,16 @@
         },
         {
             "name": "doctrine/orm",
-            "version": "3.7.0",
+            "version": "3.7.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/orm.git",
-                "reference": "f25c5e5385d3a0bca2dc364d556d3b83a06559ed"
+                "reference": "037807a39697890dcede8b766c5efe8a1b4855fe"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/orm/zipball/f25c5e5385d3a0bca2dc364d556d3b83a06559ed",
-                "reference": "f25c5e5385d3a0bca2dc364d556d3b83a06559ed",
+                "url": "https://api.github.com/repos/doctrine/orm/zipball/037807a39697890dcede8b766c5efe8a1b4855fe",
+                "reference": "037807a39697890dcede8b766c5efe8a1b4855fe",
                 "shasum": ""
             },
             "require": {
@@ -2123,9 +2123,9 @@
             ],
             "support": {
                 "issues": "https://github.com/doctrine/orm/issues",
-                "source": "https://github.com/doctrine/orm/tree/3.7.0"
+                "source": "https://github.com/doctrine/orm/tree/3.7.1"
             },
-            "time": "2026-09-07T19:35:17+00:00"
+            "time": "2026-09-14T05:45:59+00:00"
         },
         {
             "name": "doctrine/persistence",
@@ -2801,7 +2801,7 @@
         },
         {
             "name": "navigating/navigation",
-            "version": "dev-cmcp/navigating-rc-20260911",
+            "version": "dev-master",
             "dist": {
                 "type": "path",
                 "url": "../Navigating",
@@ -3309,7 +3309,7 @@
             "dist": {
                 "type": "path",
                 "url": "../Ordering",
-                "reference": "9b5f49e7ed3c70ffaea68c7bf376c6e641f5dee2"
+                "reference": "5e1f15da4af1b262b71253d1245fd56bea12b46d"
             },
             "require": {
                 "administering/administration": "dev-master",
@@ -11311,10 +11311,10 @@
             "dist": {
                 "type": "path",
                 "url": "../Tabling",
-                "reference": "679200172fc8ba224649417eef3c8fd013c06903"
+                "reference": "bc26adf0a9f7a2dbe88b7929ec44338493f47ce4"
             },
             "require": {
-                "collectioning/collection": "dev-main || dev-master",
+                "collectioning/collection": "dev-master",
                 "php": "^8.4",
                 "symfony/dependency-injection": "^8.1",
                 "symfony/framework-bundle": "^8.1",
@@ -11341,14 +11341,28 @@
                 "test": [
                     "phpunit tests"
                 ],
+                "test:coverage": [
+                    "@php -r \"if (!is_dir('var/coverage')) { mkdir('var/coverage', 0777, true); }\"",
+                    "@php -d xdebug.mode=coverage vendor/bin/phpunit --branch-coverage --coverage-text=var/coverage/summary.txt"
+                ],
+                "validate:prod": [
+                    "composer validate --strict --no-check-all composer.prod.json"
+                ],
                 "phpstan": [
-                    "phpstan analyse src tests --level=8"
+                    "phpstan analyse -c phpstan.neon"
                 ],
                 "cs:check": [
                     "php-cs-fixer fix --dry-run --diff"
                 ],
                 "cs:fix": [
                     "php-cs-fixer fix"
+                ],
+                "quality": [
+                    "@test",
+                    "@test:coverage",
+                    "@phpstan",
+                    "@cs:check",
+                    "@validate:prod"
                 ]
             },
             "license": [

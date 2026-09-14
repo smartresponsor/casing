@@ -170,3 +170,44 @@
 - `composer validate --strict --check-lock`: manifest and lock are consistent; strict exit 1 remains solely for ten pre-existing unbound internal `*@dev` constraints.
 - `.gating/` remains an untracked local enforcement copy and is intentionally excluded from the product commit.
 
+## 2026-09-14 — outbox RC hardening continuation
+
+### Reconnaissance and canon mapping
+
+- Re-read Casing runtime documentation, development/production Composer manifests, quality configuration, lifecycle/outbox entities and services, repository patterns, controllers, route/service wiring, and architecture/unit tests.
+- Verified Objecting, Cruding, Viewing, and Interfacing as direct runtime dependencies; Collectioning and Tabling remain exposed in the root local repository closure required by Cruding.
+- Consulted current Objecting, Cruding, Viewing, Interfacing, Gating, and Canonization responsibility/package surfaces relevant to the Casing boundary.
+- Read normative Canon007, Canon008, Canon011, Canon017, Canon019, Canon020, Canon021, Canon022, Canon023, Canon024, Canon026, Canon029, Canon030, Canon031, Canon035, Canon039, Canon040, Canon043, Canon044, and Canon045 rule text and Evidence Contracts.
+- Target mapping: Casing remains under `App\\Casing\\`; EasyAdmin back-office CRUD is the explicit Canon021 exception rather than a migration defect; local first-party path repositories require Canon043 `dev-master` package identity pins; outbox silent poison-message handling conflicts with Canon011; README must track current runtime under Canon017.
+
+### Baseline and selected work
+
+- Branch baseline: `feature/facting-case-lifecycle-20260823`; pre-existing untracked `.gating/` was present before this continuation and remains outside owned product changes.
+- Pre-change gates passed: strict Composer validation/check-lock, PHPUnit 73 tests / 605 assertions, PHPStan, and PHP-CS-Fixer dry-run.
+- RC-critical work selected: prevent outbox starvation by filtering dispatchable rows before the batch limit; fail visibly on unsupported event types; introduce a typed repository boundary; pin local path-repository package identities under Canon043; align runtime documentation.
+- Growth remains separate: SLA/escalation policy, omnichannel routing, agent-workspace automation, retry/backoff/dead-letter policy, and broader UX/API maturity require explicit product/operational contracts and are not invented by this RC patch.
+
+### Implementation
+
+- Added `CaseOutboxMessageRepository` plus `CaseOutboxMessageRepositoryInterface`; dispatchable selection now occurs in Doctrine before `setMaxResults()`.
+- Bound the outbox entity to the repository and wired the interface alias explicitly in Symfony services.
+- `CaseOutboxProcessor` now consumes the typed repository and throws for unsupported event types instead of silently keeping poison messages pending.
+- Added regression coverage for successful dispatch and unsupported-event observability.
+- Added Canon043 `options.versions[package] = dev-master` to every local first-party path repository.
+- Updated README lifecycle semantics and corrected the stale claim that EasyAdmin CRUD was awaiting migration to Cruding.
+
+### Risks and gates
+
+- Delivery remains at-least-once; event consumers must remain idempotent.
+- Retry/backoff/dead-letter semantics remain a separate explicit operational design item, not an implicit RC behavior change.
+- Required post-change gates: strict Composer validation/check-lock, PHPUnit, PHPStan, PHP-CS-Fixer, changed-file PHP lint, then final Git/worktree integration inspection.
+
+### Final verification
+
+- Canon043 manifest change initially invalidated the Composer lock content hash; a package-scoped first-party update refreshed the lock without adding/removing packages. Composer installed the refreshed lock successfully.
+- Final `composer validate --strict --check-lock`: PASS.
+- Final PHPUnit: PASS, 76 tests / 628 assertions.
+- Final PHPStan: PASS, no errors after repairing the initially truncated new repository file.
+- Final PHP-CS-Fixer dry-run: PASS after normalizing the two new PHP files.
+- Changed/untracked PHP syntax lint: PASS. The tool also inspected the pre-existing untracked `.gating/` PHP tree; it remains excluded from the owned product change.
+

@@ -27,7 +27,7 @@ The component consumes these packages through Composer dependencies. Local devel
 
 ## Lifecycle
 
-A submitted case starts in `submitted` and can move through the transitions enforced by `CaseEntity::transitionToAllowed()`. Resolution writes a `CaseResolvedEvent` to the outbox in the same persistence operation; the outbox processor dispatches supported events and marks messages as dispatched.
+A submitted case starts in `submitted` and can move through the transitions enforced by `CaseEntity::transitionToAllowed()`. Resolution writes a `CaseResolvedEvent` to the outbox in the same persistence operation. The outbox processor selects only messages that are dispatchable now, applies the batch limit after that eligibility filter, dispatches supported events, and marks successful messages as dispatched. Unsupported event types fail explicitly instead of remaining silently hidden in the pending queue.
 
 ## Verification
 
@@ -49,4 +49,4 @@ Keep Doctrine entities inside Casing operations and exchange scalar identifiers,
 
 The component-level checks can be run independently, but full-suite acceptance also loads sibling packages from the local path-repository composition. A failure originating in a sibling package must be repaired in that package rather than bypassed from Casing.
 
-The current administrative controller extends EasyAdmin's generic CRUD controller. This is an identified boundary exception pending migration to the shared Cruding surface; new generic CRUD controllers or generic CRUD route declarations must not be added inside Casing.
+The current administrative controller extends EasyAdmin's generic CRUD controller for the back-office surface. Canon021 explicitly permits this EasyAdmin administrative CRUD surface; it must not be generalized into component-local application CRUD. Generic application CRUD routing and controllers remain owned by Cruding.
