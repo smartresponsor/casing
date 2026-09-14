@@ -42,6 +42,17 @@
 - Push was attempted through Console MCP but correctly blocked by its dirty-worktree guard because `.gating/` remains untracked; no force, deletion, staging, or ownership assumption was used to bypass that safeguard.
 - Final implementation verdict: the bounded hardening change is complete and committed locally. Full RC readiness remains explicitly open on Canon040 line/method coverage debt and authoritative replacement of internal `*@dev` constraints; remote publication is additionally blocked until the existing `.gating/` worktree state is resolved by its owner.
 
+### Continuation — Canon043 dependency version hardening
+
+- Canonization now materializes Canon043 (`Canon043DevelopmentComposerDependencyVersionRule`): first-party sibling packages connected through local Composer path repositories must use the exact `dev-master` constraint.
+- Replaced all ten development `*@dev` constraints in Casing `composer.json` with exact `dev-master`; this is a deterministic canon fix, not a guessed package version.
+- Added local `Collectioning` and `Tabling` path repositories because current first-party `dev-master` dependencies require those packages transitively; Composer resolution now sees the complete live sibling contour.
+- Package-scoped Composer update succeeded and refreshed `composer.lock`; strict Composer validation now passes with no warnings.
+- Post-update gates remain green: PHPUnit 73 tests / 605 assertions, PHPStan no errors, PHP-CS-Fixer clean, and persistent coverage execution passes.
+- Current Canon040 semantics are warning-only: coverage remains HIGH_TEST_DEBT (lines 33.47%, methods 28.89%, branches 68.29%) and is queued remediation, not a hard RC readiness blocker.
+- RC validator reports all executable validation commands passed. Its four Canon013 warnings are false-positive keyword matches on legitimate Symfony form/view `placeholder` option names, not placeholder production logic.
+- The only remaining integration blocker is the pre-existing untracked `.gating/` tree triggering Console MCP's dirty-worktree push guard; it remains untouched and excluded from Casing commits.
+
 ## engine-20260906000504-casing-ccf194
 
 ### Iteration 1 — reconnaissance and baseline
