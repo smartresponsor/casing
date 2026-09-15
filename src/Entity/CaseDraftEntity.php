@@ -19,6 +19,11 @@ final class CaseDraftEntity
     use ObjectIdentityEmbeddableTrait;
     use ObjectAuditEmbeddableTrait;
 
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
+    private ?int $id = null;
+
     #[ORM\Column(name: 'draft_reference', type: 'string', length: 26, unique: true)]
     private string $draftReference;
 
@@ -61,6 +66,11 @@ final class CaseDraftEntity
         $this->businessContext = trim($businessContext);
         $this->initializeObjectIdentity(objectSlug: 'case-draft-'.$this->draftReference);
         $this->initializeObjectAudit();
+    }
+
+    public function getId(): ?int
+    {
+        return $this->id;
     }
 
     public function getDraftReference(): string

@@ -22,6 +22,11 @@ final class CaseEntity
     use ObjectAuditEmbeddableTrait;
     use ObjectStateEmbeddableTrait;
 
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
+    private ?int $id = null;
+
     #[ORM\Column(name: 'case_reference', type: 'string', length: 26, unique: true)]
     private string $caseReference;
 
@@ -75,6 +80,11 @@ final class CaseEntity
         $this->initializeObjectIdentity(objectSlug: 'case-'.$this->caseReference);
         $this->initializeObjectAudit();
         $this->initializeObjectState(objectStatus: $this->status->value);
+    }
+
+    public function getId(): ?int
+    {
+        return $this->id;
     }
 
     public function getCaseReference(): string
