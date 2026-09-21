@@ -9,7 +9,7 @@ use App\Casing\Form\Claim\ServiceDisputeClaimType;
 use App\Casing\Service\Resolver\Paying\ServicePaymentSubjectResolver;
 use App\Ordering\Entity\Order\OrderEntity;
 use App\Ordering\ReadModel\Repository\OrderReadRepository;
-use App\Paying\Entity\PaymentEntity;
+use App\Paying\Entity\Business\PaymentEntity;
 use App\Paying\RepositoryInterface\PaymentRepositoryInterface;
 use App\Paying\ValueObject\PaymentStatus;
 use Doctrine\ORM\EntityManagerInterface;

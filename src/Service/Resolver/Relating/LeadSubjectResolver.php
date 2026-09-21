@@ -6,12 +6,12 @@ namespace App\Casing\Service\Resolver\Relating;
 
 use App\Casing\ServiceInterface\Resolver\LeadSubjectResolverInterface;
 use App\Casing\Value\LeadSubject;
-use App\Entity\Lead;
-use App\Service\VendorLeadReadServiceInterface;
+use App\Relating\Entity\RelationLead;
+use App\Relating\Service\RelationVendorLeadReadServiceInterface;
 
 final readonly class LeadSubjectResolver implements LeadSubjectResolverInterface
 {
-    public function __construct(private VendorLeadReadServiceInterface $leads)
+    public function __construct(private RelationVendorLeadReadServiceInterface $leads)
     {
     }
 
@@ -19,7 +19,7 @@ final readonly class LeadSubjectResolver implements LeadSubjectResolverInterface
     {
         $subjects = [];
         foreach ($this->leads->leadsForVendor(trim($actorId)) as $lead) {
-            if ($lead instanceof Lead) {
+            if ($lead instanceof RelationLead) {
                 $subjects[] = new LeadSubject($lead->id(), $lead->status(), $lead->score());
             }
         }

@@ -1,5 +1,19 @@
 # CMCP Execution Journal
 
+## 2026-09-20 — Casing RC continuation
+
+- Reconnaissance resumed against the live Casing workspace and mandatory Objecting, Cruding, Viewing, Interfacing, Canonization, and Gating contours.
+- Canon mapping consulted: Canon001/002/003 role/interface/DTO structure, Canon021 Cruding ownership with EasyAdmin exemption, Canon026 PHP 8.4+/Symfony 8.1+, and Canon046 Vendor identity. Casing contains no active tenant identity vocabulary.
+- Dependency declarations and sibling path wiring for Objecting, Cruding, Viewing, and Interfacing remain present in Composer.
+- Baseline gates: coding style green; PHPUnit and PHPStan exposed one current Paying integration drift because PaymentEntity moved to `App\\Paying\\Entity\\Business`.
+- RC-critical work selected: update the Casing-owned Paying integration import and regression test to the current Paying package surface, then rerun acceptance gates.
+- Growth remains separate: assignment/SLA/agent-workspace and AI-assisted support maturity are post-RC capabilities, not correctness blockers.
+- Repair verification: PHPUnit passes 76 tests / 628 assertions; PHPStan reports no errors; PHP-CS-Fixer reports no changes required.
+- Extended verification subsequently exposed a second stale integration: Casing still referenced legacy `App\\Entity\\Lead` / `App\\Service\\VendorLeadReadServiceInterface`; current Relating owns `App\\Relating\\Entity\\RelationLead` and `App\\Relating\\Service\\RelationVendorLeadReadServiceInterface`. Casing resolver and regression test were migrated to that public contract.
+- Refreshing Relating exposed missing local first-party path wiring required by Ordering (`Currencing`, `Pricing`); those repositories were added and the lock refreshed. Symfony Flex entered the resolved graph and is explicitly allowed as a Composer plugin.
+- PHPStan now scans the path-installed Relating source so its non-root `App\\Relating\\` symbols are statically discoverable.
+- Final local verification: PHPUnit 76 tests / 628 assertions green; coverage execution green; PHPStan no errors; PHP-CS-Fixer green; `composer validate --strict --check-lock` green.
+
 ## 2026-09-13 — Casing repository implementation
 
 ### Iteration 1 — reconnaissance and baseline

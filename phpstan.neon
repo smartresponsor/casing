@@ -5,6 +5,8 @@ parameters:
         - tests
     tmpDir: var/phpstan
     treatPhpDocTypesAsCertain: false
+    scanDirectories:
+        - vendor/relating/relation/src
     ignoreErrors:
         -
             identifier: property.unusedType

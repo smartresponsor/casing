@@ -43,11 +43,13 @@
     {"type": "path", "url": "../Cataloging", "options": {"symlink": true, "versions": {"cataloging/catalog": "dev-master"}}},
     {"type": "path", "url": "../Collectioning", "options": {"symlink": true, "versions": {"collectioning/collection": "dev-master"}}},
     {"type": "path", "url": "../Cruding", "options": {"symlink": true, "versions": {"cruding/crud": "dev-master"}}},
+    {"type": "path", "url": "../Currencing", "options": {"symlink": true, "versions": {"currencing/currency": "dev-master"}}},
     {"type": "path", "url": "../Interfacing", "options": {"symlink": true, "versions": {"interfacing/interface": "dev-master"}}},
     {"type": "path", "url": "../Navigating", "options": {"symlink": true, "versions": {"navigating/navigation": "dev-master"}}},
     {"type": "path", "url": "../Objecting", "options": {"symlink": true, "versions": {"objecting/object": "dev-master"}}},
     {"type": "path", "url": "../Ordering", "options": {"symlink": true, "versions": {"ordering/order": "dev-master"}}},
     {"type": "path", "url": "../Paying", "options": {"symlink": true, "versions": {"paying/payment": "dev-master"}}},
+    {"type": "path", "url": "../Pricing", "options": {"symlink": true, "versions": {"pricing/price": "dev-master"}}},
     {"type": "path", "url": "../Relating", "options": {"symlink": true, "versions": {"relating/relation": "dev-master"}}},
     {"type": "path", "url": "../Shipping", "options": {"symlink": true, "versions": {"shipping/shipment": "dev-master"}}},
     {"type": "path", "url": "../Tabling", "options": {"symlink": true, "versions": {"tabling/table": "dev-master"}}},
@@ -64,7 +66,7 @@
     "test": "php vendor/bin/phpunit -c phpunit.xml.dist"
   },
   "config": {
-    "allow-plugins": {"symfony/runtime": true},
+    "allow-plugins": {"symfony/flex": true, "symfony/runtime": true},
     "sort-packages": true
   },
   "extra": {"symfony": {"bundle": "App\\Casing\\CasingBundle"}},

@@ -13,8 +13,8 @@ use App\Cataloging\Entity\Catalog\CatalogCatalogEntity;
 use App\Cataloging\Entity\Catalog\CatalogCategoryEntity;
 use App\Cataloging\ServiceInterface\CatalogCatalogTreeReadServiceInterface;
 use App\Cataloging\ServiceInterface\CatalogCategoryLookupServiceInterface;
-use App\Entity\Lead;
-use App\Service\VendorLeadReadServiceInterface;
+use App\Relating\Entity\RelationLead;
+use App\Relating\Service\RelationVendorLeadReadServiceInterface;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Form\Forms;
 
@@ -22,9 +22,9 @@ final class LeadDisputeFlowTest extends TestCase
 {
     public function testLeadResolverUsesOnlyVendorScopedRelatingResults(): void
     {
-        $lead = new Lead('lead-1');
-        $owner = new class($lead) implements VendorLeadReadServiceInterface {
-            public function __construct(private readonly Lead $lead)
+        $lead = new RelationLead('lead-1');
+        $owner = new class($lead) implements RelationVendorLeadReadServiceInterface {
+            public function __construct(private readonly RelationLead $lead)
             {
             }
 

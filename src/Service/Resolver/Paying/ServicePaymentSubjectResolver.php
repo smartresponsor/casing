@@ -8,7 +8,7 @@ use App\Casing\ServiceInterface\Resolver\ServicePaymentSubjectResolverInterface;
 use App\Casing\Value\ServicePaymentSubject;
 use App\Ordering\Entity\Order\OrderEntity;
 use App\Ordering\ReadModel\Repository\OrderReadRepository;
-use App\Paying\Entity\PaymentEntity;
+use App\Paying\Entity\Business\PaymentEntity;
 use App\Paying\RepositoryInterface\PaymentRepositoryInterface;
 
 final readonly class ServicePaymentSubjectResolver implements ServicePaymentSubjectResolverInterface
