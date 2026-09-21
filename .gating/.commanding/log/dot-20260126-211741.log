@@ -1,0 +1,39 @@
+DOT root=/d/PhpstormProjects/www/Gating time=20260126-211741
+DOT-FOLDER: /d/PhpstormProjects/www/Gating/.gate
+PRIMARY : ps -> /d/PhpstormProjects/www/Gating/.gate/run.ps1
+FALLBACK: sh -> /d/PhpstormProjects/www/Gating/.gate/run.sh
+
+============================================================
+START  runner=ps  file=/d/PhpstormProjects/www/Gating/.gate/run.ps1
+CWD    /d/PhpstormProjects/www/Gating/.gate
+TIME   20260126-211747
+------------------------------------------------------------
+[31;1m\: [0mD:\PhpstormProjects\www\Gating\.gate\run.ps1:1[0m
+[31;1m[0m[36;1mLine |[0m
+[31;1m[0m[36;1m[36;1m   1 | [0m [36;1m\[0m
+[31;1m[0m[36;1m[36;1m[0m[36;1m[0m[36;1m     | [31;1m ~[0m
+[31;1m[0m[36;1m[36;1m[0m[36;1m[0m[36;1m[31;1m[31;1m[36;1m     | [31;1mThe term '\' is not recognized as a name of a cmdlet, function, script file, or executable program. Check the spelling of the name, or if a[0m
+[31;1m[0m[36;1m[36;1m[0m[36;1m[0m[36;1m[31;1m[31;1m[36;1m[31;1m[36;1m     | [31;1mpath was included, verify that the path is correct and try again.[0m
+[31;1mException: [0mD:\PhpstormProjects\www\Gating\.gate\run.ps1:49[0m
+[31;1m[0m[36;1mLine |[0m
+[31;1m[0m[36;1m[36;1m  49 | [0m   [36;1mthrow "[run] missing gate.sh ($GateSh)"[0m
+[31;1m[0m[36;1m[36;1m[0m[36;1m[0m[36;1m     | [31;1m   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[31;1m[0m[36;1m[36;1m[0m[36;1m[0m[36;1m[31;1m[31;1m[36;1m     | [31;1m[run] missing gate.sh (D:\PhpstormProjects\www\Gating\.gate\.gate\gate.sh)[0m
+------------------------------------------------------------
+END    runner=ps  rc=1
+TIME   20260126-211748
+============================================================
+
+============================================================
+START  runner=sh  file=/d/PhpstormProjects/www/Gating/.gate/run.sh
+CWD    /d/PhpstormProjects/www/Gating/.gate
+TIME   20260126-211748
+------------------------------------------------------------
+[gate] repo=local mode=unknown root=/d/PhpstormProjects/www/Gating/.gate
+bash: .gate/contract/sh/root-contract-check.sh: No such file or directory
+[gate] FAIL step=root-contract-check code=127
+------------------------------------------------------------
+END    runner=sh  rc=127
+TIME   20260126-211748
+============================================================
+

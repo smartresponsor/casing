@@ -1,0 +1,46 @@
+{
+  "name": "gating/gate",
+  "type": "library",
+  "description": "Smart Responsor Symfony-oriented executable ecosystem gate.",
+  "license": "proprietary",
+  "require": {
+    "php": "^8.4",
+    "symfony/console": "^8.1",
+    "symfony/finder": "^8.1",
+    "symfony/filesystem": "^8.1",
+    "symfony/yaml": "^8.1"
+  },
+  "require-dev": {
+    "friendsofphp/php-cs-fixer": "^3.95.4",
+    "phpstan/phpstan": "^2.2.2",
+    "phpunit/phpunit": "^13.3.3",
+    "rector/rector": "^2.4.1"
+  },
+  "autoload": {
+    "psr-4": {
+      "Gating\\Gate\\": "src/"
+    }
+  },
+  "bin": [
+    "bin/gating"
+  ],
+  "scripts": {
+    "gate": "@php bin/gating check --target=.",
+    "scan": "@php bin/gating scan --target=.",
+    "test": "@php tests/calibration.php",
+    "test:unit": "phpunit tests/Unit",
+    "test:coverage": "@php -d xdebug.mode=coverage vendor/bin/phpunit --branch-coverage --coverage-text=var/coverage/summary.txt",
+    "cs:check": "php-cs-fixer fix --dry-run --diff --verbose",
+    "cs:fix": "php-cs-fixer fix --verbose",
+    "phpstan": "phpstan analyse -c .gating/quality/owner/php/phpstan.neon",
+    "rector:check": "rector process --dry-run --config .gating/quality/owner/php/rector.php",
+    "rector:fix": "rector process --config .gating/quality/owner/php/rector.php",
+    "quality": [
+      "@cs:check",
+      "@phpstan",
+      "@rector:check",
+      "@test",
+      "@gate"
+    ]
+  }
+}

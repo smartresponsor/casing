@@ -1,0 +1,17 @@
+rule_set:
+  name: release
+  description: Release/evidence gate. Designed for RC/GA profiles.
+  rules:
+    - profile.contract_validity
+    - structure.forbidden_architecture
+    - namespace.profile_match
+    - layer.typed_class_location
+    - mirror.service_interface
+    - composer.platform_constraint
+    - database.table_prefix
+    - route.owner_token
+    - mutation.safety_firewall
+    - security.secret_leak
+    - release.evidence_manifest
+    - documentation.docblock_preservation
+    - inventory.component_surface

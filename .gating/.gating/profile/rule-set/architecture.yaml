@@ -1,0 +1,15 @@
+rule_set:
+  name: architecture
+  alias_of: architectural
+  description: Legacy alias for architectural rule set.
+  rules:
+    - profile.contract_validity
+    - structure.forbidden_architecture
+    - namespace.profile_match
+    - layer.typed_class_location
+    - mirror.service_interface
+    - composer.platform_constraint
+    - database.table_prefix
+    - route.owner_token
+    - documentation.docblock_preservation
+    - inventory.component_surface

@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Gating report",
+  "type": "object",
+  "required": [
+    "schema",
+    "tool",
+    "generated_at",
+    "target",
+    "status",
+    "summary",
+    "profile",
+    "results"
+  ],
+  "properties": {
+    "schema": { "const": "gating.report.v1" },
+    "tool": { "const": "gating/gate" },
+    "generated_at": { "type": "string" },
+    "target": { "type": "string" },
+    "status": { "enum": ["passed", "failed"] },
+    "summary": {
+      "type": "object",
+      "required": ["total", "passed", "failed", "skipped"],
+      "properties": {
+        "total": { "type": "integer", "minimum": 0 },
+        "passed": { "type": "integer", "minimum": 0 },
+        "failed": { "type": "integer", "minimum": 0 },
+        "skipped": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "profile": { "type": "object" },
+    "results": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["rule", "status", "message", "evidence"],
+        "properties": {
+          "rule": { "type": "string" },
+          "status": { "enum": ["passed", "failed", "skipped"] },
+          "message": { "type": "string" },
+          "evidence": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        }
+      }
+    }
+  }
+}

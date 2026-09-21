@@ -1,0 +1,12 @@
+rule_set:
+  name: local-dev
+  description: Fast local developer feedback. No release evidence requirement.
+  rules:
+    - profile.contract_validity
+    - structure.forbidden_architecture
+    - namespace.profile_match
+    - layer.typed_class_location
+    - composer.platform_constraint
+    - mutation.safety_firewall
+    - security.secret_leak
+    - inventory.component_surface

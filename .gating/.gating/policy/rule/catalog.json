@@ -1,0 +1,111 @@
+{
+  "schema": "gating.rule.catalog.v1",
+  "tool": "gating/gate",
+  "description": "Human-readable catalog of platform-wide and profile-based Gating rules.",
+  "rules": [
+    {
+      "id": "profile.contract_validity",
+      "area": "profile",
+      "scope": "profile",
+      "kind": "profile-canon",
+      "human_summary": "Профиль компонента должен иметь обязательные поля: имя, namespace, business prefix, database prefix, route owner и корректные rule ids.",
+      "why": "Без единого профиля одно и то же правило нельзя безопасно применять к разным компонентам."
+    },
+    {
+      "id": "structure.forbidden_architecture",
+      "area": "structure",
+      "scope": "platform",
+      "kind": "hard-canon",
+      "human_summary": "Компонент не должен приносить чужую архитектуру: /src/Domain, Port, Adapter, Adaptor запрещены.",
+      "why": "Платформа держит единый Symfony-oriented typed-layer стиль вместо смеси архитектурных школ."
+    },
+    {
+      "id": "namespace.profile_match",
+      "area": "namespace",
+      "scope": "profile",
+      "kind": "profile-canon",
+      "human_summary": "Namespace PHP-классов должен совпадать с namespace компонента из профиля.",
+      "why": "Так ownership, autoload и перенос компонента остаются понятными."
+    },
+    {
+      "id": "layer.typed_class_location",
+      "area": "layer",
+      "scope": "platform",
+      "kind": "hard-canon",
+      "human_summary": "Тип класса должен совпадать с папкой: Controller в Controller, Entity в Entity, Voter в Voter и т.д.",
+      "why": "В большом Symfony-монолите/экосистеме слой должен читаться глазами без открытия файла."
+    },
+    {
+      "id": "mirror.service_interface",
+      "area": "mirror",
+      "scope": "profile",
+      "kind": "profile-canon",
+      "human_summary": "Service должен иметь зеркальный ServiceInterface, если это включено профилем.",
+      "why": "Это сохраняет контрактность без Port/Adapter паттерна."
+    },
+    {
+      "id": "composer.platform_constraint",
+      "area": "composer",
+      "scope": "platform",
+      "kind": "hard-canon",
+      "human_summary": "composer.json не должен врать о платформе: PHP и Symfony constraints должны совпадать с каноном.",
+      "why": "Все компоненты должны жить в одном совместимом runtime."
+    },
+    {
+      "id": "database.table_prefix",
+      "area": "database",
+      "scope": "profile",
+      "kind": "profile-canon",
+      "human_summary": "Doctrine table names должны начинаться с database_prefix компонента.",
+      "why": "Общая база не должна превращаться в кашу из случайных table names."
+    },
+    {
+      "id": "route.owner_token",
+      "area": "route",
+      "scope": "profile",
+      "kind": "profile-canon",
+      "human_summary": "Route/API path должен иметь понятный owner token и каноничную грамматику токенов.",
+      "why": "Route ownership предотвращает ручной CRUD-дрейф и конфликт доменов."
+    },
+    {
+      "id": "mutation.safety_firewall",
+      "area": "mutation",
+      "scope": "platform",
+      "kind": "safety-canon",
+      "human_summary": "Скрипты не должны делать broad cleanup/delete/apply без явного безопасного режима.",
+      "why": "По умолчанию Gating должен быть read-only/report-first и не ломать репозитории."
+    },
+    {
+      "id": "security.secret_leak",
+      "area": "security",
+      "scope": "platform",
+      "kind": "security-canon",
+      "human_summary": "Секреты, токены и private keys не должны попадать в код и архивы.",
+      "why": "Это базовая безопасность для любого компонента."
+    },
+    {
+      "id": "release.evidence_manifest",
+      "area": "release",
+      "scope": "profile",
+      "kind": "profile-canon",
+      "human_summary": "Release должен иметь доказательства: manifest, checksum, touched/cumulative discipline, если профиль требует.",
+      "why": "Иначе невозможно понять, что передано и что применено."
+    },
+    {
+      "id": "documentation.docblock_preservation",
+      "area": "documentation",
+      "scope": "platform",
+      "kind": "hard-canon",
+      "human_summary": "Форматтеры не должны уничтожать описательные docblock-комментарии.",
+      "why": "Docblock с описанием — часть документации, а не мусор."
+    },
+    {
+      "id": "inventory.component_surface",
+      "area": "inventory",
+      "scope": "platform",
+      "kind": "reporting-canon",
+      "human_summary": "Для компонента должна собираться карта поверхности: файлы, классы, routes, tools, docs.",
+      "why": "Без inventory невозможно управлять экосистемой и сравнивать компоненты."
+    }
+  ]
+}

@@ -1,0 +1,151 @@
+{
+  "version": 1,
+  "steps": [
+    {
+      "id": "root-contract-check",
+      "scope": "owner",
+      "phase": "contract",
+      "repo_type": "canon",
+      "sh": {
+        "runner": "bash",
+        "path": ".gating/contract/owner/root/sh/root-contract-check.sh",
+        "args": ["$REPO_ROOT"]
+      },
+      "ps1": {
+        "path": ".gating/contract/owner/root/ps1/root-contract-check.ps1",
+        "args": ["-RepoRoot", "$RepoRoot"]
+      }
+    },
+    {
+      "id": "gitignore-template-check",
+      "scope": "owner",
+      "phase": "contract",
+      "sh": {
+        "runner": "bash",
+        "path": ".gating/contract/owner/template/sh/gitignore-template-check.sh",
+        "args": ["$REPO_ROOT"]
+      },
+      "ps1": {
+        "path": ".gating/contract/owner/template/ps1/gitignore-template-check.ps1",
+        "args": ["-RepoRoot", "$RepoRoot"]
+      }
+    },
+    {
+      "id": "no-plural-check",
+      "scope": "owner",
+      "phase": "linting",
+      "sh": {
+        "runner": "node",
+        "requires": "node",
+        "path": ".gating/linting/owner/js/no-plural-check.js",
+        "args": ["$REPO_ROOT"]
+      }
+    },
+    {
+      "id": "layer-mirror-check-js",
+      "scope": "owner",
+      "phase": "linting",
+      "sh": {
+        "runner": "node",
+        "requires": "node",
+        "path": ".gating/linting/owner/js/layer-mirror-check.js",
+        "args": ["$REPO_ROOT"]
+      }
+    },
+    {
+      "id": "doc-name-check-js",
+      "scope": "owner",
+      "phase": "linting",
+      "sh": {
+        "runner": "node",
+        "requires": "node",
+        "path": ".gating/linting/owner/js/doc-name-check.js",
+        "args": ["$REPO_ROOT"]
+      }
+    },
+    {
+      "id": "archive-name-check-js",
+      "scope": "owner",
+      "phase": "linting",
+      "sh": {
+        "runner": "node",
+        "requires": "node",
+        "path": ".gating/linting/owner/js/archive-name-check.js",
+        "args": ["$REPO_ROOT"]
+      }
+    },
+    {
+      "id": "copyright-header-check-sh",
+      "scope": "owner",
+      "phase": "linting",
+      "sh": {
+        "runner": "bash",
+        "path": ".gating/linting/owner/sh/copyright-header-check.sh",
+        "args": ["$REPO_ROOT"]
+      },
+      "ps1": {
+        "path": ".gating/linting/owner/ps1/copyright-header-check.ps1",
+        "args": ["-RepoRoot", "$RepoRoot"]
+      }
+    },
+    {
+      "id": "layer-mirror-check-sh",
+      "scope": "owner",
+      "phase": "linting",
+      "sh": {
+        "runner": "bash",
+        "path": ".gating/linting/owner/sh/layer-mirror-check.sh",
+        "args": ["$REPO_ROOT"]
+      },
+      "ps1": {
+        "path": ".gating/linting/owner/ps1/layer-mirror-check.ps1",
+        "args": ["-RepoRoot", "$RepoRoot"]
+      }
+    },
+    {
+      "id": "doc-name-check-sh",
+      "scope": "owner",
+      "phase": "linting",
+      "sh": {
+        "runner": "bash",
+        "path": ".gating/linting/owner/sh/doc-name-check.sh",
+        "args": ["$REPO_ROOT"]
+      },
+      "ps1": {
+        "path": ".gating/linting/owner/ps1/doc-name-check.ps1",
+        "args": ["-RepoRoot", "$RepoRoot"]
+      }
+    },
+    {
+      "id": "archive-flat-root-check-sh",
+      "scope": "owner",
+      "phase": "linting",
+      "sh": {
+        "runner": "bash",
+        "path": ".gating/linting/owner/sh/archive-flat-root-check.sh",
+        "args": ["$REPO_ROOT"]
+      },
+      "ps1": {
+        "path": ".gating/linting/owner/ps1/archive-flat-root-check.ps1",
+        "args": ["-RepoRoot", "$RepoRoot"]
+      }
+    },
+    {
+      "id": "quality-run",
+      "scope": "owner",
+      "phase": "quality",
+      "when": {
+        "quality": true
+      },
+      "sh": {
+        "runner": "bash",
+        "path": ".gating/quality/owner/sh/quality-run.sh",
+        "args": ["$REPO_ROOT"]
+      },
+      "ps1": {
+        "path": ".gating/quality/owner/ps1/quality-run.ps1",
+        "args": ["-RepoRoot", "$RepoRoot"]
+      }
+    }
+  ]
+}

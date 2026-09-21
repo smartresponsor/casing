@@ -1,0 +1,27 @@
+DOT root=/d/PhpstormProjects/www/Gating time=20260126-204751
+DOT-FOLDER: /d/PhpstormProjects/www/Gating/.gate
+PRIMARY : ps -> /d/PhpstormProjects/www/Gating/.gate/run.ps1
+FALLBACK: sh -> /d/PhpstormProjects/www/Gating/.gate/run.sh
+
+============================================================
+START  runner=ps  file=/d/PhpstormProjects/www/Gating/.gate/run.ps1
+CWD    /d/PhpstormProjects/www/Gating/.gate
+TIME   20260126-204759
+------------------------------------------------------------
+[31;1mrun.ps1: [31;1mThe term '\' is not recognized as a name of a cmdlet, function, script file, or executable program.[0m
+[31;1m[31;1mCheck the spelling of the name, or if a path was included, verify that the path is correct and try again.[0m
+------------------------------------------------------------
+END    runner=ps  rc=1
+TIME   20260126-204801
+============================================================
+
+============================================================
+START  runner=sh  file=/d/PhpstormProjects/www/Gating/.gate/run.sh
+CWD    /d/PhpstormProjects/www/Gating/.gate
+TIME   20260126-204801
+------------------------------------------------------------
+------------------------------------------------------------
+END    runner=sh  rc=1
+TIME   20260126-204801
+============================================================
+

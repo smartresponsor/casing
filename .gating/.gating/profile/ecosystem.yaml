@@ -1,0 +1,12 @@
+ecosystem:
+  name: smart-responsor
+  php_constraint: '^8.4'
+  symfony_constraint: '^8.0'
+  architecture:
+    forbidden_path_segments:
+      - Domain
+      - Port
+      - Adapter
+      - Adaptor
+    typed_layers_required: true
+    service_interface_mirror: profile_based

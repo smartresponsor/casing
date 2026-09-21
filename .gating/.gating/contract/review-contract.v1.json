@@ -1,0 +1,56 @@
+{
+  "version": "v1",
+  "defaultScope": "Changed",
+  "defaultReviewMode": "advisory",
+  "blockingPolicy": "AI review stays advisory until schema validation and explicit gate rules are added.",
+  "metadata": {
+    "maxEntries": 5,
+    "format": "flat-string-envelope",
+    "keys": ["project", "tool", "scope", "context", "request"]
+  },
+  "scopeInstructions": {
+    "Changed": "Review only the diff for the selected path. Prefer the merge-base against the upstream branch, include staged and unstaged changes, and treat unchanged files as context only.",
+    "Component": "Review the changed surface for the selected component path plus directly related files needed to assess coupling, DI wiring, and local invariants.",
+    "Repository": "Review the repository-level change surface. Focus on cross-component regressions, public surface drift, and broad consistency issues.",
+    "Architecture": "Review architecture and module boundaries. Focus on dependency direction, layering, public APIs, and long-term maintainability.",
+    "Release": "Review release readiness. Focus on compatibility, migration risk, operational risk, docs, rollout safety, and anything that would block a release candidate."
+  },
+  "modelProfiles": {
+    "fast": {
+      "reasoningEffort": "low",
+      "verbosity": "low",
+      "intent": "Small ad hoc analysis and quick checks."
+    },
+    "review": {
+      "reasoningEffort": "medium",
+      "verbosity": "medium",
+      "intent": "Default changed review."
+    },
+    "deep": {
+      "reasoningEffort": "high",
+      "verbosity": "medium",
+      "intent": "Architecture and release review."
+    }
+  },
+  "exitCodes": {
+    "0": "success",
+    "10": "configuration missing",
+    "11": "authentication failed",
+    "12": "gateway unavailable",
+    "13": "provider unavailable",
+    "20": "codex execution failed",
+    "21": "invalid ai output",
+    "22": "schema validation failed",
+    "30": "review findings detected"
+  },
+  "artifacts": {
+    "prompt": "ai/prompts/changed-review.v1.md",
+    "schema": "ai/schemas/review-result.v1.schema.json",
+    "metadataTemplate": "ai/metadata-template.v1.json"
+  },
+  "notes": [
+    "Use codex-cf-review -Scope Changed for day-to-day work.",
+    "Use cf-ai-verify and cf-ai-test only for diagnostics or CI smoke checks.",
+    "Keep the AI reviewer advisory until a schema-aware gate can interpret its JSON output."
+  ]
+}

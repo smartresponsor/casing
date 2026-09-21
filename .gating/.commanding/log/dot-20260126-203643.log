@@ -1,0 +1,129 @@
+DOT root=/d/PhpstormProjects/www/Gating time=20260126-203643
+DOT-FOLDER: /d/PhpstormProjects/www/Gating/.gate
+PRIMARY : ps -> /d/PhpstormProjects/www/Gating/.gate/run.ps1
+FALLBACK: sh -> /d/PhpstormProjects/www/Gating/.gate/run.sh
+
+============================================================
+START  runner=ps  file=/d/PhpstormProjects/www/Gating/.gate/run.ps1
+CWD    /d/PhpstormProjects/www/Gating/.gate
+TIME   20260126-203654
+------------------------------------------------------------
+
+Root contract FAILED:
+ - Unexpected dot-folder in root: .git
+ - Unexpected dot-folder in root: .idea
+ - Non-dot folder in root: contract
+ - Non-dot folder in root: linting
+ - Non-dot folder in root: policy
+ - Non-dot folder in root: quality
+ - Non-dot folder in root: report
+ - Unexpected root file: gate.ps1
+ - Unexpected root file: gate.sh
+ - Unexpected root file: run.ps1
+ - Unexpected root file: run.sh
+
+
+.gitignore template FAILED:
+ - missing: .DS_Store
+ - missing: Thumbs.db
+ - missing: node_modules/
+ - missing: /.env.local
+ - missing: /.env.*.local
+
+OK: no plural-looking class/method names found.
+OK: layer mirror check passed.
+doc-name-check: no doc/ or docs/ directory found; skip
+✗ .: extension must be .zip
+missing header: D:\PhpstormProjects\www\Gating\gate.ps1
+missing header: D:\PhpstormProjects\www\Gating\gate.sh
+missing header: D:\PhpstormProjects\www\Gating\run.ps1
+missing header: D:\PhpstormProjects\www\Gating\.commanding\command.sh
+missing header: D:\PhpstormProjects\www\Gating\.commanding\git_diff.sh
+missing header: D:\PhpstormProjects\www\Gating\.commanding\git_status.sh
+missing header: D:\PhpstormProjects\www\Gating\.commanding\git_sync.sh
+missing header: D:\PhpstormProjects\www\Gating\.commanding\health.sh
+missing header: D:\PhpstormProjects\www\Gating\.commanding\history.sh
+missing header: D:\PhpstormProjects\www\Gating\.commanding\local_ci.sh
+missing header: D:\PhpstormProjects\www\Gating\.commanding\reorganize-tests.ps1
+missing header: D:\PhpstormProjects\www\Gating\.commanding\zipper.sh
+missing header: D:\PhpstormProjects\www\Gating\.commanding\backup\composer.sh
+missing header: D:\PhpstormProjects\www\Gating\.commanding\database\migration.sh
+missing header: D:\PhpstormProjects\www\Gating\.commanding\deploy\command.sh
+missing header: D:\PhpstormProjects\www\Gating\.commanding\deploy\deploy.sh
+missing header: D:\PhpstormProjects\www\Gating\.commanding\deploy\logs.sh
+missing header: D:\PhpstormProjects\www\Gating\.commanding\deploy\notificationTest.sh
+missing header: D:\PhpstormProjects\www\Gating\.commanding\deploy\server.sh
+missing header: D:\PhpstormProjects\www\Gating\.commanding\deploy\service.sh
+missing header: D:\PhpstormProjects\www\Gating\.commanding\docker\docker.sh
+missing header: D:\PhpstormProjects\www\Gating\.commanding\docker\health.sh
+missing header: D:\PhpstormProjects\www\Gating\.commanding\docker\local_ci.sh
+missing header: D:\PhpstormProjects\www\Gating\.commanding\git\git_diff.sh
+missing header: D:\PhpstormProjects\www\Gating\.commanding\git\git_status.sh
+missing header: D:\PhpstormProjects\www\Gating\.commanding\misc\cache.sh
+missing header: D:\PhpstormProjects\www\Gating\.commanding\misc\fixture.sh
+missing header: D:\PhpstormProjects\www\Gating\.commanding\misc\history.sh
+missing header: D:\PhpstormProjects\www\Gating\.commanding\misc\patch_ziper.sh
+missing header: D:\PhpstormProjects\www\Gating\.commanding\misc\route.sh
+missing header: D:\PhpstormProjects\www\Gating\.commanding\misc\schema.sh
+missing header: D:\PhpstormProjects\www\Gating\.commanding\misc\zipper.sh
+missing header: D:\PhpstormProjects\www\Gating\.commanding\sh\cache.sh
+missing header: D:\PhpstormProjects\www\Gating\.commanding\sh\composer.sh
+missing header: D:\PhpstormProjects\www\Gating\.commanding\sh\deploy.sh
+missing header: D:\PhpstormProjects\www\Gating\.commanding\sh\docker.sh
+missing header: D:\PhpstormProjects\www\Gating\.commanding\sh\dot.sh
+missing header: D:\PhpstormProjects\www\Gating\.commanding\sh\fixture.sh
+missing header: D:\PhpstormProjects\www\Gating\.commanding\sh\log.sh
+missing header: D:\PhpstormProjects\www\Gating\.commanding\sh\migration.sh
+missing header: D:\PhpstormProjects\www\Gating\.commanding\sh\route.sh
+missing header: D:\PhpstormProjects\www\Gating\.commanding\sh\schema.sh
+missing header: D:\PhpstormProjects\www\Gating\.commanding\sh\server.sh
+missing header: D:\PhpstormProjects\www\Gating\.commanding\sh\service.sh
+missing header: D:\PhpstormProjects\www\Gating\.commanding\sh\test.sh
+missing header: D:\PhpstormProjects\www\Gating\.commanding\test\notificationTest.sh
+missing header: D:\PhpstormProjects\www\Gating\.commanding\test\test.sh
+missing header: D:\PhpstormProjects\www\Gating\.gate\gate.ps1
+missing header: D:\PhpstormProjects\www\Gating\.gate\gate.sh
+missing header: D:\PhpstormProjects\www\Gating\.gate\contract\ps1\gitignore-template-check.ps1
+missing header: D:\PhpstormProjects\www\Gating\.gate\contract\ps1\root-contract-check.ps1
+missing header: D:\PhpstormProjects\www\Gating\.gate\contract\sh\gitignore-template-check.sh
+missing header: D:\PhpstormProjects\www\Gating\.gate\contract\sh\root-contract-check.sh
+missing header: D:\PhpstormProjects\www\Gating\.gate\linting\sh\archive-flat-root-check.sh
+missing header: D:\PhpstormProjects\www\Gating\.gate\quality\php\rector.php
+missing header: D:\PhpstormProjects\www\Gating\.gate\quality\ps1\phpstan-run.ps1
+missing header: D:\PhpstormProjects\www\Gating\.gate\quality\ps1\quality-run.ps1
+missing header: D:\PhpstormProjects\www\Gating\.gate\quality\ps1\rector-run.ps1
+missing header: D:\PhpstormProjects\www\Gating\.gate\quality\sh\quality-run.sh
+missing header: D:\PhpstormProjects\www\Gating\contract\fix.ps1
+missing header: D:\PhpstormProjects\www\Gating\contract\fix.sh
+missing header: D:\PhpstormProjects\www\Gating\contract\ps1\fail-fixer-run.ps1
+missing header: D:\PhpstormProjects\www\Gating\contract\ps1\gitignore-template-check.ps1
+missing header: D:\PhpstormProjects\www\Gating\contract\ps1\root-contract-check.ps1
+missing header: D:\PhpstormProjects\www\Gating\contract\sh\fail-fixer-run.sh
+missing header: D:\PhpstormProjects\www\Gating\contract\sh\gitignore-template-check.sh
+missing header: D:\PhpstormProjects\www\Gating\contract\sh\root-contract-check.sh
+missing header: D:\PhpstormProjects\www\Gating\linting\sh\archive-flat-root-check.sh
+missing header: D:\PhpstormProjects\www\Gating\quality\php\rector.php
+missing header: D:\PhpstormProjects\www\Gating\quality\ps1\phpstan-run.ps1
+missing header: D:\PhpstormProjects\www\Gating\quality\ps1\quality-run.ps1
+missing header: D:\PhpstormProjects\www\Gating\quality\ps1\rector-run.ps1
+missing header: D:\PhpstormProjects\www\Gating\quality\sh\quality-run.sh
+[31;1mWrite-Error: [0mD:\PhpstormProjects\www\Gating\.gate\gate.ps1:24[0m
+[31;1m[0m[36;1mLine |[0m
+[31;1m[0m[36;1m[36;1m  24 | [0m [36;1m& (Join-Path $RepoRoot ".gate/linting/ps1/copyright-header-check.ps1"[0m :[0m
+[31;1m[0m[36;1m[36;1m[0m[36;1m[0m[36;1m     | [31;1m ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[31;1m[0m[36;1m[36;1m[0m[36;1m[0m[36;1m[31;1m[31;1m[36;1m     | [31;1mFAIL: 73 file(s) missing copyright header.[0m
+------------------------------------------------------------
+END    runner=ps  rc=1
+TIME   20260126-203656
+============================================================
+
+============================================================
+START  runner=sh  file=/d/PhpstormProjects/www/Gating/.gate/run.sh
+CWD    /d/PhpstormProjects/www/Gating/.gate
+TIME   20260126-203656
+------------------------------------------------------------
+------------------------------------------------------------
+END    runner=sh  rc=1
+TIME   20260126-203656
+============================================================
+

@@ -1,0 +1,55 @@
+name: gate
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: owner-gate-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  gate:
+    name: gate (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ ubuntu-latest, windows-latest ]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Run owner gate (Linux)
+        if: runner.os != 'Windows'
+        shell: bash
+        run: |
+          chmod +x ./.gating/gate.sh
+          ./.gating/gate.sh .
+
+      - name: Run owner gate (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          ./.gating/gate.ps1 -Path .
+
+      - name: gate fix proposal (print)
+        if: always()
+        shell: pwsh
+        run: |
+          pwsh -File .\.gating\contract\ps1\fail-fixer-run.ps1 -RepoRoot . -PrintOnly
+

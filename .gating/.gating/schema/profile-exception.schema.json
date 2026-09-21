@@ -1,0 +1,11 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://smartresponsor.local/schema/gating/profile-exception.schema.json",
+  "title": "Gating profile exception map",
+  "type": "object",
+  "description": "Profile-level rule suppressions. Each key is a rule id, each value is a list of evidence substrings. Use '*' only for explicitly reviewed whole-rule suppression.",
+  "additionalProperties": {
+    "type": "array",
+    "items": { "type": "string", "minLength": 1 }
+  }
+}

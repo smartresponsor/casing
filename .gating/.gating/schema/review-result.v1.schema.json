@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.local/.gating/ai/schemas/review-result.v1.schema.json",
+  "title": "Codex Cloudflare AI review result",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["status", "scope", "summary", "findings", "metadata"],
+  "properties": {
+    "status": {
+      "type": "string",
+      "enum": ["pass", "advisory", "fail"]
+    },
+    "scope": {
+      "type": "string",
+      "enum": ["Changed", "Component", "Repository", "Architecture", "Release"]
+    },
+    "summary": {
+      "type": "string",
+      "minLength": 1
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["severity", "rule", "message", "file"],
+        "properties": {
+          "severity": {
+            "type": "string",
+            "enum": ["info", "warning", "error", "critical"]
+          },
+          "rule": { "type": "string", "minLength": 1 },
+          "message": { "type": "string", "minLength": 1 },
+          "file": { "type": "string", "minLength": 1 },
+          "evidence": { "type": "string" },
+          "recommendation": { "type": "string" }
+        }
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "project",
+        "scope",
+        "environment",
+        "workflow",
+        "commit",
+        "baseCommit",
+        "promptVersion",
+        "modelProfile",
+        "reviewMode"
+      ],
+      "properties": {
+        "project": { "type": "string", "minLength": 1 },
+        "scope": { "type": "string", "enum": ["Changed", "Component", "Repository", "Architecture", "Release"] },
+        "environment": { "type": "string", "enum": ["dev", "prod", "ci"] },
+        "workflow": { "type": "string", "minLength": 1 },
+        "commit": { "type": "string", "minLength": 1 },
+        "baseCommit": { "type": "string", "minLength": 1 },
+        "promptVersion": { "type": "string", "minLength": 1 },
+        "modelProfile": { "type": "string", "enum": ["fast", "review", "deep"] },
+        "reviewMode": { "type": "string", "minLength": 1 },
+        "branch": { "type": "string" },
+        "path": { "type": "string" },
+        "requestId": { "type": "string" },
+        "userId": { "type": "string" }
+      }
+    }
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "root_contract": {
+    "allow_dot_folders_only": false,
+    "required_root_files": [
+      ".gitignore",
+      "MANIFEST.json",
+      "README.md"
+    ],
+    "allowed_root_files_exact": [
+      ".gitignore",
+      "MANIFEST.json",
+      "README.md",
+      ".gitattributes"
+    ],
+    "allowed_root_dot_folders": [
+      ".report",
+      ".gating",
+      ".github",
+      ".idea",
+      ".git",
+      ".devcontainer",
+      ".vscode",
+      ".automation",
+      ".canon",
+      ".canonization",
+      ".canonisation"
+    ]
+  }
+}
