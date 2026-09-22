@@ -1,7 +1,0 @@
-# Copyright (c) 2025 Oleksandr Tishchenko / Marketing America Corp
-# dot-ignore.yaml
-# Extra dot-folders to ignore (in addition to built-ins: .git, .github, .idea)
-#
-ignore:
-  # - .vscode
-  # - .cache

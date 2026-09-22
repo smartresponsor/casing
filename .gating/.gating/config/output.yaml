@@ -1,4 +1,0 @@
-output:
-  formats: [text, json, markdown]
-  default: text
-  machine_readable_default: json

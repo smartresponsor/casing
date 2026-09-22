@@ -1,9 +1,0 @@
-# Gating severity policy.
-# error   = failed rule blocks CI/release/Commanding flow
-# warning = reported but does not block by default
-# info    = inventory/report-only signal
-severity:
-  default: error
-  rules:
-    inventory.component_surface: info
-    release.evidence_manifest: warning

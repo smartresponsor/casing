@@ -1,6 +1,0 @@
-parameters:
-  level: 6
-  paths:
-    - src
-  excludes_analyse:
-    - vendor
