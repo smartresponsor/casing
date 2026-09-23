@@ -11,6 +11,7 @@ use Symfony\Component\Uid\Uuid;
 #[ORM\Entity(repositoryClass: CaseOutboxMessageRepository::class)]
 #[ORM\Table(name: 'case_outbox_message')]
 #[ORM\Index(name: 'idx_case_outbox_pending', columns: ['dispatched', 'available_at', 'id'])]
+#[ORM\UniqueConstraint(name: 'uniq_case_outbox_slug', columns: ['slug'])]
 final class CaseOutboxMessageEntity
 {
     #[ORM\Id]
@@ -18,7 +19,7 @@ final class CaseOutboxMessageEntity
     #[ORM\Column(type: 'integer')]
     private ?int $id = null;
 
-    #[ORM\Column(type: 'guid', unique: true)]
+    #[ORM\Column(type: 'guid')]
     private string $slug;
 
     #[ORM\Column(name: 'aggregate_id', length: 64)]

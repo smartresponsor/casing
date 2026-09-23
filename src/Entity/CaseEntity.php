@@ -16,6 +16,7 @@ use Symfony\Component\Uid\Ulid;
 #[ORM\Entity(repositoryClass: CaseRepository::class)]
 #[ORM\Table(name: 'case_record')]
 #[ORM\Index(name: 'idx_case_actor_status', columns: ['actor_id', 'case_status'])]
+#[ORM\UniqueConstraint(name: 'uniq_case_reference', columns: ['case_reference'])]
 final class CaseEntity
 {
     use ObjectIdentityEmbeddableTrait;
@@ -27,7 +28,7 @@ final class CaseEntity
     #[ORM\Column(type: 'integer')]
     private ?int $id = null;
 
-    #[ORM\Column(name: 'case_reference', type: 'string', length: 26, unique: true)]
+    #[ORM\Column(name: 'case_reference', type: 'string', length: 26)]
     private string $caseReference;
 
     #[ORM\Column(name: 'source_draft_reference', type: 'string', length: 26, nullable: true)]
