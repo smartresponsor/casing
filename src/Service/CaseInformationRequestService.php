@@ -7,14 +7,14 @@ namespace App\Casing\Service;
 use App\Casing\Entity\CaseEntity;
 use App\Casing\Entity\CaseInformationRequestEntity;
 use App\Casing\Enum\CaseStatus;
-use App\Casing\Repository\CaseInformationRequestRepository;
-use App\Casing\Repository\CaseRepository;
+use App\Casing\RepositoryInterface\CaseInformationRequestRepositoryInterface;
+use App\Casing\RepositoryInterface\CaseRepositoryInterface;
 
 final readonly class CaseInformationRequestService
 {
     public function __construct(
-        private CaseInformationRequestRepository $requests,
-        private CaseRepository $cases,
+        private CaseInformationRequestRepositoryInterface $requests,
+        private CaseRepositoryInterface $cases,
     ) {
     }
 

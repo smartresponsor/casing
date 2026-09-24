@@ -6,11 +6,12 @@ namespace App\Casing\Repository;
 
 use App\Casing\Entity\CaseEntity;
 use App\Casing\Entity\CaseInformationRequestEntity;
+use App\Casing\RepositoryInterface\CaseInformationRequestRepositoryInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /** @extends ServiceEntityRepository<CaseInformationRequestEntity> */
-final class CaseInformationRequestRepository extends ServiceEntityRepository
+final class CaseInformationRequestRepository extends ServiceEntityRepository implements CaseInformationRequestRepositoryInterface
 {
     public function __construct(ManagerRegistry $registry)
     {

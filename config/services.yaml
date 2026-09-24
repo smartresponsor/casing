@@ -22,6 +22,9 @@ services:
   App\Casing\RepositoryInterface\CaseRepositoryInterface:
     alias: App\Casing\Repository\CaseRepository
 
+  App\Casing\RepositoryInterface\CaseInformationRequestRepositoryInterface:
+    alias: App\Casing\Repository\CaseInformationRequestRepository
+
   App\Casing\RepositoryInterface\CaseOutboxMessageRepositoryInterface:
     alias: App\Casing\Repository\CaseOutboxMessageRepository
 

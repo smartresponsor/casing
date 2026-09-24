@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace App\Casing\Service;
 
 use App\Casing\Entity\CaseEntity;
-use App\Casing\Repository\CaseRepository;
+use App\Casing\RepositoryInterface\CaseRepositoryInterface;
 
 final readonly class CaseCenterService
 {
     public function __construct(
-        private CaseRepository $cases,
+        private CaseRepositoryInterface $cases,
         private CaseInformationRequestService $informationRequests,
     ) {
     }

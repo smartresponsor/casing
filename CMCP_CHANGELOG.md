@@ -282,3 +282,11 @@
 - PHPStan remains green with 0 errors.
 - Refreshed Xdebug path coverage improved Canon040 from lines 32.9% / methods 27.9% / branches 68.3% to lines 34.6% / methods 31.3% / branches 70.9%; branch coverage now clears the 70% target.
 - Gating remains 70 rules / 0 failed / 3 warnings. Canon031 semantic PHPDoc debt and Canon042 missing behavioral/UI evidence remain; Canon040 is still HIGH_TEST_DEBT on lines/methods and will be remediated with further meaningful tests rather than synthetic coverage.
+
+### RC continuation — information-request repository boundary
+
+- Added CaseInformationRequestRepositoryInterface and wired its Symfony alias; CaseInformationRequestRepository now implements the contract.
+- CaseInformationRequestService and CaseCenterService now depend on repository interfaces rather than concrete Doctrine repositories.
+- Added direct information-request orchestration coverage for request creation, duplicate/open-request rejection, answer flow, missing-request rejection, state transitions, and repository delegation.
+- Acceptance remains green: PHPUnit 93 tests / 711 assertions, PHPStan 0 errors, PHP-CS-Fixer 0 fixable files, Gating 70 rules / 0 failed.
+- Refreshed Canon040 coverage improved again to lines 36.2%, methods 33.0%, branches 72.1%; branch coverage remains above target while line/method debt remains explicit.
