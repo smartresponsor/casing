@@ -70,7 +70,7 @@ final class CaseCatalogService
 
     public function isPublishedType(string $catalogCode, string $categoryPath, string $typeCode, string $tenant = 'default'): bool
     {
-        $typeCode = trim($typeCode);
+        $typeCode = strtolower(trim($typeCode));
         foreach ($this->publishedTypes($catalogCode, $categoryPath, $tenant) as $type) {
             if ($type['code'] === $typeCode) {
                 return true;

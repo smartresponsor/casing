@@ -298,3 +298,10 @@
 - Added direct serialization coverage for CaseLeadSubject and CaseServicePaymentSubject.
 - Acceptance remains green: PHPUnit 101 tests / 724 assertions, PHPStan 0 errors, PHP-CS-Fixer 0 fixable files, Gating 70 rules / 0 failed.
 - Refreshed Canon040 coverage improved to lines 38.0%, methods 34.3%, branches 75.6%, classes 11/44; branch coverage remains above target.
+
+### RC continuation — catalog metadata semantics
+
+- Added direct CaseCatalogService coverage for context lookup, category delegation, type metadata normalization/deduplication, support definitions, labels, and missing-schema behavior.
+- Tests exposed and remediation fixed a real consistency defect: isPublishedType() now lowercases its input just like published metadata normalization and isPublishedSupportType().
+- Acceptance remains green: PHPUnit 108 tests / 747 assertions, PHPStan 0 errors, PHP-CS-Fixer 0 fixable files, Gating 70 rules / 0 failed.
+- Refreshed Canon040 coverage improved to lines 39.0%, methods 34.8%, branches 79.3%; branch coverage is now materially above the 70% target.
