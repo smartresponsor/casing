@@ -273,3 +273,12 @@
 - Read-only schema validation against the existing host DATABASE_URL reports Casing/Cataloging mappings correct. `doctrine:migrations:up-to-date` exits 0 with no pending Casing migration failure, while reporting 112 already-executed host migrations outside the standalone Casing migration registry; the shared host ledger was not modified or bypassed.
 - Final verified gates: Composer strict/check-lock PASS; PHP-CS-Fixer PASS; PHPUnit PASS 78 tests / 646 assertions; PHPStan PASS 0 errors; PHP coverage workflow PASS; Gating PASS 70 rules / 0 failed.
 - Remaining Gating warnings are non-hard debt only: Canon031 semantic PHPDoc coverage, Canon040 measured HIGH_TEST_DEBT (lines 32.9%, methods 27.9%, branches 68.3%), and Canon042 missing explicit behavioral/UI inventory evidence. No evidence was fabricated.
+
+### RC continuation — focused lifecycle/access coverage
+
+- Added direct unit coverage for CaseLifecycleService transitions, persistence/flush behavior, resolved-event outbox publication, and invalid-transition safety.
+- Added direct unit coverage for CaseActorAccessService host actor precedence, authenticated-user fallback, and deny paths.
+- PHPUnit improved from 78 tests / 646 assertions to 85 tests / 667 assertions.
+- PHPStan remains green with 0 errors.
+- Refreshed Xdebug path coverage improved Canon040 from lines 32.9% / methods 27.9% / branches 68.3% to lines 34.6% / methods 31.3% / branches 70.9%; branch coverage now clears the 70% target.
+- Gating remains 70 rules / 0 failed / 3 warnings. Canon031 semantic PHPDoc debt and Canon042 missing behavioral/UI evidence remain; Canon040 is still HIGH_TEST_DEBT on lines/methods and will be remediated with further meaningful tests rather than synthetic coverage.
