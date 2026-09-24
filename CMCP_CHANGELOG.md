@@ -311,3 +311,10 @@
 - Added direct CaseCenterService coverage for actor-scoped listing, case ownership lookup, foreign/missing case rejection, information submission, and open-request delegation.
 - Acceptance remains green: PHPUnit 113 tests / 772 assertions, PHPStan 0 errors, PHP-CS-Fixer 0 fixable files, Gating 70 rules / 0 failed.
 - Refreshed Canon040 coverage improved to lines 39.7%, methods 36.5%, branches 79.5%; branch coverage remains comfortably above target while line/method debt remains explicit.
+
+### RC continuation — outbox execution coverage
+
+- Extended CaseOutboxProcessor coverage for resolved-event reconstruction, custom batch limits, unsupported event handling, and empty batches.
+- Added direct CaseOutboxProcessCommand coverage for successful execution and reported dispatch count with cross-platform line-ending-safe assertions.
+- Acceptance remains green: PHPUnit 116 tests / 787 assertions, PHPStan 0 errors, PHP-CS-Fixer 0 fixable files, Gating 70 rules / 0 failed.
+- Refreshed Canon040 coverage improved to lines 40.4%, methods 37.8%, branches 79.7%; branch coverage remains above target while line/method debt continues to trend down.

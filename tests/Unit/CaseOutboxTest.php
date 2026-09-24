@@ -77,4 +77,51 @@ final class CaseOutboxTest extends TestCase
 
         self::assertTrue($message->isPending());
     }
+
+    public function testResolvedEventIsReconstructedAndCustomLimitIsForwarded(): void
+    {
+        $message = new CaseOutboxMessageEntity(
+            '01CASE',
+            \App\Casing\Event\CaseResolvedEvent::class,
+            [
+                'caseReference' => '01CASE',
+                'actorId' => 'actor-42',
+                'businessContext' => 'retailing.service',
+                'categoryPath' => 'retailing.service.dispute',
+                'occurredAt' => '2026-09-24T10:00:00-05:00',
+            ],
+        );
+
+        $repository = $this->createMock(CaseOutboxMessageRepositoryInterface::class);
+        $repository->expects(self::once())->method('findDispatchable')->with(7)->willReturn([$message]);
+        $repository->expects(self::once())->method('flush');
+
+        $dispatcher = $this->createMock(EventDispatcherInterface::class);
+        $dispatcher->expects(self::once())
+            ->method('dispatch')
+            ->with(
+                self::callback(static fn (object $event): bool => $event instanceof \App\Casing\Event\CaseResolvedEvent
+                    && '01CASE' === $event->caseReference
+                    && 'actor-42' === $event->actorId
+                    && 'retailing.service' === $event->businessContext
+                    && 'retailing.service.dispute' === $event->categoryPath),
+                \App\Casing\Event\CaseResolvedEvent::class,
+            )
+            ->willReturnArgument(0);
+
+        self::assertSame(1, (new CaseOutboxProcessor($repository, $dispatcher))->process(7));
+        self::assertFalse($message->isPending());
+    }
+
+    public function testEmptyBatchStillFlushesAndReturnsZero(): void
+    {
+        $repository = $this->createMock(CaseOutboxMessageRepositoryInterface::class);
+        $repository->expects(self::once())->method('findDispatchable')->with(3)->willReturn([]);
+        $repository->expects(self::once())->method('flush');
+
+        $dispatcher = $this->createMock(EventDispatcherInterface::class);
+        $dispatcher->expects(self::never())->method('dispatch');
+
+        self::assertSame(0, (new CaseOutboxProcessor($repository, $dispatcher))->process(3));
+    }
 }
