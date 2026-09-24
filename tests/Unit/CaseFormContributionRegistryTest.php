@@ -46,4 +46,127 @@ final class CaseFormContributionRegistryTest extends TestCase
         self::assertSame(['weightKg', 'priority', 'currency'], array_keys($service->create('shipping.placement')->all()));
         self::assertSame(['amount', 'currency', 'provider'], array_keys($service->create('payment.placement')->all()));
     }
+
+    public function testContributionServiceSubmitsAndNormalizesOwnerDto(): void
+    {
+        $registry = new CaseFormContributionRegistry([new CasePaymentFormContributionProvider()]);
+        $service = new CaseFormContributionService(Forms::createFormFactory(), $registry);
+
+        $form = $service->submit('payment.placement', [
+            'amount' => '12.50',
+            'currency' => 'USD',
+            'provider' => 'stripe',
+        ]);
+
+        self::assertTrue($form->isSubmitted());
+        self::assertTrue($form->isValid());
+        self::assertSame(
+            ['amount' => '0.00', 'currency' => 'USD', 'provider' => 'stripe'],
+            $service->normalized('payment.placement', $form),
+        );
+    }
+
+    public function testContributionServiceRejectsNormalizationBeforeSubmission(): void
+    {
+        $registry = new CaseFormContributionRegistry([new CasePaymentFormContributionProvider()]);
+        $service = new CaseFormContributionService(Forms::createFormFactory(), $registry);
+
+        $this->expectException(\DomainException::class);
+        $service->normalized('payment.placement', $service->create('payment.placement'));
+    }
+
+    public function testRegistryTrimsKeysAndReportsUnknownContribution(): void
+    {
+        $provider = new class implements \App\Casing\FormInterface\Contribution\CaseFormContributionInterface {
+            public function key(): string
+            {
+                return ' custom ';
+            }
+
+            public function formType(): string
+            {
+                return PaymentPlacementType::class;
+            }
+
+            public function dataClass(): string
+            {
+                return PaymentPlacementFormDTO::class;
+            }
+
+            public function createData(): object
+            {
+                return new PaymentPlacementFormDTO();
+            }
+
+            public function normalize(object $data): array
+            {
+                return [];
+            }
+        };
+
+        $registry = new CaseFormContributionRegistry([$provider]);
+
+        self::assertTrue($registry->has(' custom '));
+        self::assertSame($provider, $registry->get('custom'));
+        self::assertSame(['custom' => $provider], $registry->all());
+
+        $this->expectException(\RuntimeException::class);
+        $registry->get('missing');
+    }
+
+    public function testRegistryRejectsBlankAndDuplicateKeys(): void
+    {
+        $blank = $this->providerWithKey('   ');
+        $this->expectException(\LogicException::class);
+        (new CaseFormContributionRegistry([$blank]))->all();
+    }
+
+    public function testRegistryRejectsDuplicateTrimmedKeys(): void
+    {
+        $this->expectException(\LogicException::class);
+        (new CaseFormContributionRegistry([
+            $this->providerWithKey('duplicate'),
+            $this->providerWithKey(' duplicate '),
+        ]))->all();
+    }
+
+    public function testContributionProvidersRejectForeignDtoTypes(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        (new CaseShippingFormContributionProvider())->normalize(new PaymentPlacementFormDTO());
+    }
+
+    private function providerWithKey(string $key): \App\Casing\FormInterface\Contribution\CaseFormContributionInterface
+    {
+        return new class($key) implements \App\Casing\FormInterface\Contribution\CaseFormContributionInterface {
+            public function __construct(private readonly string $key)
+            {
+            }
+
+            public function key(): string
+            {
+                return $this->key;
+            }
+
+            public function formType(): string
+            {
+                return PaymentPlacementType::class;
+            }
+
+            public function dataClass(): string
+            {
+                return PaymentPlacementFormDTO::class;
+            }
+
+            public function createData(): object
+            {
+                return new PaymentPlacementFormDTO();
+            }
+
+            public function normalize(object $data): array
+            {
+                return [];
+            }
+        };
+    }
 }

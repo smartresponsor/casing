@@ -290,3 +290,11 @@
 - Added direct information-request orchestration coverage for request creation, duplicate/open-request rejection, answer flow, missing-request rejection, state transitions, and repository delegation.
 - Acceptance remains green: PHPUnit 93 tests / 711 assertions, PHPStan 0 errors, PHP-CS-Fixer 0 fixable files, Gating 70 rules / 0 failed.
 - Refreshed Canon040 coverage improved again to lines 36.2%, methods 33.0%, branches 72.1%; branch coverage remains above target while line/method debt remains explicit.
+
+### RC continuation — contribution and subject coverage
+
+- Extended CaseFormContributionService and CaseFormContributionRegistry tests across owner-form submission, normalization, unknown keys, trimmed keys, duplicate/blank keys, and foreign DTO rejection.
+- Confirmed Paying owner contract behavior: PaymentPlacementType keeps amount server-owned/disabled during user submission while allowing provider selection.
+- Added direct serialization coverage for CaseLeadSubject and CaseServicePaymentSubject.
+- Acceptance remains green: PHPUnit 101 tests / 724 assertions, PHPStan 0 errors, PHP-CS-Fixer 0 fixable files, Gating 70 rules / 0 failed.
+- Refreshed Canon040 coverage improved to lines 38.0%, methods 34.3%, branches 75.6%, classes 11/44; branch coverage remains above target.
