@@ -2,11 +2,12 @@
   "name": "casing/case",
   "description": "SmartResponsor case intake and lifecycle component",
   "type": "symfony-bundle",
-  "license": "proprietary",
+  "license": "PolyForm-Noncommercial-1.0.0",
   "require": {
     "php": "^8.4",
     "attaching/attachment": "dev-master",
-    "cataloging/catalog": "dev-master",
+    "cataloging/catalog": "dev-feature/cataloging-post-merge-20260921-v2 as dev-master",
+    "collectioning/collection": "dev-master",
     "cruding/crud": "dev-master",
     "doctrine/dbal": "^4.3",
     "doctrine/doctrine-bundle": "^3.2",
@@ -16,9 +17,9 @@
     "interfacing/interface": "dev-master",
     "objecting/object": "dev-master",
     "ordering/order": "dev-master",
-    "paying/payment": "dev-master",
+    "paying/payment": "dev-checkpoint/paying-release-audit-20260818 as dev-master",
     "relating/relation": "dev-master",
-    "shipping/shipment": "dev-master",
+    "shipping/shipment": "dev-checkpoint/shipping-canonical-hardcut-20260818 as dev-master",
     "symfony/dependency-injection": "^8.1",
     "symfony/form": "^8.1",
     "symfony/framework-bundle": "^8.1",
@@ -28,48 +29,186 @@
     "symfony/security-bundle": "^8.1",
     "symfony/uid": "^8.1",
     "symfony/validator": "^8.1",
+    "tabling/table": "dev-master",
     "viewing/view": "dev-master"
   },
   "require-dev": {
     "friendsofphp/php-cs-fixer": "^3.95",
     "phpstan/phpstan": "^2.1",
-    "phpunit/phpunit": "^12.5"
+    "phpunit/phpunit": "^12.5",
+    "gating/gate": "dev-master",
+    "symfony/browser-kit": "^8.1",
+    "symfony/css-selector": "^8.1",
+    "symfony/panther": "^2.2"
   },
-  "autoload": {"psr-4": {"App\\Casing\\": "src/"}},
-  "autoload-dev": {"psr-4": {"App\\Casing\\Tests\\": "tests/"}},
+  "autoload": {
+    "psr-4": {
+      "App\\Casing\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "App\\Casing\\Tests\\": "tests/"
+    }
+  },
   "repositories": [
-    {"type": "path", "url": "../Administering", "options": {"symlink": true, "versions": {"administering/administration": "dev-master"}}},
-    {"type": "path", "url": "../Attaching", "options": {"symlink": true, "versions": {"attaching/attachment": "dev-master"}}},
-    {"type": "path", "url": "../Cataloging", "options": {"symlink": true, "versions": {"cataloging/catalog": "dev-master"}}},
-    {"type": "path", "url": "../Collectioning", "options": {"symlink": true, "versions": {"collectioning/collection": "dev-master"}}},
-    {"type": "path", "url": "../Cruding", "options": {"symlink": true, "versions": {"cruding/crud": "dev-master"}}},
-    {"type": "path", "url": "../Currencing", "options": {"symlink": true, "versions": {"currencing/currency": "dev-master"}}},
-    {"type": "path", "url": "../Interfacing", "options": {"symlink": true, "versions": {"interfacing/interface": "dev-master"}}},
-    {"type": "path", "url": "../Navigating", "options": {"symlink": true, "versions": {"navigating/navigation": "dev-master"}}},
-    {"type": "path", "url": "../Objecting", "options": {"symlink": true, "versions": {"objecting/object": "dev-master"}}},
-    {"type": "path", "url": "../Ordering", "options": {"symlink": true, "versions": {"ordering/order": "dev-master"}}},
-    {"type": "path", "url": "../Paying", "options": {"symlink": true, "versions": {"paying/payment": "dev-master"}}},
-    {"type": "path", "url": "../Pricing", "options": {"symlink": true, "versions": {"pricing/price": "dev-master"}}},
-    {"type": "path", "url": "../Relating", "options": {"symlink": true, "versions": {"relating/relation": "dev-master"}}},
-    {"type": "path", "url": "../Shipping", "options": {"symlink": true, "versions": {"shipping/shipment": "dev-master"}}},
-    {"type": "path", "url": "../Tabling", "options": {"symlink": true, "versions": {"tabling/table": "dev-master"}}},
-    {"type": "path", "url": "../Viewing", "options": {"symlink": true, "versions": {"viewing/view": "dev-master"}}}
+    {
+      "type": "path",
+      "url": "../Administering",
+      "options": {
+        "symlink": true,
+        "versions": {
+          "administering/administration": "dev-master"
+        }
+      }
+    },
+    {
+      "type": "vcs",
+      "url": "git@github.com:smartresponsor/attaching.git",
+      "no-api": true
+    },
+    {
+      "type": "vcs",
+      "url": "git@github.com:smartresponsor/cataloging.git",
+      "no-api": true
+    },
+    {
+      "type": "path",
+      "url": "../Collectioning",
+      "options": {
+        "symlink": true,
+        "versions": {
+          "collectioning/collection": "dev-master"
+        }
+      }
+    },
+    {
+      "type": "path",
+      "url": "../Cruding",
+      "options": {
+        "symlink": true,
+        "versions": {
+          "cruding/crud": "dev-master"
+        }
+      }
+    },
+    {
+      "type": "vcs",
+      "url": "git@github.com:smartresponsor/currencing.git",
+      "no-api": true
+    },
+    {
+      "type": "path",
+      "url": "../Interfacing",
+      "options": {
+        "symlink": true,
+        "versions": {
+          "interfacing/interface": "dev-master"
+        }
+      }
+    },
+    {
+      "type": "vcs",
+      "url": "git@github.com:smartresponsor/navigating.git",
+      "no-api": true
+    },
+    {
+      "type": "path",
+      "url": "../Objecting",
+      "options": {
+        "symlink": true,
+        "versions": {
+          "objecting/object": "dev-master"
+        }
+      }
+    },
+    {
+      "type": "vcs",
+      "url": "https://github.com/smartresponsor/ordering.git",
+      "no-api": true
+    },
+    {
+      "type": "vcs",
+      "url": "git@github.com:smartresponsor/paying.git",
+      "no-api": true
+    },
+    {
+      "type": "vcs",
+      "url": "git@github.com:smartresponsor/pricing.git",
+      "no-api": true
+    },
+    {
+      "type": "vcs",
+      "url": "git@github.com:smartresponsor/Relating.git",
+      "no-api": true
+    },
+    {
+      "type": "vcs",
+      "url": "https://github.com/smartresponsor/shipping.git",
+      "no-api": true
+    },
+    {
+      "type": "path",
+      "url": "../Tabling",
+      "options": {
+        "symlink": true,
+        "versions": {
+          "tabling/table": "dev-master"
+        }
+      }
+    },
+    {
+      "type": "path",
+      "url": "../Viewing",
+      "options": {
+        "symlink": true,
+        "versions": {
+          "viewing/view": "dev-master"
+        }
+      }
+    },
+    {
+      "type": "path",
+      "url": "../Gating",
+      "options": {
+        "symlink": true,
+        "versions": {
+          "gating/gate": "dev-master"
+        }
+      }
+    }
   ],
   "scripts": {
     "cs:check": "php vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.php --dry-run --diff",
     "cs:fix": "php vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.php",
     "phpstan": "php vendor/bin/phpstan analyse -c phpstan.neon --memory-limit=1G",
+    "schema:validate": "php bin/console doctrine:schema:validate --skip-sync",
+    "schema:parity": "php bin/console doctrine:migrations:up-to-date",
     "test:coverage": [
       "@php -r \"if (!is_dir('var/coverage')) { mkdir('var/coverage', 0777, true); }\"",
       "@php -d xdebug.mode=coverage vendor/bin/phpunit -c phpunit.xml.dist --path-coverage --coverage-text=var/coverage/summary.txt"
     ],
-    "test": "php vendor/bin/phpunit -c phpunit.xml.dist"
+    "test": "php vendor/bin/phpunit -c phpunit.xml.dist",
+    "gate": "@php vendor/bin/gating check --target=.",
+    "quality": [
+      "@cs:check",
+      "@phpstan",
+      "@test",
+      "@gate"
+    ]
   },
   "config": {
-    "allow-plugins": {"symfony/flex": true, "symfony/runtime": true},
+    "allow-plugins": {
+      "symfony/flex": true,
+      "symfony/runtime": true
+    },
     "sort-packages": true
   },
-  "extra": {"symfony": {"bundle": "App\\Casing\\CasingBundle"}},
+  "extra": {
+    "symfony": {
+      "bundle": "App\\Casing\\CasingBundle"
+    }
+  },
   "minimum-stability": "dev",
   "prefer-stable": true
 }

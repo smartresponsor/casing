@@ -1,0 +1,40 @@
+doctrine:
+  dbal:
+    default_connection: data
+    types:
+      ltree: App\Cataloging\Doctrine\Type\LtreeType
+    connections:
+      data:
+        url: '%env(resolve:DATABASE_URL)%'
+        driver: pdo_pgsql
+        server_version: '16'
+        mapping_types:
+          ltree: ltree
+      infra:
+        driver: pdo_sqlite
+        path: '%kernel.project_dir%/var/casing.sqlite'
+  orm:
+    default_entity_manager: data
+    entity_managers:
+      data:
+        connection: data
+        naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware
+        mappings:
+          Casing:
+            is_bundle: false
+            type: attribute
+            dir: '%kernel.project_dir%/src/Entity'
+            prefix: 'App\Casing\Entity'
+          CatalogingEntities:
+            is_bundle: false
+            type: attribute
+            dir: '%kernel.project_dir%/vendor/cataloging/catalog/src/Entity'
+            prefix: 'App\Cataloging\Entity'
+          ObjectingEmbeddables:
+            is_bundle: false
+            type: attribute
+            dir: '%kernel.project_dir%/vendor/objecting/object/src/Embeddable'
+            prefix: 'App\Objecting\Embeddable'
+      infra:
+        connection: infra
+        naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware

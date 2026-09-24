@@ -1,5 +1,17 @@
 # CMCP Execution Journal
 
+## 2026-09-23 — Casing RC canon convergence
+
+- Reconnaissance read Casing README/Composer/config/runtime/lifecycle/outbox surfaces plus mandatory Objecting, Cruding, Viewing, Interfacing, Gating, and Canonization contours.
+- Market baseline separated RC correctness from post-RC growth: lifecycle integrity, durable event delivery, integration boundaries, and reproducible verification are RC-critical; omnichannel, SLA/entitlements, richer routing, knowledge integration, and AI assistance remain growth work.
+- Canonization rules consulted and mapped: Canon018 package subject identity, Canon019 no alternative layer taxonomy, Canon020 typed role roots, Canon021 Cruding ownership/EasyAdmin exception, Canon023 dev symlinks, Canon024 production package resolution, Canon025 dual runtime, Canon030 Doctrine schema parity, Canon041/042 behavioral test tooling/evidence, Canon043 local package versions, Canon048 async entity boundary, Canon049 entity orchestration isolation, Canon052 Gating integration, and Canon053 closed sibling symlink contour.
+- Fresh Canon053 normative text permits eleven explicit sibling symlink exceptions; its normative Rule takes precedence over the older journal wording that still mentions four.
+- Starting worktree was pre-dirty: composer.json, composer.lock, composer.prod.json and .gating/README.md modified, with a copied/untracked .gating tree. These pre-existing changes were preserved and not attributed to this run.
+- Baseline verification: Composer validation passed; PHPStan passed; Gating became executable only after composer install materialized gating/gate, then reported architecture/runtime/tooling debt; PHPUnit initially had two Casing integration errors caused by stale Paying DTO references.
+- RC repair completed: migrated Casing from removed App\\Paying\\Dto\\Payment\\PaymentPlacementFormData to current App\\Paying\\DTO\\PaymentPlacementFormDTO in the contribution provider and regression test.
+- Verification after repair: PHPUnit passes 76 tests / 628 assertions. PHPStan remains green.
+- Remaining RC-critical Gating debt: resolver/provider technical-role topology and interface mirroring, Canon018 Case subject-prefix naming, Canon025 standalone boot surfaces, Canon030 schema-parity execution contract, Canon041 behavioral/browser tooling, plus dependency/.gating convergence under Canon052/053. Canon031/040/042 are measured warning-level documentation/coverage debt unless promoted by a separate release policy.
+
 ## 2026-09-20 — Casing RC continuation
 
 - Reconnaissance resumed against the live Casing workspace and mandatory Objecting, Cruding, Viewing, Interfacing, Canonization, and Gating contours.
@@ -225,3 +237,39 @@
 - Final PHP-CS-Fixer dry-run: PASS after normalizing the two new PHP files.
 - Changed/untracked PHP syntax lint: PASS. The tool also inspected the pre-existing untracked `.gating/` PHP tree; it remains excluded from the owned product change.
 
+
+## 2026-09-23 — RC convergence continuation: standalone wiring and Canon052-054
+
+### Reconnaissance and selected work
+
+- Continued from the existing Case-prefix/repository-ownership baseline on `feature/facting-case-lifecycle-20260823`; did not restart prior verified work.
+- Read the real Ordering, Paying, Relating, Cataloging and Objecting bundle/service integration surfaces plus Canon023, Canon045, Canon052 and Canon053.
+- Confirmed OrderingBundle, PayingBundle and RelatingBundle as real dependency entrypoints; Casing standalone registration was extended only along actual runtime dependency edges.
+- Canon053 remediation changed forbidden product sibling repositories from local path symlinks to their authoritative VCS origins while retaining canonical helper path symlinks.
+- Canon052 remediation removed the copied Gating engine/policy tree from consumer `.gating/`, preserving its README/generated-artifact boundary.
+- Canon054 remediation registered ObjectBundle and applied `doctrine.orm.naming_strategy.underscore_number_aware` at the standalone entity-manager level.
+- Completed the canonical `.gitignore` baseline and removed the Case-prefix migration helper plus obsolete resolver/provider `.gitkeep` artifacts.
+
+### Verification and current blockers
+
+- `composer validate --strict --check-lock`: PASS after VCS dependency lock refresh.
+- `composer cs:check`: PASS after normalizing the current Casing RC source/test set.
+- `composer gate`: PASS, 70 rules, 0 failed; Canon052, Canon053 and Canon054 are green. Remaining warnings are semantic PHPDoc coverage, stale PHP coverage evidence, and missing behavioral/UI coverage evidence.
+- Canon053 transport now resolves published `dev-master` packages rather than dirty sibling worktrees. This exposed publication drift rather than a Casing-local DI workaround opportunity.
+- Locked Paying resolves to `dev-master` source `c4f599f3de1abbc85cdd9e0993c2d33e4ba390e2`; its published `PayingExtension::load()` calls abstract `Extension::load()`, so standalone schema boot fails inside the dependency.
+- Published Paying also lacks the newer `PaymentPlacementFormDTO`, `PaymentPlacementType`, and `Entity\Business\PaymentEntity` contracts consumed by the already-migrated Casing implementation; published Shipping lacks `ShipmentPlacementFormDTO` and still exposes `ShipmentPlacementFormData`.
+- Consequently `composer test` currently reaches 78 tests with 3 dependency-contract errors, `composer phpstan` reports dependency symbol errors, and coverage cannot be refreshed validly.
+- No fake aliases, local stubs, production test hacks, sibling writes, or runtime-graph reductions were introduced to hide the publication mismatch.
+- Commit/push are intentionally withheld because canonical VCS transport is currently not acceptance-green against the published dependency revisions; committing a known broken resolved composition would violate the RC integration contract.
+
+### RC continuation finalization — published RC branch composition
+
+- Re-fetched read-only sibling remotes and confirmed the required canonical Paying and Shipping APIs are published on their existing remote checkpoint branches, while the required Cataloging fixture/runtime fixes are published on its remote feature branch.
+- Kept Canon053 product dependencies on VCS transport and used Composer inline aliases so those published RC branches satisfy transitive dev-master requirements without restoring forbidden sibling symlinks.
+- Locked sources: Paying checkpoint `6f3bfa3bf9740abd7aac16cc547e27406e619184`; Shipping checkpoint `95a695f3099488b86f9def9770a447e77a099ea9`; Cataloging feature `2dfe6e6c7c12796f12b92b3c6df833255cd6489b`.
+- CatalogingBundle's component export includes fixture services whose parent package is dev-only. Standalone Casing therefore composes Cataloging's real runtime `config/services.yaml` directly in `app/Kernel.php` rather than pulling fixture-only bundle export state. CasingBundle host mode is unchanged.
+- Restored canonical Doctrine topology: `data` uses PostgreSQL and owns Casing/Cataloging business mappings; `infra` remains SQLite; Objecting embeddables and Cataloging's real `LtreeType` are registered without importing Cataloging's incompatible standalone MySQL topology.
+- PHPStan now explicitly scans the VCS-resolved Paying source surface; static analysis is green.
+- Read-only schema validation against the existing host DATABASE_URL reports Casing/Cataloging mappings correct. `doctrine:migrations:up-to-date` exits 0 with no pending Casing migration failure, while reporting 112 already-executed host migrations outside the standalone Casing migration registry; the shared host ledger was not modified or bypassed.
+- Final verified gates: Composer strict/check-lock PASS; PHP-CS-Fixer PASS; PHPUnit PASS 78 tests / 646 assertions; PHPStan PASS 0 errors; PHP coverage workflow PASS; Gating PASS 70 rules / 0 failed.
+- Remaining Gating warnings are non-hard debt only: Canon031 semantic PHPDoc coverage, Canon040 measured HIGH_TEST_DEBT (lines 32.9%, methods 27.9%, branches 68.3%), and Canon042 missing explicit behavioral/UI inventory evidence. No evidence was fabricated.

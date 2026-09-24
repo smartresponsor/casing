@@ -7,6 +7,7 @@
     "php": "^8.4",
     "attaching/attachment": "dev-master",
     "cataloging/catalog": "dev-master",
+    "collectioning/collection": "dev-master",
     "cruding/crud": "dev-master",
     "doctrine/dbal": "^4.3",
     "doctrine/doctrine-bundle": "^3.2",
@@ -28,14 +29,35 @@
     "symfony/security-bundle": "^8.1",
     "symfony/uid": "^8.1",
     "symfony/validator": "^8.1",
+    "tabling/table": "dev-master",
     "viewing/view": "dev-master"
   },
-  "autoload": {"psr-4": {"App\\Casing\\": "src/"}},
+  "autoload": {
+    "psr-4": {
+      "App\\Casing\\": "src/"
+    }
+  },
   "config": {
-    "allow-plugins": {"symfony/runtime": true},
+    "allow-plugins": {
+      "symfony/runtime": true
+    },
     "sort-packages": true
   },
-  "extra": {"symfony": {"bundle": "App\\Casing\\CasingBundle"}},
+  "extra": {
+    "symfony": {
+      "bundle": "App\\Casing\\CasingBundle"
+    }
+  },
   "minimum-stability": "dev",
-  "prefer-stable": true
+  "prefer-stable": true,
+  "require-dev": {
+    "gating/gate": "dev-master"
+  },
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "https://github.com/smartresponsor/gating.git",
+      "no-api": true
+    }
+  ]
 }
