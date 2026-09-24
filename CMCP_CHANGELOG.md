@@ -1,5 +1,18 @@
 # CMCP Execution Journal
 
+## 2026-09-24 — Contextual support coverage and RC verification
+
+- Reconnaissance resumed from the live branch and preserved pre-existing/concurrent dirty work: modified `.gating/README.md` and `composer.json`, the expanded untracked `.gating/` tree, `LICENSE`, `NOTICE`, and generated `config/reference.php` were not absorbed into Casing-owned changes.
+- Market/enterprise baseline kept RC and growth separate: lifecycle integrity, actor ownership, auditability, controlled transitions, durable event delivery, and deterministic verification are RC-critical; richer SLA/routing/agent workspace/AI-assistance remain growth work.
+- Mandatory dependency contour re-read from Objecting, Cruding, Viewing, Interfacing, and Gating package/README surfaces. Casing still declares real Composer dependencies on objecting/object, cruding/crud, viewing/view, and interfacing/interface.
+- Canonization normative rules re-read and mapped: Canon018 confirms `casing/case` => `App\\Casing\\` plus `Case*`; Canon021 keeps generic application CRUD in Cruding while allowing EasyAdmin admin CRUD; Canon053 permits only the explicit helper sibling symlink set and Casing passes; current Gating also reports Canon054 physical identifier naming green.
+- Baseline test execution exposed a duplicate PHPUnit declaration: an in-progress contextual-support test file declared the same class as the existing tracked controller test. The supplemental test was retained as `CaseContextualSupportControllerCoverageTest` so its additional behavior coverage is preserved without collision.
+- Added/retained direct contextual-support coverage for order aggregation, product/payment action construction, URL encoding, order-number payment matching, and actor-ownership rejection.
+- Verification after normalization: PHPUnit PASS 126 tests / 823 assertions; PHPStan PASS 0 errors; PHP-CS-Fixer PASS; Xdebug path coverage PASS.
+- Refreshed coverage improved from lines 40.7% / methods 38.2% / branches 80.5% to lines 44.0% / methods 39.1% / branches 82.6%; `CaseContextualSupportController` is now 100% line-covered and 96.7% branch-covered.
+- Gating hard architecture rules remain green except Canon052, which fails solely because the preserved pre-existing full `.gating/` source/tooling tree violates the consumer artifact-only contract. Canon031 PHPDoc, Canon040 line/method coverage, and Canon042 behavioral/UI evidence remain warning-level debt.
+- RC boundary decision: do not delete, stage, or rewrite the pre-existing `.gating/` tree without ownership. Casing-owned work can be committed independently, but final green Gating/push remains blocked until that concurrent artifact tree is resolved by its owner.
+
 ## 2026-09-23 — Casing RC canon convergence
 
 - Reconnaissance read Casing README/Composer/config/runtime/lifecycle/outbox surfaces plus mandatory Objecting, Cruding, Viewing, Interfacing, Gating, and Canonization contours.
