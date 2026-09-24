@@ -318,3 +318,9 @@
 - Added direct CaseOutboxProcessCommand coverage for successful execution and reported dispatch count with cross-platform line-ending-safe assertions.
 - Acceptance remains green: PHPUnit 116 tests / 787 assertions, PHPStan 0 errors, PHP-CS-Fixer 0 fixable files, Gating 70 rules / 0 failed.
 - Refreshed Canon040 coverage improved to lines 40.4%, methods 37.8%, branches 79.7%; branch coverage remains above target while line/method debt continues to trend down.
+
+### RC continuation — product-return intake failure coverage
+
+- Extended ProductReturnIntakeTest across missing/unowned product association, ordering-reference replacement while preserving unrelated component references, and claim validation guards for blank type, blank reason, and non-positive quantity.
+- Acceptance remains green: PHPUnit 121 tests / 804 assertions, PHPStan 0 errors, PHP-CS-Fixer 0 fixable files, Gating 70 rules / 0 failed.
+- Refreshed Canon040 coverage improved to lines 40.7%, methods 38.2%, branches 80.5%; branch coverage remains above target while line/method debt continues to decrease.

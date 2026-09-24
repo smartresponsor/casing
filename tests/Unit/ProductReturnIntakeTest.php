@@ -115,4 +115,110 @@ final class ProductReturnIntakeTest extends TestCase
 
         self::assertFalse($form->isValid());
     }
+
+    public function testAssociationFailureDoesNotMutateOrPersistDraft(): void
+    {
+        $resolver = $this->createMock(CasePurchasedProductSubjectResolverInterface::class);
+        $resolver->expects(self::once())
+            ->method('resolve')
+            ->with('actor-1', 'ORD-MISSING', 'SKU-MISSING')
+            ->willReturn(null);
+
+        $drafts = $this->createMock(CaseDraftRepositoryInterface::class);
+        $drafts->expects(self::never())->method('save');
+
+        $draft = new CaseDraftEntity('actor-1', 'products');
+        $draft->setSubjectReferences([['component' => 'relating', 'type' => 'lead', 'id' => 'lead-1']]);
+
+        try {
+            (new CaseProductReturnIntakeService($resolver, $drafts))
+                ->associatePurchasedProduct($draft, 'ORD-MISSING', 'SKU-MISSING');
+            self::fail('Unowned or missing purchased products must be rejected.');
+        } catch (\DomainException $exception) {
+            self::assertStringContainsString('could not associate', $exception->getMessage());
+        }
+
+        self::assertSame(
+            [['component' => 'relating', 'type' => 'lead', 'id' => 'lead-1']],
+            $draft->getSubjectReferences(),
+        );
+    }
+
+    public function testAssociationReplacesOldOrderingReferencesAndPreservesOtherComponents(): void
+    {
+        $subject = new CasePurchasedProductSubject(
+            orderReference: 'order-new',
+            orderNumber: 'ORD-NEW',
+            itemReference: 'SKU-NEW',
+            quantity: 1,
+            currency: 'USD',
+            unitPrice: '10.00',
+            orderStatus: 'delivered',
+        );
+
+        $resolver = $this->createMock(CasePurchasedProductSubjectResolverInterface::class);
+        $resolver->expects(self::once())->method('resolve')->willReturn($subject);
+
+        $drafts = $this->createMock(CaseDraftRepositoryInterface::class);
+        $drafts->expects(self::once())->method('save');
+
+        $draft = new CaseDraftEntity('actor-1', 'products');
+        $draft->setSubjectReferences([
+            ['component' => 'ordering', 'type' => 'order', 'id' => 'order-old'],
+            ['component' => 'ordering', 'type' => 'order-item', 'id' => 'SKU-OLD'],
+            ['component' => 'relating', 'type' => 'lead', 'id' => 'lead-1'],
+        ]);
+
+        (new CaseProductReturnIntakeService($resolver, $drafts))
+            ->associatePurchasedProduct($draft, 'ORD-NEW', 'SKU-NEW');
+
+        self::assertSame([
+            ['component' => 'relating', 'type' => 'lead', 'id' => 'lead-1'],
+            ['component' => 'ordering', 'type' => 'order', 'id' => 'order-new'],
+            ['component' => 'ordering', 'type' => 'order-item', 'id' => 'SKU-NEW'],
+        ], $draft->getSubjectReferences());
+        self::assertSame('details', $draft->getCurrentStep());
+    }
+
+    public function testCustomerClaimRejectsBlankTypeWithoutPersisting(): void
+    {
+        $drafts = $this->createMock(CaseDraftRepositoryInterface::class);
+        $drafts->expects(self::never())->method('save');
+
+        $service = new CaseProductReturnIntakeService(
+            $this->createStub(CasePurchasedProductSubjectResolverInterface::class),
+            $drafts,
+        );
+
+        $this->expectException(\InvalidArgumentException::class);
+        $service->recordCustomerClaim(new CaseDraftEntity('actor-1', 'products'), '   ', 'Reason');
+    }
+
+    public function testCustomerClaimRejectsBlankReasonWithoutPersisting(): void
+    {
+        $drafts = $this->createMock(CaseDraftRepositoryInterface::class);
+        $drafts->expects(self::never())->method('save');
+
+        $service = new CaseProductReturnIntakeService(
+            $this->createStub(CasePurchasedProductSubjectResolverInterface::class),
+            $drafts,
+        );
+
+        $this->expectException(\InvalidArgumentException::class);
+        $service->recordCustomerClaim(new CaseDraftEntity('actor-1', 'products'), 'damaged', '   ');
+    }
+
+    public function testCustomerClaimRejectsNonPositiveQuantityWithoutPersisting(): void
+    {
+        $drafts = $this->createMock(CaseDraftRepositoryInterface::class);
+        $drafts->expects(self::never())->method('save');
+
+        $service = new CaseProductReturnIntakeService(
+            $this->createStub(CasePurchasedProductSubjectResolverInterface::class),
+            $drafts,
+        );
+
+        $this->expectException(\InvalidArgumentException::class);
+        $service->recordCustomerClaim(new CaseDraftEntity('actor-1', 'products'), 'damaged', 'Reason', 0);
+    }
 }
