@@ -305,3 +305,9 @@
 - Tests exposed and remediation fixed a real consistency defect: isPublishedType() now lowercases its input just like published metadata normalization and isPublishedSupportType().
 - Acceptance remains green: PHPUnit 108 tests / 747 assertions, PHPStan 0 errors, PHP-CS-Fixer 0 fixable files, Gating 70 rules / 0 failed.
 - Refreshed Canon040 coverage improved to lines 39.0%, methods 34.8%, branches 79.3%; branch coverage is now materially above the 70% target.
+
+### RC continuation — case-center orchestration coverage
+
+- Added direct CaseCenterService coverage for actor-scoped listing, case ownership lookup, foreign/missing case rejection, information submission, and open-request delegation.
+- Acceptance remains green: PHPUnit 113 tests / 772 assertions, PHPStan 0 errors, PHP-CS-Fixer 0 fixable files, Gating 70 rules / 0 failed.
+- Refreshed Canon040 coverage improved to lines 39.7%, methods 36.5%, branches 79.5%; branch coverage remains comfortably above target while line/method debt remains explicit.
