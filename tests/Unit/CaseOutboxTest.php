@@ -8,7 +8,6 @@ use App\Casing\Entity\CaseOutboxMessageEntity;
 use App\Casing\Event\CaseOpenedEvent;
 use App\Casing\RepositoryInterface\CaseOutboxMessageRepositoryInterface;
 use App\Casing\Service\Outbox\CaseOutboxProcessor;
-use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\TestCase;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
@@ -34,8 +33,7 @@ final class CaseOutboxTest extends TestCase
             ->with(100)
             ->willReturn([$message]);
 
-        $entityManager = $this->createMock(EntityManagerInterface::class);
-        $entityManager->expects(self::once())->method('flush');
+        $repository->expects(self::once())->method('flush');
 
         $dispatcher = $this->createMock(EventDispatcherInterface::class);
         $dispatcher->expects(self::once())
@@ -50,7 +48,7 @@ final class CaseOutboxTest extends TestCase
             )
             ->willReturnArgument(0);
 
-        self::assertSame(1, (new CaseOutboxProcessor($entityManager, $repository, $dispatcher))->process());
+        self::assertSame(1, (new CaseOutboxProcessor($repository, $dispatcher))->process());
         self::assertFalse($message->isPending());
     }
 
@@ -64,12 +62,11 @@ final class CaseOutboxTest extends TestCase
             ->with(100)
             ->willReturn([$message]);
 
-        $entityManager = $this->createMock(EntityManagerInterface::class);
-        $entityManager->expects(self::never())->method('flush');
+        $repository->expects(self::never())->method('flush');
         $dispatcher = $this->createMock(EventDispatcherInterface::class);
         $dispatcher->expects(self::never())->method('dispatch');
 
-        $processor = new CaseOutboxProcessor($entityManager, $repository, $dispatcher);
+        $processor = new CaseOutboxProcessor($repository, $dispatcher);
 
         try {
             $processor->process();

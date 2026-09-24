@@ -5,11 +5,12 @@ declare(strict_types=1);
 namespace App\Casing\Repository;
 
 use App\Casing\Entity\CaseDraftEntity;
+use App\Casing\RepositoryInterface\CaseDraftRepositoryInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /** @extends ServiceEntityRepository<CaseDraftEntity> */
-final class CaseDraftRepository extends ServiceEntityRepository
+final class CaseDraftRepository extends ServiceEntityRepository implements CaseDraftRepositoryInterface
 {
     public function __construct(ManagerRegistry $registry)
     {

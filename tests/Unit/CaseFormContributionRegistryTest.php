@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\Casing\Tests\Unit;
 
-use App\Casing\Form\Contribution\PaymentCaseFormContributionProvider;
-use App\Casing\Form\Contribution\ShippingCaseFormContributionProvider;
+use App\Casing\Provider\Contribution\CasePaymentFormContributionProvider;
+use App\Casing\Provider\Contribution\CaseShippingFormContributionProvider;
 use App\Casing\Service\CaseFormContributionService;
 use App\Casing\Service\Form\CaseFormContributionRegistry;
-use App\Paying\Dto\Payment\PaymentPlacementFormData;
+use App\Paying\DTO\PaymentPlacementFormDTO;
 use App\Paying\Form\PaymentPlacementType;
 use App\Shipping\DTO\ShipmentPlacementFormDTO;
 use App\Shipping\Form\ShipmentPlacementType;
@@ -20,8 +20,8 @@ final class CaseFormContributionRegistryTest extends TestCase
     public function testRegistryExposesOwnerFormTypesAndDtosWithoutFieldCopies(): void
     {
         $registry = new CaseFormContributionRegistry([
-            new ShippingCaseFormContributionProvider(),
-            new PaymentCaseFormContributionProvider(),
+            new CaseShippingFormContributionProvider(),
+            new CasePaymentFormContributionProvider(),
         ]);
 
         $shipping = $registry->get('shipping.placement');
@@ -31,15 +31,15 @@ final class CaseFormContributionRegistryTest extends TestCase
 
         $payment = $registry->get('payment.placement');
         self::assertSame(PaymentPlacementType::class, $payment->formType());
-        self::assertSame(PaymentPlacementFormData::class, $payment->dataClass());
-        self::assertInstanceOf(PaymentPlacementFormData::class, $payment->createData());
+        self::assertSame(PaymentPlacementFormDTO::class, $payment->dataClass());
+        self::assertInstanceOf(PaymentPlacementFormDTO::class, $payment->createData());
     }
 
     public function testContributionServiceBuildsActualOwnerForms(): void
     {
         $registry = new CaseFormContributionRegistry([
-            new ShippingCaseFormContributionProvider(),
-            new PaymentCaseFormContributionProvider(),
+            new CaseShippingFormContributionProvider(),
+            new CasePaymentFormContributionProvider(),
         ]);
         $service = new CaseFormContributionService(Forms::createFormFactory(), $registry);
 

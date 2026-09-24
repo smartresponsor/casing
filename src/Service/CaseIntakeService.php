@@ -7,18 +7,16 @@ namespace App\Casing\Service;
 use App\Casing\Entity\CaseDraftEntity;
 use App\Casing\Entity\CaseEntity;
 use App\Casing\Event\CaseOpenedEvent;
-use App\Casing\Repository\CaseDraftRepository;
-use App\Casing\Repository\CaseRepository;
+use App\Casing\RepositoryInterface\CaseDraftRepositoryInterface;
+use App\Casing\RepositoryInterface\CaseRepositoryInterface;
 use App\Casing\Service\Outbox\CaseOutboxWriter;
 use App\Cataloging\Entity\Catalog\CatalogCategoryEntity;
-use Doctrine\ORM\EntityManagerInterface;
 
 final class CaseIntakeService
 {
     public function __construct(
-        private readonly EntityManagerInterface $entityManager,
-        private readonly CaseDraftRepository $drafts,
-        private readonly CaseRepository $cases,
+        private readonly CaseDraftRepositoryInterface $drafts,
+        private readonly CaseRepositoryInterface $cases,
         private readonly CaseCatalogService $catalogs,
         private readonly CaseOutboxWriter $outbox,
     ) {
@@ -90,7 +88,7 @@ final class CaseIntakeService
 
     public function submit(string $draftReference, string $actorId): CaseEntity
     {
-        return $this->entityManager->wrapInTransaction(function () use ($draftReference, $actorId): CaseEntity {
+        return $this->cases->transactional(function () use ($draftReference, $actorId): CaseEntity {
             $draft = $this->drafts->findActorDraft(trim($draftReference), trim($actorId));
             if (!$draft instanceof CaseDraftEntity) {
                 throw new \DomainException('We could not associate this case draft with your account.');
@@ -115,7 +113,6 @@ final class CaseIntakeService
             );
             $this->outbox->store($case->getCaseReference(), CaseOpenedEvent::class, get_object_vars($event));
             $this->drafts->remove($draft, false);
-            $this->entityManager->flush();
 
             return $case;
         });

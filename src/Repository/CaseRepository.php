@@ -5,11 +5,12 @@ declare(strict_types=1);
 namespace App\Casing\Repository;
 
 use App\Casing\Entity\CaseEntity;
+use App\Casing\RepositoryInterface\CaseRepositoryInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /** @extends ServiceEntityRepository<CaseEntity> */
-final class CaseRepository extends ServiceEntityRepository
+final class CaseRepository extends ServiceEntityRepository implements CaseRepositoryInterface
 {
     public function __construct(ManagerRegistry $registry)
     {
@@ -43,5 +44,22 @@ final class CaseRepository extends ServiceEntityRepository
         if ($flush) {
             $this->getEntityManager()->flush();
         }
+    }
+
+    public function flush(): void
+    {
+        $this->getEntityManager()->flush();
+    }
+
+    /**
+     * @template T
+     *
+     * @param callable(): T $operation
+     *
+     * @return T
+     */
+    public function transactional(callable $operation): mixed
+    {
+        return $this->getEntityManager()->wrapInTransaction($operation);
     }
 }

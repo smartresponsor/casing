@@ -4,19 +4,19 @@ declare(strict_types=1);
 
 namespace App\Casing\Tests\Unit;
 
-use App\Casing\DTO\Claim\ProductReturnClaimDTO;
-use App\Casing\Form\Claim\ProductReturnClaimType;
-use App\Casing\Value\PurchasedProductSubject;
+use App\Casing\DTO\Claim\CaseProductReturnClaimDTO;
+use App\Casing\Form\Claim\CaseProductReturnClaimType;
+use App\Casing\Value\CasePurchasedProductSubject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Form\Forms;
 
-final class ProductReturnClaimTypeTest extends TestCase
+final class CaseProductReturnClaimTypeTest extends TestCase
 {
     public function testActorScopedSubjectTokenMapsBackToVerifiedProjection(): void
     {
         $subject = $this->subject();
-        $data = new ProductReturnClaimDTO();
-        $form = Forms::createFormFactory()->create(ProductReturnClaimType::class, $data, [
+        $data = new CaseProductReturnClaimDTO();
+        $form = Forms::createFormFactory()->create(CaseProductReturnClaimType::class, $data, [
             'subjects' => [$subject],
             'types' => [['code' => 'damaged', 'label' => 'Damaged']],
         ]);
@@ -39,8 +39,8 @@ final class ProductReturnClaimTypeTest extends TestCase
     public function testUnknownSubjectTokenIsRejectedByTheChoiceField(): void
     {
         $subject = $this->subject();
-        $data = new ProductReturnClaimDTO();
-        $form = Forms::createFormFactory()->create(ProductReturnClaimType::class, $data, [
+        $data = new CaseProductReturnClaimDTO();
+        $form = Forms::createFormFactory()->create(CaseProductReturnClaimType::class, $data, [
             'subjects' => [$subject],
             'types' => [['code' => 'damaged', 'label' => 'Damaged']],
         ]);
@@ -56,9 +56,9 @@ final class ProductReturnClaimTypeTest extends TestCase
         self::assertNull($data->subject);
     }
 
-    private function subject(): PurchasedProductSubject
+    private function subject(): CasePurchasedProductSubject
     {
-        return new PurchasedProductSubject(
+        return new CasePurchasedProductSubject(
             orderReference: 'order-slug-1',
             orderNumber: 'ORD-TEST-1',
             itemReference: 'SKU-RETURN-1',
@@ -69,7 +69,7 @@ final class ProductReturnClaimTypeTest extends TestCase
         );
     }
 
-    private function token(PurchasedProductSubject $subject): string
+    private function token(CasePurchasedProductSubject $subject): string
     {
         return hash('sha256', $subject->orderReference."\0".$subject->itemReference);
     }

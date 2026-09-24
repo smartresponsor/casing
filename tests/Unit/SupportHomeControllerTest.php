@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace App\Casing\Tests\Unit;
 
-use App\Casing\Controller\SupportHomeController;
+use App\Casing\Controller\CaseSupportHomeController;
+use App\Casing\ResolverInterface\Ordering\CasePurchasedProductSubjectResolverInterface;
+use App\Casing\ResolverInterface\Paying\CaseServicePaymentSubjectResolverInterface;
+use App\Casing\ResolverInterface\Relating\CaseLeadSubjectResolverInterface;
 use App\Casing\Service\CaseActorAccessService;
 use App\Casing\Service\CaseCatalogService;
-use App\Casing\ServiceInterface\Resolver\LeadSubjectResolverInterface;
-use App\Casing\ServiceInterface\Resolver\PurchasedProductSubjectResolverInterface;
-use App\Casing\ServiceInterface\Resolver\ServicePaymentSubjectResolverInterface;
 use App\Cataloging\Entity\Catalog\CatalogCatalogEntity;
 use App\Cataloging\Entity\Catalog\CatalogCategoryEntity;
 use App\Cataloging\ServiceInterface\CatalogCatalogTreeReadServiceInterface;
@@ -18,7 +18,7 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 
-final class SupportHomeControllerTest extends TestCase
+final class CaseSupportHomeControllerTest extends TestCase
 {
     public function testSupportHomeRequiresPublishedTypeVocabularyAndExposesIt(): void
     {
@@ -51,14 +51,14 @@ final class SupportHomeControllerTest extends TestCase
         );
         $catalogs = new CaseCatalogService($this->createStub(CatalogCatalogTreeReadServiceInterface::class), $lookup);
 
-        $products = $this->createStub(PurchasedProductSubjectResolverInterface::class);
+        $products = $this->createStub(CasePurchasedProductSubjectResolverInterface::class);
         $products->method('listForActor')->willReturn([]);
-        $payments = $this->createStub(ServicePaymentSubjectResolverInterface::class);
+        $payments = $this->createStub(CaseServicePaymentSubjectResolverInterface::class);
         $payments->method('listForActor')->willReturn([]);
-        $leads = $this->createStub(LeadSubjectResolverInterface::class);
+        $leads = $this->createStub(CaseLeadSubjectResolverInterface::class);
         $leads->method('listForActor')->willReturn([]);
 
-        $controller = new SupportHomeController(
+        $controller = new CaseSupportHomeController(
             new CaseActorAccessService($this->createStub(Security::class)),
             $catalogs,
             $products,

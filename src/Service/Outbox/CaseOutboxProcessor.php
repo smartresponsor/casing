@@ -7,13 +7,11 @@ namespace App\Casing\Service\Outbox;
 use App\Casing\Event\CaseOpenedEvent;
 use App\Casing\Event\CaseResolvedEvent;
 use App\Casing\RepositoryInterface\CaseOutboxMessageRepositoryInterface;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 final readonly class CaseOutboxProcessor
 {
     public function __construct(
-        private EntityManagerInterface $entityManager,
         private CaseOutboxMessageRepositoryInterface $messages,
         private EventDispatcherInterface $dispatcher,
     ) {
@@ -50,7 +48,7 @@ final readonly class CaseOutboxProcessor
             ++$count;
         }
 
-        $this->entityManager->flush();
+        $this->messages->flush();
 
         return $count;
     }

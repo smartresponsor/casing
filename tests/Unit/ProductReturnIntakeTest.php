@@ -5,10 +5,11 @@ declare(strict_types=1);
 namespace App\Casing\Tests\Unit;
 
 use App\Casing\Entity\CaseDraftEntity;
-use App\Casing\Service\ProductReturnIntakeService;
-use App\Casing\Service\Resolver\Ordering\PurchasedProductSubjectResolver;
-use App\Casing\ServiceInterface\Resolver\PurchasedProductSubjectResolverInterface;
-use App\Casing\Value\PurchasedProductSubject;
+use App\Casing\RepositoryInterface\CaseDraftRepositoryInterface;
+use App\Casing\Resolver\Ordering\CasePurchasedProductSubjectResolver;
+use App\Casing\ResolverInterface\Ordering\CasePurchasedProductSubjectResolverInterface;
+use App\Casing\Service\CaseProductReturnIntakeService;
+use App\Casing\Value\CasePurchasedProductSubject;
 use App\Ordering\Entity\Order\OrderEntity;
 use App\Ordering\Entity\Order\OrderItemEntity;
 use App\Ordering\ReadModel\Repository\OrderReadRepository;
@@ -31,7 +32,7 @@ final class ProductReturnIntakeTest extends TestCase
         $entityManager = $this->createStub(EntityManagerInterface::class);
         $entityManager->method('getRepository')->willReturn($repository);
 
-        $resolver = new PurchasedProductSubjectResolver(new CustomerOrderReadService(new OrderReadRepository($entityManager)));
+        $resolver = new CasePurchasedProductSubjectResolver(new CustomerOrderReadService(new OrderReadRepository($entityManager)));
 
         self::assertCount(1, $resolver->listForActor('actor-1'));
         self::assertSame([], $resolver->listForActor('actor-2'));
@@ -44,7 +45,7 @@ final class ProductReturnIntakeTest extends TestCase
 
     public function testVerifiedSubjectAndCustomerClaimRemainSeparate(): void
     {
-        $resolver = new class implements PurchasedProductSubjectResolverInterface {
+        $resolver = new class implements CasePurchasedProductSubjectResolverInterface {
             public function listForActor(string $actorId): array
             {
                 $subject = $this->resolve($actorId, 'ORD-TEST-1', 'SKU-RETURN-1');
@@ -54,16 +55,16 @@ final class ProductReturnIntakeTest extends TestCase
 
             public function listForActorOrder(string $actorId, string $orderReference): array
             {
-                return array_values(array_filter($this->listForActor($actorId), static fn (PurchasedProductSubject $subject): bool => $subject->orderReference === $orderReference || $subject->orderNumber === $orderReference));
+                return array_values(array_filter($this->listForActor($actorId), static fn (CasePurchasedProductSubject $subject): bool => $subject->orderReference === $orderReference || $subject->orderNumber === $orderReference));
             }
 
-            public function resolve(string $actorId, string $orderReference, string $itemReference): ?PurchasedProductSubject
+            public function resolve(string $actorId, string $orderReference, string $itemReference): ?CasePurchasedProductSubject
             {
                 if ('actor-1' !== $actorId) {
                     return null;
                 }
 
-                return new PurchasedProductSubject(
+                return new CasePurchasedProductSubject(
                     orderReference: 'order-slug-1',
                     orderNumber: 'ORD-TEST-1',
                     itemReference: 'SKU-RETURN-1',
@@ -74,10 +75,9 @@ final class ProductReturnIntakeTest extends TestCase
                 );
             }
         };
-        $entityManager = $this->createMock(EntityManagerInterface::class);
-        $entityManager->expects(self::exactly(2))->method('persist');
-        $entityManager->expects(self::exactly(2))->method('flush');
-        $service = new ProductReturnIntakeService($resolver, $entityManager);
+        $drafts = $this->createMock(CaseDraftRepositoryInterface::class);
+        $drafts->expects(self::exactly(2))->method('save');
+        $service = new CaseProductReturnIntakeService($resolver, $drafts);
         $draft = new CaseDraftEntity('actor-1', 'products');
 
         $service->associatePurchasedProduct($draft, 'ORD-TEST-1', 'SKU-RETURN-1');
@@ -100,9 +100,9 @@ final class ProductReturnIntakeTest extends TestCase
 
     public function testProductReturnFormRejectsUnknownCatalogType(): void
     {
-        $subject = new PurchasedProductSubject('order-1', 'ORD-1', 'SKU-1', 1, 'USD', '25.00', 'delivered');
-        $data = new \App\Casing\DTO\Claim\ProductReturnClaimDTO();
-        $form = \Symfony\Component\Form\Forms::createFormFactory()->create(\App\Casing\Form\Claim\ProductReturnClaimType::class, $data, [
+        $subject = new CasePurchasedProductSubject('order-1', 'ORD-1', 'SKU-1', 1, 'USD', '25.00', 'delivered');
+        $data = new \App\Casing\DTO\Claim\CaseProductReturnClaimDTO();
+        $form = \Symfony\Component\Form\Forms::createFormFactory()->create(\App\Casing\Form\Claim\CaseProductReturnClaimType::class, $data, [
             'subjects' => [$subject],
             'types' => [['code' => 'damaged', 'label' => 'Damaged']],
         ]);

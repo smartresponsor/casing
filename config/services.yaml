@@ -7,14 +7,20 @@ services:
     App\Casing\FormInterface\Contribution\CaseFormContributionInterface:
       tags: ['casing.form_contribution']
 
-  App\Casing\ServiceInterface\Resolver\PurchasedProductSubjectResolverInterface:
-    alias: App\Casing\Service\Resolver\Ordering\PurchasedProductSubjectResolver
+  App\Casing\ResolverInterface\Ordering\CasePurchasedProductSubjectResolverInterface:
+    alias: App\Casing\Resolver\Ordering\CasePurchasedProductSubjectResolver
 
-  App\Casing\ServiceInterface\Resolver\ServicePaymentSubjectResolverInterface:
-    alias: App\Casing\Service\Resolver\Paying\ServicePaymentSubjectResolver
+  App\Casing\ResolverInterface\Paying\CaseServicePaymentSubjectResolverInterface:
+    alias: App\Casing\Resolver\Paying\CaseServicePaymentSubjectResolver
 
-  App\Casing\ServiceInterface\Resolver\LeadSubjectResolverInterface:
-    alias: App\Casing\Service\Resolver\Relating\LeadSubjectResolver
+  App\Casing\ResolverInterface\Relating\CaseLeadSubjectResolverInterface:
+    alias: App\Casing\Resolver\Relating\CaseLeadSubjectResolver
+
+  App\Casing\RepositoryInterface\CaseDraftRepositoryInterface:
+    alias: App\Casing\Repository\CaseDraftRepository
+
+  App\Casing\RepositoryInterface\CaseRepositoryInterface:
+    alias: App\Casing\Repository\CaseRepository
 
   App\Casing\RepositoryInterface\CaseOutboxMessageRepositoryInterface:
     alias: App\Casing\Repository\CaseOutboxMessageRepository
@@ -29,6 +35,7 @@ services:
       - '../src/Value/'
       - '../src/FormInterface/'
       - '../src/RepositoryInterface/'
+      - '../src/ResolverInterface/'
       - '../src/ServiceInterface/'
 
   App\Casing\Service\Form\CaseFormContributionRegistry:

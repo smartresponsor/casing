@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Casing\Tests\Unit;
 
-use App\Casing\DTO\Claim\ServiceDisputeClaimDTO;
-use App\Casing\Form\Claim\ServiceDisputeClaimType;
-use App\Casing\Service\Resolver\Paying\ServicePaymentSubjectResolver;
+use App\Casing\DTO\Claim\CaseServiceDisputeClaimDTO;
+use App\Casing\Form\Claim\CaseServiceDisputeClaimType;
+use App\Casing\Resolver\Paying\CaseServicePaymentSubjectResolver;
 use App\Ordering\Entity\Order\OrderEntity;
 use App\Ordering\ReadModel\Repository\OrderReadRepository;
 use App\Paying\Entity\Business\PaymentEntity;
@@ -36,7 +36,7 @@ final class ServiceDisputeFlowTest extends TestCase
             static fn (string $orderId): ?PaymentEntity => 'ORD-SERVICE-1' === $orderId ? $payment : null,
         );
 
-        $resolver = new ServicePaymentSubjectResolver(new OrderReadRepository($entityManager), $payments);
+        $resolver = new CaseServicePaymentSubjectResolver(new OrderReadRepository($entityManager), $payments);
 
         self::assertCount(1, $resolver->listForActor('actor-1'));
         self::assertSame([], $resolver->listForActor('actor-2'));
@@ -46,10 +46,10 @@ final class ServiceDisputeFlowTest extends TestCase
 
     public function testFormRejectsPaymentOutsideProvidedActorScopedChoices(): void
     {
-        $subject = new \App\Casing\Value\ServicePaymentSubject('payment-1', 'order-1', 'ORD-1', 'completed', '50.00', 'USD', null);
+        $subject = new \App\Casing\Value\CaseServicePaymentSubject('payment-1', 'order-1', 'ORD-1', 'completed', '50.00', 'USD', null);
         $types = [['code' => 'billing', 'label' => 'Billing']];
-        $data = new ServiceDisputeClaimDTO();
-        $form = Forms::createFormFactory()->create(ServiceDisputeClaimType::class, $data, ['subjects' => [$subject], 'types' => $types]);
+        $data = new CaseServiceDisputeClaimDTO();
+        $form = Forms::createFormFactory()->create(CaseServiceDisputeClaimType::class, $data, ['subjects' => [$subject], 'types' => $types]);
         $form->submit([
             'subject' => hash('sha256', 'other-payment'),
             'typeCode' => 'billing',
@@ -62,9 +62,9 @@ final class ServiceDisputeFlowTest extends TestCase
 
     public function testFormRejectsUnknownCatalogType(): void
     {
-        $subject = new \App\Casing\Value\ServicePaymentSubject('payment-1', 'order-1', 'ORD-1', 'completed', '50.00', 'USD', null);
-        $data = new ServiceDisputeClaimDTO();
-        $form = Forms::createFormFactory()->create(ServiceDisputeClaimType::class, $data, [
+        $subject = new \App\Casing\Value\CaseServicePaymentSubject('payment-1', 'order-1', 'ORD-1', 'completed', '50.00', 'USD', null);
+        $data = new CaseServiceDisputeClaimDTO();
+        $form = Forms::createFormFactory()->create(CaseServiceDisputeClaimType::class, $data, [
             'subjects' => [$subject],
             'types' => [['code' => 'billing', 'label' => 'Billing']],
         ]);

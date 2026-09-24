@@ -7,15 +7,13 @@ namespace App\Casing\Service;
 use App\Casing\Entity\CaseEntity;
 use App\Casing\Enum\CaseStatus;
 use App\Casing\Event\CaseResolvedEvent;
-use App\Casing\Repository\CaseRepository;
+use App\Casing\RepositoryInterface\CaseRepositoryInterface;
 use App\Casing\Service\Outbox\CaseOutboxWriter;
-use Doctrine\ORM\EntityManagerInterface;
 
 final readonly class CaseLifecycleService
 {
     public function __construct(
-        private EntityManagerInterface $entityManager,
-        private CaseRepository $cases,
+        private CaseRepositoryInterface $cases,
         private CaseOutboxWriter $outbox,
     ) {
     }
@@ -36,6 +34,6 @@ final readonly class CaseLifecycleService
             $this->outbox->store($case->getCaseReference(), CaseResolvedEvent::class, get_object_vars($event));
         }
 
-        $this->entityManager->flush();
+        $this->cases->flush();
     }
 }

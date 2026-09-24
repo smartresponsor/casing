@@ -39,4 +39,15 @@ final class CaseOutboxMessageRepository extends ServiceEntityRepository implemen
 
         return $messages;
     }
+
+    /** @param array<string, mixed> $payload */
+    public function store(string $caseReference, string $eventType, array $payload): void
+    {
+        $this->getEntityManager()->persist(new CaseOutboxMessageEntity($caseReference, $eventType, $payload));
+    }
+
+    public function flush(): void
+    {
+        $this->getEntityManager()->flush();
+    }
 }

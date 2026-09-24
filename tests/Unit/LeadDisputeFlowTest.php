@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace App\Casing\Tests\Unit;
 
-use App\Casing\DTO\Claim\LeadDisputeClaimDTO;
-use App\Casing\Form\Claim\LeadDisputeClaimType;
+use App\Casing\DTO\Claim\CaseLeadDisputeClaimDTO;
+use App\Casing\Form\Claim\CaseLeadDisputeClaimType;
+use App\Casing\Resolver\Relating\CaseLeadSubjectResolver;
 use App\Casing\Service\CaseCatalogService;
-use App\Casing\Service\Resolver\Relating\LeadSubjectResolver;
-use App\Casing\Value\LeadSubject;
+use App\Casing\Value\CaseLeadSubject;
 use App\Cataloging\Entity\Catalog\CatalogCatalogEntity;
 use App\Cataloging\Entity\Catalog\CatalogCategoryEntity;
 use App\Cataloging\ServiceInterface\CatalogCatalogTreeReadServiceInterface;
 use App\Cataloging\ServiceInterface\CatalogCategoryLookupServiceInterface;
-use App\Relating\Entity\RelationLead;
+use App\Relating\Entity\RelationLeadEntity;
 use App\Relating\Service\RelationVendorLeadReadServiceInterface;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Form\Forms;
@@ -22,9 +22,9 @@ final class LeadDisputeFlowTest extends TestCase
 {
     public function testLeadResolverUsesOnlyVendorScopedRelatingResults(): void
     {
-        $lead = new RelationLead('lead-1');
+        $lead = new RelationLeadEntity('lead-1');
         $owner = new class($lead) implements RelationVendorLeadReadServiceInterface {
-            public function __construct(private readonly RelationLead $lead)
+            public function __construct(private readonly RelationLeadEntity $lead)
             {
             }
 
@@ -33,7 +33,7 @@ final class LeadDisputeFlowTest extends TestCase
                 return 'actor-1' === $vendorReference ? [$this->lead] : [];
             }
         };
-        $resolver = new LeadSubjectResolver($owner);
+        $resolver = new CaseLeadSubjectResolver($owner);
 
         self::assertCount(1, $resolver->listForActor('actor-1'));
         self::assertSame([], $resolver->listForActor('actor-2'));
@@ -43,13 +43,13 @@ final class LeadDisputeFlowTest extends TestCase
 
     public function testFormAcceptsOnlyProvidedLeadAndCatalogReasonChoices(): void
     {
-        $subject = new LeadSubject('lead-1', 'converted', 70);
+        $subject = new CaseLeadSubject('lead-1', 'converted', 70);
         $types = [
             ['code' => 'invalid', 'label' => 'Invalid'],
             ['code' => 'duplicate', 'label' => 'Duplicate'],
         ];
-        $data = new LeadDisputeClaimDTO();
-        $form = Forms::createFormFactory()->create(LeadDisputeClaimType::class, $data, ['subjects' => [$subject], 'types' => $types]);
+        $data = new CaseLeadDisputeClaimDTO();
+        $form = Forms::createFormFactory()->create(CaseLeadDisputeClaimType::class, $data, ['subjects' => [$subject], 'types' => $types]);
         $form->submit([
             'subject' => hash('sha256', $subject->leadReference),
             'typeCode' => 'invalid',
@@ -60,8 +60,8 @@ final class LeadDisputeFlowTest extends TestCase
         self::assertSame($subject, $data->subject);
         self::assertSame('invalid', $data->typeCode);
 
-        $tampered = new LeadDisputeClaimDTO();
-        $tamperedForm = Forms::createFormFactory()->create(LeadDisputeClaimType::class, $tampered, ['subjects' => [$subject], 'types' => $types]);
+        $tampered = new CaseLeadDisputeClaimDTO();
+        $tamperedForm = Forms::createFormFactory()->create(CaseLeadDisputeClaimType::class, $tampered, ['subjects' => [$subject], 'types' => $types]);
         $tamperedForm->submit([
             'subject' => hash('sha256', 'other-lead'),
             'typeCode' => 'not-published',
