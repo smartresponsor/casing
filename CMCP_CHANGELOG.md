@@ -1,5 +1,17 @@
 # CMCP Execution Journal
 
+## 2026-09-24 — Support-home coverage continuation
+
+- Continued from signed HEAD `1ba022e` without reopening completed reconnaissance or touching concurrent `.gating/` and Composer dependency edits.
+- Canon042 was read from the normative Canonization rule. It requires schema-v2 behavioral/UI evidence from a declared repository-owned package script with explicit eligible/covered inventories; no such producer currently exists in Casing.
+- Canon042 implementation is temporarily blocked by ownership overlap in modified `composer.json`: the current diff changes Cataloging, Paying, and Shipping constraints independently of this Casing pass. No fake evidence file or mixed-ownership manifest commit was created.
+- Selected the next non-overlapping RC debt item: meaningful executable coverage for `CaseSupportHomeController`.
+- Extended `CaseSupportHomeControllerTest` to exercise all three published support contexts (product return, service dispute, lead dispute), actor-scoped resolver counts, support type propagation, metadata, and header actions.
+- Verification: PHPUnit PASS 127 tests / 835 assertions; PHPStan PASS 0 errors; PHP-CS-Fixer PASS; Xdebug path coverage PASS.
+- Refreshed Canon040 evidence improved from lines 44.0% / methods 39.1% / branches 82.6% to lines 45.2% / methods 39.5% / branches 83.3%; covered classes increased from 13/44 to 14/44.
+- Gating execution environment changed concurrently: installed `gating/gate` resolves to sibling Gating at reference `af7e24d4dbb6a9684c9c9a11013afa67e13febfe`, and the current `composer gate` invocation executes only 8 generic rules rather than Canon018-054. Its green result is therefore not treated as canonical acceptance evidence for this pass.
+- Residual RC work remains: stabilize canonical Gating execution, resolve the pre-existing consumer `.gating/` tree and Composer lock drift, then resume Canon042 producer/evidence and Canon031/040 debt reduction.
+
 ## 2026-09-24 — Contextual support coverage and RC verification
 
 - Reconnaissance resumed from the live branch and preserved pre-existing/concurrent dirty work: modified `.gating/README.md` and `composer.json`, the expanded untracked `.gating/` tree, `LICENSE`, `NOTICE`, and generated `config/reference.php` were not absorbed into Casing-owned changes.
