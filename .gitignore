@@ -3,6 +3,7 @@
 /var/
 /node_modules/
 /.idea/
+/config/reference.php
 .env.local
 .env.*.local
 .DS_Store

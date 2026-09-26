@@ -1,12 +1,12 @@
 {
   "name": "casing/case",
-  "description": "SmartResponsor case intake and lifecycle component",
+  "description": "Platform case intake and lifecycle component",
   "type": "symfony-bundle",
   "license": "PolyForm-Noncommercial-1.0.0",
   "require": {
     "php": "^8.4",
     "attaching/attachment": "dev-master",
-    "cataloging/catalog": "dev-feature/cataloging-post-merge-20260921-v2 as dev-master",
+    "cataloging/catalog": "dev-master",
     "collectioning/collection": "dev-master",
     "cruding/crud": "dev-master",
     "doctrine/dbal": "^4.3",

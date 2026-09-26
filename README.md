@@ -1,6 +1,6 @@
 # Casing
 
-Casing is the Smart Responsor Symfony bundle for support-case intake and lifecycle management. It owns case drafts, submitted cases, lifecycle transitions, contextual subject resolution, information requests, and the transactional outbox used to publish case events.
+Casing is the platform Symfony bundle for support-case intake and lifecycle management. It owns case drafts, submitted cases, lifecycle transitions, contextual subject resolution, information requests, and the transactional outbox used to publish case events.
 
 ## Runtime contract
 
