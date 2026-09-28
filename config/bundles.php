@@ -11,5 +11,6 @@ return [
     App\Ordering\OrderingBundle::class => ['all' => true],
     App\Paying\PayingBundle::class => ['all' => true],
     App\Relating\RelatingBundle::class => ['all' => true],
+    App\Failing\FailingBundle::class => ['all' => true],
     App\Casing\CasingBundle::class => ['all' => true],
 ];

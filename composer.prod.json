@@ -9,6 +9,7 @@
     "cataloging/catalog": "dev-master",
     "collectioning/collection": "dev-master",
     "cruding/crud": "dev-master",
+    "failing/failure": "dev-master",
     "doctrine/dbal": "^4.3",
     "doctrine/doctrine-bundle": "^3.2",
     "doctrine/doctrine-migrations-bundle": "^4.0",
@@ -54,6 +55,11 @@
     "gating/gate": "dev-master"
   },
   "repositories": [
+    {
+      "type": "vcs",
+      "url": "https://github.com/smartresponsor/failing.git",
+      "no-api": true
+    },
     {
       "type": "vcs",
       "url": "https://github.com/smartresponsor/gating.git",
